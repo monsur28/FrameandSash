@@ -1,19 +1,38 @@
+import { useLocation } from "react-router-dom"; // Import useLocation hook
 import { Bell, Mail, Search } from "lucide-react";
 
-const Header = () => (
-  <div className="flex flex-wrap justify-between items-center p-4 bg-gray-50 shadow-md">
-    {/* Title */}
-    <h1 className="text-xl lg:text-2xl font-semibold">Dashboard</h1>
+const Header = () => {
+  const location = useLocation(); // Get the current route path
 
-    {/* Search Bar and Actions */}
-    <div className="flex items-center justify-between flex-grow lg:flex-grow-0 space-x-4 mt-4 lg:mt-0 w-full lg:w-auto">
-      {/* Search Bar */}
-      <SearchBar />
-      {/* Header Actions */}
-      <HeaderActions />
+  // Determine the dynamic title based on the current route
+  let title;
+  switch (location.pathname) {
+    case "/manufacturer":
+      title = "Manufacturer Dashboard";
+      break;
+    case "/reseller":
+      title = "Reseller Dashboard";
+      break;
+    default:
+      title = "Dashboard";
+      break;
+  }
+
+  return (
+    <div className="flex flex-wrap justify-between items-center p-4 bg-gray-50 shadow-md">
+      {/* Dynamic Title */}
+      <h1 className="text-xl lg:text-2xl font-semibold">{title}</h1>
+
+      {/* Search Bar and Actions */}
+      <div className="flex items-center justify-between flex-grow lg:flex-grow-0 space-x-4 mt-4 lg:mt-0 w-full lg:w-auto">
+        {/* Search Bar */}
+        <SearchBar />
+        {/* Header Actions */}
+        <HeaderActions />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const SearchBar = () => (
   <div className="relative flex-grow lg:flex-grow-0 max-w-full lg:max-w-sm">

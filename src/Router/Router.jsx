@@ -3,6 +3,7 @@ import DashboardLayout from "../Pages/DashboardLayout";
 import Login from "../Pages/Login";
 import Manufacturer from "../Pages/Manufacturer";
 import Dashboard from "../Components/Dashboard";
+import Reseller from "../Pages/Reseller";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/manufacturer",
         element: <Manufacturer />,
+      },
+      {
+        path: "/dashboard/reseller",
+        element: <Reseller />,
       },
     ],
   },

@@ -1,8 +1,8 @@
-// Manufacturer.jsx
+// Reseller.jsx
 
 import CompanyList from "../Shared/CompanyList";
 
-const Manufacturer = () => {
+const Reseller = () => {
   const formFields = [
     { name: "logo", label: "Logo URL", type: "text" },
     { name: "name", label: "Company Name", type: "text" },
@@ -13,7 +13,7 @@ const Manufacturer = () => {
     { name: "expiry", label: "Expiry Date", type: "date" },
   ];
 
-  const manufacturers = [
+  const resellers = [
     {
       logo: "https://i.ibb.co/ryTWxGF/plygem.webp",
       name: "Ply Gem",
@@ -52,22 +52,22 @@ const Manufacturer = () => {
     },
   ];
 
-  const handleManufacturerSubmit = (formData) => {
-    console.log("Manufacturer Data:", formData);
+  const handleResellerSubmit = (formData) => {
+    console.log("Reseller Data:", formData);
   };
 
   return (
     <div>
       <CompanyList
-        title="Manufacturer"
+        title="Reseller"
         formFields={formFields}
-        data={manufacturers}
+        data={resellers}
         onAddItem={() => {}}
-        onSubmit={handleManufacturerSubmit}
+        onSubmit={handleResellerSubmit}
         fieldToCompare="Total Sales"
       />
     </div>
   );
 };
 
-export default Manufacturer;
+export default Reseller;

@@ -28,12 +28,10 @@ export default function AdminLogin() {
       {/* Content Overlay */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
         {/* Logo Circle */}
-        <div className="bg-white rounded-full p-8 mb-6 shadow-lg">
+        <div className="bg-white rounded-full p-8 mb-3 shadow-lg">
           <div className="w-16 h-16 relative">
             {/* Logo squares */}
-            <div className="absolute right-0 bottom-0 w-12 h-12 bg-[#00B2B2]"></div>
-            <div className="absolute left-0 top-0 w-8 h-8 bg-black"></div>
-            <div className="absolute left-4 top-4 w-4 h-4 bg-[#00B2B2]"></div>
+            <img src="https://i.ibb.co.com/sQsdjgJ/Logo.webp" alt="" />
           </div>
         </div>
 

@@ -1,23 +1,23 @@
-import {
-  Home,
-  Package,
-  Users,
-  UserPlus,
-  Tag,
-  Layers,
-  Upload,
-  Globe,
-  FileText,
-  MessageSquare,
-  Percent,
-  Settings,
-  Menu,
-  X,
-} from "lucide-react";
+import { useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
 import { Outlet } from "react-router-dom"; // Import Outlet for nested routing
-import { useState } from "react";
+import {
+  FileText,
+  Globe,
+  Home,
+  Layers,
+  Menu,
+  MessageSquare,
+  Package,
+  Percent,
+  Settings,
+  Tag,
+  Upload,
+  UserPlus,
+  Users,
+  X,
+} from "lucide-react";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -41,7 +41,7 @@ const DashboardLayout = () => {
     {
       icon: <UserPlus className="w-5 h-5" />,
       label: "Re-Seller",
-      link: "/reseller",
+      link: "/dashboard/reseller",
     },
     { icon: <Tag className="w-5 h-5" />, label: "Offer", link: "/offers" },
     {
@@ -101,6 +101,14 @@ const DashboardLayout = () => {
           <Menu className="w-6 h-6" />
         )}
       </button>
+
+      {/* Backdrop for mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 z-10"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* Sidebar */}
       <div
