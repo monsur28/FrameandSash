@@ -1,7 +1,6 @@
-"use client";
-
 import { useState } from "react";
 import { Mail, EyeOff, Eye } from "lucide-react";
+import loginBanner from "../assets/Login copy.jpg";
 
 export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,10 +15,17 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#00B2B2] relative overflow-hidden">
-      {/* Curved shape */}
-      <div className="absolute w-full h-[40vh] bottom-0 bg-white rounded-t-[150%] transform scale-x-150"></div>
+    <div className="min-h-screen relative">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={loginBanner}
+          alt="Login Background"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
+      {/* Content Overlay */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
         {/* Logo Circle */}
         <div className="bg-white rounded-full p-8 mb-6 shadow-lg">
