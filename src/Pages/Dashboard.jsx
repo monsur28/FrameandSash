@@ -15,16 +15,16 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
-import StatsCard from "./StateCard";
-import ChartBoard from "./ChartBoard";
-import TopSellingTable from "./TopSellingTable";
-import CustomerReview from "./CustomerReview";
+import Sidebar from "../Components/Sidebar";
+import Header from "../Components/Header";
+import StatsCard from "../Components/StateCard";
+import ChartBoard from "../Components/ChartBoard";
+import TopSellingTable from "../Components/TopSellingTable";
+import CustomerReview from "../Components/CustomerReview";
 import { useState } from "react";
 
 const Dashboard = () => {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
     { icon: <Home className="w-5 h-5" />, label: "Dashboard" },
@@ -47,7 +47,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100 mt-10">
       {/* Sidebar Toggle for Mobile */}
       <button
         className="lg:hidden p-2 bg-teal-500 text-white fixed top-4 left-4 z-20 rounded-md"
@@ -62,9 +62,9 @@ const Dashboard = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed z-10 inset-y-0 left-0 transform ${
+        className={`fixed z-10 inset-y-0 left-0 w-64 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 transition-transform duration-300 ease-in-out`}
+        } lg:translate-x-0 transition-transform duration-300 ease-in-out bg-white shadow-lg`}
       >
         <Sidebar menuItems={menuItems} />
       </div>
@@ -72,15 +72,15 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1 lg:ml-64">
         <Header />
-        <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-md shadow-md space-y-4 sm:space-y-0">
+        <div className="flex flex-col sm:flex-row items-center sm:justify-between bg-white p-4 rounded-md shadow-md space-y-4 sm:space-y-0">
           {/* Date Range Picker */}
-          <div className="flex items-center space-x-2 border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-600">
+          <div className="flex items-center space-x-2 border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-600 w-full sm:w-auto">
             <span>Nov 1, 2024 - Nov 24, 2024</span>
             <Calendar className="w-5 h-5 text-gray-500" />
           </div>
 
           {/* Export Button */}
-          <button className="flex items-center space-x-2 bg-teal-500 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-teal-600 transition duration-200">
+          <button className="flex items-center justify-center space-x-2 bg-teal-500 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-teal-600 transition duration-200 w-full sm:w-auto">
             <span>Export Data</span>
           </button>
         </div>
@@ -88,7 +88,7 @@ const Dashboard = () => {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <StatsCard title="Total Visitors" value="19587" info={true} />
                 <StatsCard title="Conversion Rate" value="5%" info={true} />
                 <StatsCard title="AOV" value="$575" info={true} />
