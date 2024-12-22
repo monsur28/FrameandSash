@@ -9,7 +9,8 @@ const reviews = [
     review:
       "Fantastic service! The team was professional and responsive, and the product exceeded my expectations. Highly recommend!",
     date: "Nov 25, 2024 08:45 AM",
-    image: "https://cdnstorage.sendbig.com/unreal/female.webp",
+    image:
+      "https://static.vecteezy.com/system/resources/thumbnails/033/168/356/small/a-beautiful-young-business-woman-in-a-suit-ai-generative-free-photo.jpg",
   },
   {
     id: 2,
@@ -18,7 +19,8 @@ const reviews = [
     review:
       "Overall, a great experience. There were a few minor issues, but customer support was quick to resolve them. I’ll definitely use this service again.",
     date: "Nov 24, 2024 10:30 AM",
-    image: "https://cdnstorage.sendbig.com/unreal/male.webp",
+    image:
+      "https://static.vecteezy.com/system/resources/thumbnails/033/168/356/small/a-beautiful-young-business-woman-in-a-suit-ai-generative-free-photo.jpg",
   },
   {
     id: 3,
@@ -27,7 +29,8 @@ const reviews = [
     review:
       "I was blown away by the quality and attention to detail! The entire process was seamless, and the final result was exactly what I needed.",
     date: "Nov 23, 2024 02:15 PM",
-    image: "https://cdnstorage.sendbig.com/unreal/female.webp",
+    image:
+      "https://static.vecteezy.com/system/resources/thumbnails/033/168/356/small/a-beautiful-young-business-woman-in-a-suit-ai-generative-free-photo.jpg",
   },
 ];
 

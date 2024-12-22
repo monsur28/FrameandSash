@@ -65,7 +65,7 @@ const HeaderActions = () => (
 
     {/* Profile Image */}
     <img
-      src="https://cdnstorage.sendbig.com/unreal/female.webp"
+      src="https://static.vecteezy.com/system/resources/thumbnails/033/168/356/small/a-beautiful-young-business-woman-in-a-suit-ai-generative-free-photo.jpg"
       alt="Profile"
       className="w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 lg:border-4 border-[#37B34A]"
     />
