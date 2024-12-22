@@ -44,7 +44,7 @@ const TopSellingTable = () => {
         {salesData.map((item, index) => (
           <div
             key={index}
-            className="grid grid-cols-2 py-3 border-b border-teal-100 hover:bg-teal-50"
+            className="grid grid-cols-2 py-3 border-b border-teal-100 hover:bg-teal-50 mb-4"
           >
             <div>{item.product}</div>
             <div className="text-right">{item.units}</div>

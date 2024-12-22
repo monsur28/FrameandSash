@@ -53,55 +53,75 @@ const CustomerReview = () => {
     reviews[currentReviewIndex];
 
   return (
-    <div className="bg-white rounded-lg shadow-md py-4 px-4">
-      <h3 className="text-3xl font-bold text-[#009daa] mb-4">
-        Customers Rating & Review
-      </h3>
+    <div className="w-full flex flex-col text-black justify-between rounded-md bg-white p-8 shadow-md max-w-4xl mx-auto ">
+      {/* Stars */}
+      <div className="flex gap-2 mb-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <svg
+            key={i}
+            xmlns="http://www.w3.org/2000/svg"
+            className="text-violet-500"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path
+              d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"
+              className={`${i < rating ? "text-violet-500" : "text-gray-300"}`}
+            />
+          </svg>
+        ))}
+      </div>
 
-      <div className="px-20 py-5 rounded-lg  relative">
-        <div className="mb-4 text-right">
-          <p className="text-gray-400 text-sm">{date}</p>
-        </div>
+      {/* Review */}
+      <p className="my-4 mb-0 text-base md:text-base lg:text-lg font-normal leading-relaxed tracking-wide">
+        {review}
+      </p>
 
-        <div className="relative border border-solid shadow-lg rounded-lg p-10">
+      {/* Customer Info */}
+      <div className="mt-6 flex items-center gap-6">
+        <div className="h-12 w-12 overflow-hidden rounded-full shadow-sm">
           <img
-            src={image}
             alt={customerName}
-            className="w-28 h-28 rounded-full border border-gray-300 absolute -top-10 -left-8"
+            src={image}
+            width="48"
+            height="48"
+            className="object-cover"
           />
-          <div>
-            <div className="lg:ml-64 ml-32 mb-10">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span
-                  key={i}
-                  className={`${
-                    i < rating ? "text-yellow-400" : "text-gray-300"
-                  }`}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
-            <p className="text-gray-600 text-sm sm:text-base">{review}</p>
-          </div>
         </div>
+        <div>
+          <p className="leading-relaxed tracking-wide font-medium text-gray-800">
+            {customerName}
+          </p>
+          <p className="text-sm leading-relaxed tracking-wide text-gray-500">
+            {date}
+          </p>
+        </div>
+      </div>
 
-        {/* Navigation buttons */}
+      {/* Navigation Buttons */}
+      <div className="mt-6 flex justify-between">
         <button
           onClick={handlePrevReview}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-700 disabled:text-gray-300 transition duration-200"
           disabled={currentReviewIndex === 0}
           aria-label="Previous Review"
+          className="text-gray-600 hover:text-gray-800 disabled:text-gray-300"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-8 h-8" />
         </button>
         <button
           onClick={handleNextReview}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-700 disabled:text-gray-300 transition duration-200"
           disabled={currentReviewIndex === reviews.length - 1}
           aria-label="Next Review"
+          className="text-gray-600 hover:text-gray-800 disabled:text-gray-300"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-8 h-8" />
         </button>
       </div>
     </div>

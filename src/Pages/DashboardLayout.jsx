@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
-import { Outlet } from "react-router-dom"; // Import Outlet for nested routing
+import { Outlet } from "react-router-dom";
 import {
   FileText,
   Globe,
@@ -52,7 +52,7 @@ const DashboardLayout = () => {
     {
       icon: <Users className="w-5 h-5" />,
       label: "Role Management",
-      link: "/roles",
+      link: "/dashboard/rolemanagement",
     },
     {
       icon: <Upload className="w-5 h-5" />,
@@ -89,7 +89,7 @@ const DashboardLayout = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100 mt-10">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       {/* Sidebar Toggle for Mobile */}
       <button
         className="lg:hidden p-2 bg-teal-500 text-white fixed top-4 left-4 z-20 rounded-md"
@@ -102,10 +102,10 @@ const DashboardLayout = () => {
         )}
       </button>
 
-      {/* Backdrop for mobile */}
+      {/* Backdrop for Mobile Sidebar */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black opacity-50 z-10"
+          className="fixed inset-0 bg-black bg-opacity-50 z-10"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -120,9 +120,9 @@ const DashboardLayout = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-64 flex flex-col">
         <Header />
-        <main className="p-4 md:p-6">
+        <main className="p-4 md:p-6 flex-grow">
           <Outlet /> {/* Dynamic content rendered here */}
         </main>
       </div>

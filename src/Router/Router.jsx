@@ -4,6 +4,7 @@ import Login from "../Pages/Login";
 import Manufacturer from "../Pages/Manufacturer";
 import Dashboard from "../Components/Dashboard";
 import Reseller from "../Pages/Reseller";
+import RoleManagement from "../Pages/RoleManagment";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/reseller",
         element: <Reseller />,
+      },
+      {
+        path: "/dashboard/rolemanagement",
+        element: <RoleManagement />,
       },
     ],
   },

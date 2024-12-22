@@ -26,14 +26,16 @@ const data = [
 
 export default function ChartBoard() {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl mx-auto mt-8">
       {/* Flex container to justify-between */}
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-3xl font-bold text-[#009daa]">Chart Board</h3>
+        <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#009daa]">
+          Chart Board
+        </h3>
       </div>
 
       {/* Responsive container for the chart */}
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />

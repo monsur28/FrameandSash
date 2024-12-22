@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Mail, EyeOff, Eye } from "lucide-react";
 import loginBanner from "../assets/Login copy.jpg";
 
-export default function AdminLogin() {
+export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
