@@ -89,10 +89,10 @@ const DashboardLayout = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row w-full md:w-3/4 lg:w-full bg-gradient-to-r from-[#FFFFFF] to-[#009DAA7D]">
+    <div className="flex flex-col lg:flex-row w-full md:w-full lg:w-full bg-gradient-to-r from-[#FFFFFF] to-[#009DAA7D]">
       {/* Sidebar Toggle for Mobile */}
       <button
-        className="lg:hidden p-2 bg-[#009DAA] text-white fixed top-4 left-4 z-20 rounded-md"
+        className="lg:hidden p-2 text-[#009DAA] fixed top-4 left-4 z-20 rounded-md"
         onClick={() => setSidebarOpen(!isSidebarOpen)}
       >
         {isSidebarOpen ? (

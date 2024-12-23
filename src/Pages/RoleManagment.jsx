@@ -90,7 +90,7 @@ export default function RoleManagement() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 space-y-8">
+    <div className="h-screen p-4 space-y-8">
       {/* Modal for adding/editing roles */}
       <UserModal
         isOpen={showRoleModal}
@@ -111,8 +111,8 @@ export default function RoleManagement() {
       />
 
       {/* The rest of the RoleManagement component */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Role List</h1>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold mb-4 md:mb-0">Role List</h1>
         <button
           onClick={() =>
             activeTab === "role"
@@ -153,8 +153,8 @@ export default function RoleManagement() {
         </div>
       </div>
 
-      <div className=" bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-lg p-6">
-        <div className="flex justify-between mb-6">
+      <div className="bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-lg p-6">
+        <div className="flex justify-between mb-6 flex-col md:flex-row gap-4">
           <div className="flex items-center gap-2">
             <span>Show</span>
             <select
@@ -175,7 +175,7 @@ export default function RoleManagement() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border rounded px-3 py-1 w-64"
+              className="border rounded px-3 py-1 w-64 md:w-32 sm:w-28"
               placeholder="Search..."
             />
           </div>
@@ -198,7 +198,7 @@ export default function RoleManagement() {
             </thead>
             <tbody>
               {paginatedData.map((item, index) => (
-                <tr key={item.id} className="border-b ">
+                <tr key={item.id} className="border-b">
                   <td className="py-3 px-4">{index + 1}</td>
                   <td className="py-3 px-4">{item.name}</td>
                   {activeTab === "user" && (
