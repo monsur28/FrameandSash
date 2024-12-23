@@ -24,11 +24,11 @@ export default function ProductHeader() {
   }
 
   return (
-    <header className="px-4 sm:px-6 py-4 bg-gradient-to-r from-[#E3F3F3] to-[#C3E7EA]">
+    <header className="px-4 sm:px-6 py-4">
       <div className="flex items-center justify-between">
         {/* Title and Search Bar */}
         <div className="flex flex-row sm:flex-row sm:items-center gap-4 sm:gap-4 lg:gap-8 flex-grow">
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#0A9B9B] mb-2 sm:mb-0 ml-12">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#0A9B9B] mb-2 sm:mb-0 ml-12 lg:ml-8">
             {title}
           </h1>
           {/* Search Bar (Hidden on mobile) */}

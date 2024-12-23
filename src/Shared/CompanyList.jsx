@@ -14,7 +14,7 @@ const CompanyList = ({ title, formFields, data, onSubmit, fieldToCompare }) => {
           <div className="mb-4 lg:mb-0">
             <h2 className="text-2xl sm:text-3xl font-semibold">ChartBoard</h2>
             <div className="flex flex-wrap gap-2 mt-4">
-              <button className="bg-teal-500 text-white px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base">
+              <button className="bg-[#009DAA] text-white px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base">
                 This Year
               </button>
               <button className="bg-gray-200 text-gray-700 px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base">
@@ -24,7 +24,7 @@ const CompanyList = ({ title, formFields, data, onSubmit, fieldToCompare }) => {
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-teal-500 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center space-x-2 text-sm sm:text-base"
+            className="bg-[#009DAA] text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center space-x-2 text-sm sm:text-base"
           >
             <span>+</span>
             <span>Add {title}</span>
@@ -35,10 +35,60 @@ const CompanyList = ({ title, formFields, data, onSubmit, fieldToCompare }) => {
             <MonthlyOrdersChart />
           </div>
           <div className="w-full lg:w-auto ">
-            <button className="w-full lg:w-auto bg-cyan-400 text-white px-3 py-1 sm:px-4 sm:py-2 mt-2 lg:mt-4 rounded-lg flex items-center justify-center space-x-2 text-sm sm:text-base">
+            <button className="w-full lg:w-auto bg-[#009DAA] text-white px-3 py-1 sm:px-4 sm:py-2 mt-2 lg:mt-4 rounded-lg flex items-center justify-center space-x-2 text-sm sm:text-base">
               <Download className="h-4 w-4 sm:h-5 sm:w-5" />
               <span>Download</span>
             </button>
+            <div className="grid grid-cols-2 gap-4 mt-8 space-y-4">
+              <div className="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="19"
+                  height="19"
+                  viewBox="0 0 19 19"
+                  fill="none"
+                >
+                  <circle cx="9.5" cy="9.5" r="9.5" fill="#009DAA" />
+                </svg>
+                <h2>Ply Gem</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="19"
+                  height="19"
+                  viewBox="0 0 19 19"
+                  fill="none"
+                >
+                  <circle cx="9.5" cy="9.5" r="9.5" fill="#252526" />
+                </svg>
+                <h2>Alside Inc</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="19"
+                  height="19"
+                  viewBox="0 0 19 19"
+                  fill="none"
+                >
+                  <circle cx="9.5" cy="9.5" r="9.5" fill="#CC4646" />
+                </svg>
+                <h2>Pella</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="19"
+                  height="19"
+                  viewBox="0 0 19 19"
+                  fill="none"
+                >
+                  <circle cx="9.5" cy="9.5" r="9.5" fill="#03ADD9" />
+                </svg>
+                <h2>Cham Window</h2>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -59,7 +109,7 @@ const CompanyList = ({ title, formFields, data, onSubmit, fieldToCompare }) => {
         </div>
 
         <div className="overflow-x-auto space-y-[20px]">
-          <div className="overflow-hidden  divide-y divide-gray-500">
+          <div className="overflow-x-auto divide-y divide-gray-500">
             <table className="min-w-full">
               <thead>
                 <tr>

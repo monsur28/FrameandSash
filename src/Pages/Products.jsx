@@ -61,13 +61,15 @@ export default function Products() {
   };
 
   return (
-    <div className="h-screen p-6 ">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Product List</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8">
+        <h1 className="text-xl lg:text-3xl  font-bold text-gray-800">
+          Product List
+        </h1>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-full flex items-center gap-2 transition-colors"
+          className="mt-4 sm:mt-0 bg-teal-500 hover:bg-teal-600 text-white px-3 sm:px-2 lg:px-2 py-1 lg:py-2 rounded-full flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />
           Create Product
@@ -75,35 +77,42 @@ export default function Products() {
       </div>
 
       {/* Product Table */}
-      <div className="border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-sm">
-        <div className="grid grid-cols-3 p-4 border-b text-gray-500">
-          <div>Product Title</div>
-          <div>Types</div>
-          <div>Accessories</div>
-        </div>
-
-        {products.map((product) => (
-          <div
-            key={product.id}
-            onClick={() => navigate(`/dashboard/products/${product.title}`)} // Navigate to the ProductDetails page
-            className="grid grid-cols-3 p-4 border-b hover:bg-gray-50 cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              {product.icon}
-              <span className="font-medium text-gray-900">{product.title}</span>
-            </div>
-            <div className="text-teal-500">{product.types}</div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-teal-500"></div>
-              <span>Available</span>
-            </div>
-          </div>
-        ))}
+      <div className="border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-sm overflow-x-auto">
+        <table className="w-full text-gray-500 text-sm sm:text-base">
+          <thead className="bg-gray-100">
+            <tr className="text-left">
+              <th className="p-4 border-b font-medium">Product Title</th>
+              <th className="p-4 border-b font-medium">Types</th>
+              <th className="p-4 border-b font-medium">Accessories</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr
+                key={product.id}
+                onClick={() => navigate(`/dashboard/products/${product.title}`)}
+                className="hover:bg-gray-50 cursor-pointer"
+              >
+                <td className="p-4 flex items-center gap-3">
+                  {product.icon}
+                  <span className="font-medium text-gray-900">
+                    {product.title}
+                  </span>
+                </td>
+                <td className="p-4 text-teal-500">{product.types}</td>
+                <td className="p-4 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-teal-500"></div>
+                  <span>Available</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Add Product Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Add New Product</h2>
             <div className="space-y-4">

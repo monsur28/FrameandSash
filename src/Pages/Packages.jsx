@@ -154,12 +154,12 @@ export default function PricingTable() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 space-y-8">
-      <div className="flex items-center justify-between rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
-        <h1 className="text-3xl font-bold">Packages Details</h1>
+    <div className="p-4 space-y-8">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
+        <h1 className="text-2xl lg:text-3xl font-bold">Packages Details</h1>
         <button
           onClick={() => handleOpenModal()}
-          className="bg-[#009DAA] hover:bg-teal-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
+          className="bg-[#009DAA] mt-4 lg:mt-0 hover:bg-teal-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
         >
           <span className="text-xl">+</span> Add Package
         </button>

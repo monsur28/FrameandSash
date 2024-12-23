@@ -143,13 +143,13 @@ export default function ProductList() {
   return (
     <div className="h-screen p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Product: {productName}
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8">
+        <h1 className="text-xl lg:text-3xl font-bold text-gray-800">
+          Product List | {productName}
         </h1>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-full flex items-center gap-2 transition-colors"
+          className="mt-4 sm:mt-0 bg-teal-500 hover:bg-teal-600 text-white px-9 sm:px-2 lg:px-8 py-2 lg:py-4 rounded-full flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />
           Create Product
@@ -157,46 +157,58 @@ export default function ProductList() {
       </div>
 
       {/* Product Table */}
-      <div className="border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-sm">
-        <div className="grid grid-cols-5 p-4 border-b text-gray-500">
-          <div>Product Type</div>
-          <div>Working Hour</div>
-          <div>Wholesell Price</div>
-          <div>Market Price</div>
-          <div className="text-center">Actions</div>
-        </div>
-
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="grid grid-cols-5 p-4 border-b hover:bg-gray-50 cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <Window className="w-6 h-6 text-gray-600" />
-              <span className="font-medium text-gray-900">{product.type}</span>
-            </div>
-            <div>{product.workingHour}</div>
-            <div className="text-teal-500">{product.wholesellPrice}</div>
-            <div className="text-teal-500">{product.marketPrice}</div>
-            <div className="flex justify-center gap-2">
-              <button
-                onClick={() => {
-                  setSelectedProduct(product);
-                  setShowEditModal(true);
-                }}
-                className="p-2 text-blue-500 hover:bg-blue-100 rounded-full"
-              >
-                <Edit className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => handleDeleteProduct(product.id)}
-                className="p-2 text-red-500 hover:bg-red-100 rounded-full"
-              >
-                <Trash className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        ))}
+      <div className="border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-sm overflow-x-auto">
+        <table className="w-full text-gray-500 text-sm sm:text-base">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="p-4 border-b text-left font-medium">
+                Product Type
+              </th>
+              <th className="p-4 border-b text-left font-medium">
+                Working Hour
+              </th>
+              <th className="p-4 border-b text-left font-medium">
+                Wholesale Price
+              </th>
+              <th className="p-4 border-b text-left font-medium">
+                Market Price
+              </th>
+              <th className="p-4 border-b text-center font-medium">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id} className="hover:bg-gray-50 cursor-pointer">
+                <td className="p-4 flex items-center gap-3">
+                  <Window className="w-6 h-6 text-gray-600" />
+                  <span className="font-medium text-gray-900">
+                    {product.type}
+                  </span>
+                </td>
+                <td className="p-4">{product.workingHour}</td>
+                <td className="p-4 text-teal-500">{product.wholesellPrice}</td>
+                <td className="p-4 text-teal-500">{product.marketPrice}</td>
+                <td className="p-4 flex justify-center gap-2">
+                  <button
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      setShowEditModal(true);
+                    }}
+                    className="p-2 text-blue-500 hover:bg-blue-100 rounded-full"
+                  >
+                    <Edit className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProduct(product.id)}
+                    className="p-2 text-red-500 hover:bg-red-100 rounded-full"
+                  >
+                    <Trash className="w-5 h-5" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Add Product Modal */}

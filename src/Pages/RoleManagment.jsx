@@ -175,7 +175,7 @@ export default function RoleManagement() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border rounded px-3 py-1 w-64 md:w-32 sm:w-28"
+              className="border rounded px-3 py-1 w-36 md:w-32 sm:w-28"
               placeholder="Search..."
             />
           </div>
