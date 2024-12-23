@@ -1,98 +1,263 @@
 import { useState } from "react";
-import { Edit, Trash } from "lucide-react";
+import { Edit2, Trash2, Users, Settings } from "lucide-react";
+import UserModal from "../Shared/UserModal";
 
-const RoleManagement = () => {
-  const [entries, setEntries] = useState(4);
-  const roles = [
-    { id: 1, name: "Super Admin" },
-    { id: 2, name: "Manufacturer" },
-    { id: 3, name: "Re-Seller" },
-    { id: 4, name: "Staff Access" },
-  ];
+export default function RoleManagement() {
+  const [activeTab, setActiveTab] = useState("role");
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [roleToEdit, setRoleToEdit] = useState(null);
+  const [userToEdit, setUserToEdit] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [entriesPerPage, setEntriesPerPage] = useState("4");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [roles, setRoles] = useState([
+    { id: 1, name: "Super Admin", canDelete: false },
+    { id: 2, name: "Manufacturer", canDelete: true },
+    { id: 3, name: "Re-Seller", canDelete: true },
+    { id: 4, name: "Staff Access", canDelete: true },
+  ]);
+
+  const [users, setUsers] = useState([
+    { id: 1, name: "John Doe", email: "john@example.com", role: "Super Admin" },
+    {
+      id: 2,
+      name: "Jane Smith",
+      email: "jane@example.com",
+      role: "Manufacturer",
+    },
+    { id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Re-Seller" },
+  ]);
+
+  const handleAddRole = (role) => {
+    if (role) {
+      const newRole = { id: roles.length + 1, name: role, canDelete: true };
+      setRoles([...roles, newRole]);
+    }
+    setShowRoleModal(false);
+  };
+
+  const handleAddUser = (user) => {
+    if (user) {
+      const newUser = {
+        id: users.length + 1,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      };
+      setUsers([...users, newUser]);
+    }
+    setShowUserModal(false);
+  };
+
+  const handleDeleteRole = (id) => {
+    setRoles(roles.filter((role) => role.id !== id));
+  };
+
+  const handleDeleteUser = (id) => {
+    setUsers(users.filter((user) => user.id !== id));
+  };
+
+  const handleEditRole = (role) => {
+    setRoleToEdit(role);
+    setShowRoleModal(true);
+  };
+
+  const handleEditUser = (user) => {
+    setUserToEdit(user);
+    setShowUserModal(true);
+  };
+
+  const filteredData =
+    activeTab === "role"
+      ? roles.filter((role) =>
+          role.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : users.filter(
+          (user) =>
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * entriesPerPage,
+    currentPage * entriesPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex space-x-4">
-          <button className="bg-teal-500 text-white py-2 px-6 rounded-full shadow-md">
-            Role
-          </button>
-          <button className="bg-white border border-gray-300 py-2 px-6 rounded-full shadow-md">
-            User
-          </button>
-        </div>
-        <button className="bg-gradient-to-r from-teal-500 to-blue-500 text-white py-2 px-6 rounded-full shadow-md">
-          Add Role
+    <div className="w-full max-w-6xl mx-auto p-4 space-y-8">
+      {/* Modal for adding/editing roles */}
+      <UserModal
+        isOpen={showRoleModal}
+        onClose={() => setShowRoleModal(false)}
+        onSave={roleToEdit ? handleEditRole : handleAddRole}
+        initialData={roleToEdit}
+        type="role"
+        roles={roles} // Pass roles to the modal
+      />
+      {/* Modal for adding/editing users */}
+      <UserModal
+        isOpen={showUserModal}
+        onClose={() => setShowUserModal(false)}
+        onSave={userToEdit ? handleEditUser : handleAddUser}
+        initialData={userToEdit}
+        type="user"
+        roles={roles} // Pass roles to the modal
+      />
+
+      {/* The rest of the RoleManagement component */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Role List</h1>
+        <button
+          onClick={() =>
+            activeTab === "role"
+              ? setShowRoleModal(true)
+              : setShowUserModal(true)
+          }
+          className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
+        >
+          <span className="text-xl">+</span>
+          {activeTab === "role" ? "Add Role" : "Add User"}
         </button>
       </div>
 
-      {/* Table Header */}
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Role List</h2>
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-2">
-            <label htmlFor="entries" className="text-gray-500 text-sm">
-              Show
-            </label>
-            <input
-              id="entries"
-              type="number"
-              min="1"
-              value={entries}
-              onChange={(e) => setEntries(e.target.value)}
-              className="w-12 p-1 border rounded-md text-center"
-            />
-            <span className="text-gray-500 text-sm">entries</span>
+      <div className="flex justify-center mb-8">
+        <div className="inline-flex rounded-lg overflow-hidden">
+          <button
+            onClick={() => setActiveTab("role")}
+            className={`flex items-center gap-2 px-6 py-3 ${
+              activeTab === "role"
+                ? "bg-teal-500 text-white"
+                : "bg-white border-2 border-gray-200"
+            } hover:bg-teal-600 hover:text-white transition-colors`}
+          >
+            <Settings className="w-5 h-5" />
+            Role
+          </button>
+          <button
+            onClick={() => setActiveTab("user")}
+            className={`flex items-center gap-2 px-6 py-3 ${
+              activeTab === "user"
+                ? "bg-teal-500 text-white"
+                : "bg-white border-2 border-gray-200"
+            } hover:bg-teal-600 hover:text-white transition-colors`}
+          >
+            <Users className="w-5 h-5" />
+            User
+          </button>
+        </div>
+      </div>
+
+      <div className=" bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-lg p-6">
+        <div className="flex justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <span>Show</span>
+            <select
+              value={entriesPerPage}
+              onChange={(e) => setEntriesPerPage(e.target.value)}
+              className="border rounded px-2 py-1"
+            >
+              <option value="4">4</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+            <span>Entries</span>
           </div>
-          <div>
+          <div className="flex items-center gap-2">
+            <span>Search:</span>
             <input
               type="text"
-              placeholder="Search"
-              className="w-48 p-2 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-teal-300"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border rounded px-3 py-1 w-64"
+              placeholder="Search..."
             />
           </div>
         </div>
 
-        {/* Table */}
-        <table className="w-full text-left text-sm border-collapse">
-          <thead>
-            <tr className="bg-teal-100">
-              <th className="p-2 border">SL.</th>
-              <th className="p-2 border">Name</th>
-              <th className="p-2 border">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {roles.slice(0, entries).map((role, index) => (
-              <tr key={role.id} className="even:bg-gray-50">
-                <td className="p-2 border">{index + 1}</td>
-                <td className="p-2 border">{role.name}</td>
-                <td className="p-2 border flex space-x-2">
-                  <button className="p-2 bg-teal-100 text-teal-500 rounded-md">
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 bg-red-100 text-red-500 rounded-md">
-                    <Trash className="w-4 h-4" />
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left py-3 px-4">SL.</th>
+                <th className="text-left py-3 px-4">Name</th>
+                {activeTab === "user" && (
+                  <>
+                    <th className="text-left py-3 px-4">Email</th>
+                    <th className="text-left py-3 px-4">Role</th>
+                  </>
+                )}
+                <th className="text-left py-3 px-4">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {paginatedData.map((item, index) => (
+                <tr key={item.id} className="border-b ">
+                  <td className="py-3 px-4">{index + 1}</td>
+                  <td className="py-3 px-4">{item.name}</td>
+                  {activeTab === "user" && (
+                    <>
+                      <td className="py-3 px-4">{item.email}</td>
+                      <td className="py-3 px-4">{item.role}</td>
+                    </>
+                  )}
+                  <td className="py-3 px-4">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() =>
+                          activeTab === "role"
+                            ? handleEditRole(item)
+                            : handleEditUser(item)
+                        }
+                        className="text-gray-600 hover:text-teal-500"
+                      >
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                      {(activeTab === "role" ? item.canDelete : true) && (
+                        <button
+                          onClick={() =>
+                            activeTab === "role"
+                              ? handleDeleteRole(item.id)
+                              : handleDeleteUser(item.id)
+                          }
+                          className="text-gray-600 hover:text-red-500"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-        {/* Pagination */}
-        <div className="flex justify-between items-center mt-4">
-          <button className="bg-gray-200 py-1 px-4 rounded-md shadow-md">
-            Previous
-          </button>
-          <button className="bg-teal-500 text-white py-1 px-4 rounded-md shadow-md">
-            Next
-          </button>
+        <div className="flex justify-center mt-6 gap-4">
+          {Array.from(
+            { length: Math.ceil(filteredData.length / entriesPerPage) },
+            (_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePageChange(index + 1)}
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === index + 1
+                    ? "bg-teal-500 text-white"
+                    : "bg-white border-2 border-gray-200"
+                } hover:bg-teal-600 hover:text-white`}
+              >
+                {index + 1}
+              </button>
+            )
+          )}
         </div>
       </div>
     </div>
   );
-};
-
-export default RoleManagement;
+}

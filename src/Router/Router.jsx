@@ -5,6 +5,10 @@ import Manufacturer from "../Pages/Manufacturer";
 import Dashboard from "../Components/Dashboard";
 import Reseller from "../Pages/Reseller";
 import RoleManagement from "../Pages/RoleManagment";
+import Packages from "../Pages/Packages";
+import Products from "../Pages/Products";
+
+import ProductListWrapper from "../Components/ProductListWrapper";
 
 export const router = createBrowserRouter([
   {
@@ -16,12 +20,24 @@ export const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
+        path: "/dashboard/products",
+        element: <Products />,
+      },
+      {
+        path: "/dashboard/products/:title",
+        element: <ProductListWrapper />,
+      },
+      {
         path: "/dashboard/manufacturer",
         element: <Manufacturer />,
       },
       {
         path: "/dashboard/reseller",
         element: <Reseller />,
+      },
+      {
+        path: "/dashboard/packages",
+        element: <Packages />,
       },
       {
         path: "/dashboard/rolemanagement",
@@ -31,6 +47,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login></Login>,
+    element: <Login />,
   },
 ]);

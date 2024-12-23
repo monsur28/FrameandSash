@@ -31,7 +31,7 @@ const DashboardLayout = () => {
     {
       icon: <Package className="w-5 h-5" />,
       label: "Products",
-      link: "/products",
+      link: "/dashboard/products",
     },
     {
       icon: <Users className="w-5 h-5" />,
@@ -47,7 +47,7 @@ const DashboardLayout = () => {
     {
       icon: <Layers className="w-5 h-5" />,
       label: "Packages",
-      link: "/packages",
+      link: "/dashboard/packages",
     },
     {
       icon: <Users className="w-5 h-5" />,
@@ -89,10 +89,10 @@ const DashboardLayout = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row w-full md:w-3/4 lg:w-full bg-gradient-to-r from-[#FFFFFF] to-[#009DAA7D]">
       {/* Sidebar Toggle for Mobile */}
       <button
-        className="lg:hidden p-2 bg-teal-500 text-white fixed top-4 left-4 z-20 rounded-md"
+        className="lg:hidden p-2 bg-[#009DAA] text-white fixed top-4 left-4 z-20 rounded-md"
         onClick={() => setSidebarOpen(!isSidebarOpen)}
       >
         {isSidebarOpen ? (
@@ -105,25 +105,25 @@ const DashboardLayout = () => {
       {/* Backdrop for Mobile Sidebar */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10"
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed z-10 inset-y-0 left-0 w-64 transform ${
+        className={`fixed z-20 inset-y-0 left-0 w-48 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 transition-transform duration-300 ease-in-out bg-white shadow-lg`}
+        } lg:translate-x-0 transition-transform duration-300 ease-in-out`}
       >
         <Sidebar menuItems={menuItems} />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-64 flex flex-col">
+      <div className="flex-1 lg:ml-44 flex flex-col">
         <Header />
         <main className="p-4 md:p-6 flex-grow">
-          <Outlet /> {/* Dynamic content rendered here */}
+          <Outlet />
         </main>
       </div>
     </div>

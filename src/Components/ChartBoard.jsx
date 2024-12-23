@@ -26,7 +26,7 @@ const data = [
 
 export default function ChartBoard() {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl mx-auto mt-8">
+    <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl mx-auto mt-8 border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
       {/* Flex container to justify-between */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#009daa]">

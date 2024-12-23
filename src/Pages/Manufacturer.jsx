@@ -59,7 +59,7 @@ const Manufacturer = () => {
   return (
     <div>
       <CompanyList
-        title="Manufacturer"
+        title="Manufacturer Company List"
         formFields={formFields}
         data={manufacturers}
         onAddItem={() => {}}

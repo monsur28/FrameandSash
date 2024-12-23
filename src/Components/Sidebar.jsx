@@ -15,7 +15,7 @@ const Sidebar = ({ menuItems }) => {
         <img
           src="https://i.ibb.co/P4dg89X/db.jpg"
           alt="Logo"
-          className="mb-4 w-20 h-20 rounded-full mx-auto lg:w-full lg:h-auto"
+          className="mb-4 w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-full lg:h-auto mx-auto"
         />
       </div>
 
@@ -34,12 +34,12 @@ const Sidebar = ({ menuItems }) => {
 
           {/* Subitems */}
           {item.subItems && (
-            <div className="ml-6 space-y-2 mt-2">
+            <div className="ml-6 space-y-2 mt-2 mr-14">
               {item.subItems.map((subItem) => (
                 <a
                   key={subItem.label}
                   href={subItem.link}
-                  className={`flex items-center p-2 rounded-lg ${isActive(
+                  className={`flex items-center rounded-lg w-full  ${isActive(
                     subItem.link
                   )} hover:bg-teal-600 hover:text-white transition duration-200`}
                 >

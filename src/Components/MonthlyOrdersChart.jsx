@@ -91,8 +91,8 @@ export default function MonthlyOrdersChart() {
   };
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm p-6">
-      <div className="h-[400px]">
+    <div className="w-full rounded-lg shadow-sm p-6">
+      <div className="h-[200px]">
         <Bar options={options} data={data} />
       </div>
     </div>

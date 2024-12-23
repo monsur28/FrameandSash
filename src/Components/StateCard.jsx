@@ -3,14 +3,14 @@ import { Info } from "lucide-react";
 
 const StatsCard = ({ title, value, description, icon, showInfo = false }) => {
   return (
-    <div className="stat bg-white rounded-lg shadow p-6 lg:p-8 flex items-center">
+    <div className="stat bg-white rounded-lg shadow p-6 lg:p-8 flex items-center border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
       {/* Icon or Stat Figure */}
       {icon && <div className="stat-figure text-primary">{icon}</div>}
 
       {/* Stat Details */}
       <div>
         <div className="stat-title text-gray-500">{title}</div>
-        <div className="stat-value text-primary text-4xl font-bold">
+        <div className="stat-value text-primary text-base lg:text-4xl font-bold">
           {value}
         </div>
         {description && (
