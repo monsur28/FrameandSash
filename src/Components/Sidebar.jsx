@@ -9,7 +9,7 @@ const Sidebar = ({ menuItems }) => {
   };
 
   return (
-    <div className="space-y-4 p-4 bg-[#009DAA] text-white min-h-screen lg:min-h-0">
+    <div className="space-y-4 p-4 bg-[#009DAA] text-white min-h-screen lg:min-h-0 overflow-y-auto">
       {/* Logo Section */}
       <div className="mb-8 text-center">
         <img

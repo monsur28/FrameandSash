@@ -37,18 +37,29 @@ export default function ProductHeader() {
             <input
               type="text"
               placeholder="Search Product Here...."
-              className="w-4/3 lg:w-full md:w-2/3 pl-10 pr-4 py-2 rounded-full bg-white/80 border-0 focus:ring-2 focus:ring-[#0A9B9B] outline-none text-sm ml-0 "
+              className="w-4/3 lg:w-full md:w-2/3 pl-10 pr-4 py-2 rounded-full bg-white/80 border-0 focus:ring-2 focus:ring-[#0A9B9B] outline-none text-sm ml-0"
             />
           </div>
         </div>
         {/* Mobile Menu Button */}
-        <button className="w-10 h-10 rounded-full overflow-hidden sm:block md:hidden lg:hidden hover:opacity-90 flex-shrink-0">
-          <img
-            src="https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w"
-            alt="Profile picture"
-            className="w-full h-full object-cover"
-          />
-        </button>
+        <div className="flex items-center  sm:hidden">
+          <button className="relative hover:opacity-80 p-2">
+            <Bell className="w-6 h-6 text-gray-700" />
+            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full" />
+          </button>
+
+          {/* Message Icon */}
+          <button className="hover:opacity-80 p-2">
+            <Mail className="w-6 h-6 text-gray-700" />
+          </button>
+          <button className="w-10 h-10 rounded-full overflow-hidden sm:block md:hidden lg:hidden hover:opacity-90 flex-shrink-0">
+            <img
+              src="https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w"
+              alt="Profile picture"
+              className="w-full h-full object-cover"
+            />
+          </button>
+        </div>
         {/* Desktop Right Section */}
         <div className="hidden sm:flex items-center space-x-4 lg:space-x-6">
           <RightSectionContent />

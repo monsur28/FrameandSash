@@ -114,7 +114,8 @@ const DashboardLayout = () => {
       <div
         className={`fixed z-20 inset-y-0 left-0 w-48 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 transition-transform duration-300 ease-in-out`}
+        } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto`}
+        style={{ scrollbarWidth: "none" }} // For Firefox to hide the scrollbar
       >
         <Sidebar menuItems={menuItems} />
       </div>
@@ -126,6 +127,20 @@ const DashboardLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      <style>
+        {`
+          /* Hide scrollbar for Webkit browsers (Chrome, Safari) */
+          .overflow-y-auto::-webkit-scrollbar {
+            display: none;
+          }
+
+          /* Hide scrollbar for Firefox */
+          .overflow-y-auto {
+            scrollbar-width: none;
+          }
+        `}
+      </style>
     </div>
   );
 };
