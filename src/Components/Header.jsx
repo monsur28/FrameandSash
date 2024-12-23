@@ -32,17 +32,17 @@ export default function ProductHeader() {
             {title}
           </h1>
           {/* Search Bar (Hidden on mobile) */}
-          <div className="relative max-w-xl w-full mb-2 sm:mb-0 sm:block hidden">
-            <Search className="absolute left-5 lg:left-24 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <div className="relative max-w-xl w-full md:w-2/3 mb-2 sm:mb-0 sm:block hidden">
+            <Search className="absolute left-5 lg:left-2 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
               placeholder="Search Product Here...."
-              className=" w- lg:w-full md:w-2/3 pl-10 pr-4 py-2 rounded-full bg-white/80 border-0 focus:ring-2 focus:ring-[#0A9B9B] outline-none text-sm ml-0 lg:ml-20"
+              className="w-4/3 lg:w-full md:w-2/3 pl-10 pr-4 py-2 rounded-full bg-white/80 border-0 focus:ring-2 focus:ring-[#0A9B9B] outline-none text-sm ml-0 "
             />
           </div>
         </div>
         {/* Mobile Menu Button */}
-        <button className="w-10 h-10 rounded-full overflow-hidden sm:block lg:hidden hover:opacity-90 flex-shrink-0">
+        <button className="w-10 h-10 rounded-full overflow-hidden sm:block md:hidden lg:hidden hover:opacity-90 flex-shrink-0">
           <img
             src="https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w"
             alt="Profile picture"
