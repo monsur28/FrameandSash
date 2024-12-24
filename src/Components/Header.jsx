@@ -41,14 +41,14 @@ export default function Header() {
       <div className="flex items-center justify-between lg:gap-0">
         {/* Toggle Button */}
         <button
-          onClick={toggleSidebar} // Ensure toggleSidebar is called here
+          onClick={toggleSidebar}
           className="block lg:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0A9B9B]"
         >
           <Menu className="w-6 h-6 text-gray-700" />
         </button>
 
         {/* Title */}
-        <h1 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-[#0A9B9B] truncate max-w-[80%] sm:max-w-[60%] md:max-w-[50%] lg:max-w-[40%] xl:max-w-none mx-4 md:mx-7 mr-28 lg:ml-0">
+        <h1 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-[#0A9B9B] truncate   mr-26 lg:ml-0">
           <span className="sm:hidden">{mobileTitle}</span>
           <span className="hidden sm:inline">{title}</span>
         </h1>
