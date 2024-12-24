@@ -12,7 +12,7 @@ const Sidebar = ({ menuItems }) => {
       {/* Logo Section */}
       <div className="mb-8 text-center">
         <img
-          src="/src/assets/Brand Logo.webp"
+          src="https://i.ibb.co.com/ZJ9hDdn/Brand-Logo.webp"
           alt="Logo"
           className="mb-4  lg:w-full lg:h-auto mx-auto"
         />
