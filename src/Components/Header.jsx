@@ -48,7 +48,7 @@ export default function Header() {
         </button>
 
         {/* Title */}
-        <h1 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-[#0A9B9B] truncate max-w-[80%] sm:max-w-[60%] md:max-w-[50%] lg:max-w-[40%] xl:max-w-none mx-4 md:mx-7 lg:mx-0 mr- lg:ml-0">
+        <h1 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-[#0A9B9B] truncate max-w-[80%] sm:max-w-[60%] md:max-w-[50%] lg:max-w-[40%] xl:max-w-none mx-4 md:mx-7 mr-28 lg:ml-0">
           <span className="sm:hidden">{mobileTitle}</span>
           <span className="hidden sm:inline">{title}</span>
         </h1>
