@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Plus, AppWindowIcon as Window } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -69,7 +67,7 @@ export default function Products() {
         </h1>
         <button
           onClick={() => setShowModal(true)}
-          className="mt-4 sm:mt-0 bg-teal-500 hover:bg-teal-600 text-white px-3 sm:px-2 lg:px-2 py-1 lg:py-2 rounded-full flex items-center gap-2 transition-colors"
+          className="mt-4 sm:mt-0 bg-bg-[#009DAA] hover:bg-teal-600 text-white px-3 sm:px-2 lg:px-2 py-1 lg:py-2 rounded-full flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />
           Create Product

@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = ({ menuItems }) => {
   const location = useLocation(); // Get current location
@@ -13,24 +12,24 @@ const Sidebar = ({ menuItems }) => {
       {/* Logo Section */}
       <div className="mb-8 text-center">
         <img
-          src="https://i.ibb.co/P4dg89X/db.jpg"
+          src="/src/assets/Brand Logo.webp"
           alt="Logo"
-          className="mb-4 w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-full lg:h-auto mx-auto"
+          className="mb-4  lg:w-full lg:h-auto mx-auto"
         />
       </div>
 
       {/* Menu Items */}
       {menuItems.map((item) => (
         <div key={item.label} className="group">
-          <a
-            href={item.link}
+          <Link
+            to={item.link}
             className={`flex items-center p-2 rounded-lg ${isActive(
               item.link
             )} hover:bg-teal-600 hover:text-white transition duration-200`}
           >
             {item.icon}
             <span className="ml-3">{item.label}</span>
-          </a>
+          </Link>
 
           {/* Subitems */}
           {item.subItems && (

@@ -1,27 +1,30 @@
-/* eslint-disable react/prop-types */
 import { Info } from "lucide-react";
 
 const StatsCard = ({ title, value, description, icon, showInfo = false }) => {
   return (
-    <div className="stat bg-white rounded-lg shadow p-6 lg:p-8 flex items-center border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
+    <div className="stat bg-white rounded-lg shadow p-6 lg:p-8 flex flex-col items-center justify-center text-center border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
       {/* Icon or Stat Figure */}
-      {icon && <div className="stat-figure text-primary">{icon}</div>}
+      {icon && <div className="stat-figure text-primary mb-4">{icon}</div>}
 
       {/* Stat Details */}
       <div>
-        <div className="stat-title text-gray-500">{title}</div>
-        <div className="stat-value text-primary text-base lg:text-4xl font-bold">
+        <div className="stat-title text-gray-500 text-lg md:text-xl lg:text-xl font-semibold">
+          {title}
+        </div>
+        <div className="stat-value text-primary text-lg md:text-xl lg:text-3xl font-bold">
           {value}
         </div>
         {description && (
-          <div className="stat-desc text-gray-400">{description}</div>
+          <div className="stat-desc text-gray-400 text-xs md:text-sm mt-2">
+            {description}
+          </div>
         )}
       </div>
 
       {/* Optional Info Button */}
       {showInfo && (
         <button
-          className="ml-auto text-gray-300 hover:text-gray-400 transition-colors"
+          className="mt-4 text-gray-300 hover:text-gray-400 transition-colors"
           aria-label="More information"
         >
           <Info className="w-6 h-6" />

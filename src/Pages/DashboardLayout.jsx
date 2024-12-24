@@ -1,13 +1,9 @@
-import { useState } from "react";
-import Sidebar from "../Components/Sidebar";
-import Header from "../Components/Header";
 import { Outlet } from "react-router-dom";
 import {
   FileText,
   Globe,
   Home,
   Layers,
-  Menu,
   MessageSquare,
   Package,
   Percent,
@@ -16,11 +12,13 @@ import {
   Upload,
   UserPlus,
   Users,
-  X,
 } from "lucide-react";
+import Sidebar from "../Components/Sidebar";
+import Header from "../Components/Header";
+import { UseSidebar } from "../Shared/SidebarContext";
 
 const DashboardLayout = () => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const { isOpen, toggleSidebar } = UseSidebar();
 
   const menuItems = [
     {
@@ -89,55 +87,46 @@ const DashboardLayout = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row w-full md:w-full lg:w-full bg-gradient-to-r from-[#FFFFFF] to-[#009DAA7D]">
-      {/* Sidebar Toggle for Mobile */}
-      <button
-        className="lg:hidden p-2 text-[#009DAA] fixed top-4 left-4 z-20 rounded-md"
-        onClick={() => setSidebarOpen(!isSidebarOpen)}
-      >
-        {isSidebarOpen ? (
-          <X className="w-6 h-6" />
-        ) : (
-          <Menu className="w-6 h-6" />
-        )}
-      </button>
-
-      {/* Backdrop for Mobile Sidebar */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
+    <div className="flex flex-col lg:flex-row w-full bg-gradient-to-r from-[#FFFFFF] to-[#009DAA7D]">
       {/* Sidebar */}
       <div
-        className={`fixed z-20 inset-y-0 left-0 w-48 transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed z-20 inset-y-0 left-0 w-56 bg-[#009DAA] transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto`}
-        style={{ scrollbarWidth: "none" }} // For Firefox to hide the scrollbar
       >
         <Sidebar menuItems={menuItems} />
       </div>
 
+      {/* Backdrop for Mobile Sidebar */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+
       {/* Main Content */}
-      <div className="flex-1 lg:ml-44 flex flex-col">
+      <div className="flex-1 lg:ml-56 flex flex-col">
         <Header />
         <main className="p-4 md:p-6 flex-grow">
           <Outlet />
         </main>
       </div>
 
+      {/* Hide Scrollbars */}
       <style>
         {`
-          /* Hide scrollbar for Webkit browsers (Chrome, Safari) */
+          /* Hide scrollbar for webkit-based browsers */
           .overflow-y-auto::-webkit-scrollbar {
             display: none;
           }
-
           /* Hide scrollbar for Firefox */
           .overflow-y-auto {
-            scrollbar-width: none;
+            scrollbar-width: none; /* Firefox */
+          }
+          /* Hide scrollbar for IE and Edge */
+          .overflow-y-auto {
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
           }
         `}
       </style>
