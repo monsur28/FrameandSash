@@ -14,10 +14,10 @@ const TopSellingTable = () => {
 
   return (
     <div className=" rounded-lg p-6 shadow-sm border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
-      <div className="flex mb-4">
+      <div className="flex justify-center mb-4 space-x-4">
         <button
           onClick={() => setActiveTab("top")}
-          className={`flex items-center px-6 py-2 rounded-md mr-4 ${
+          className={`flex items-center px-6 py-2 rounded-md ${
             activeTab === "top" ? "bg-[#009daa] text-white" : "text-gray-600"
           }`}
         >
