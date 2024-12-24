@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import {
   FileText,
   Globe,
-  Home,
+  // Home,
   Layers,
   MessageSquare,
   Package,
@@ -21,11 +21,11 @@ const DashboardLayout = () => {
   const { isOpen, toggleSidebar } = UseSidebar();
 
   const menuItems = [
-    {
-      icon: <Home className="w-5 h-5" />,
-      label: "Dashboard",
-      link: "/dashboard",
-    },
+    // {
+    //   icon: <Home className="w-5 h-5" />,
+    //   label: "Dashboard",
+    //   link: "/dashboard",
+    // },
     {
       icon: <Package className="w-5 h-5" />,
       label: "Products",
