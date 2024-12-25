@@ -1,12 +1,8 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import { Download } from "lucide-react";
 import MonthlyOrdersChart from "../Components/MonthlyOrdersChart";
-import FormModal from "./FormModal";
 
-const CompanyList = ({ title, formFields, data, onSubmit, fieldToCompare }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+const CompanyList = ({ title, data, fieldToCompare }) => {
   return (
     <div className="p-5">
       <div className=" rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4 md:p-6 lg:p-8">
@@ -22,10 +18,7 @@ const CompanyList = ({ title, formFields, data, onSubmit, fieldToCompare }) => {
               </button>
             </div>
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-[#009DAA] text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center space-x-2 text-sm sm:text-base"
-          >
+          <button className="bg-[#009DAA] text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center space-x-2 text-sm sm:text-base">
             <span>+</span>
             <span>Add {title}</span>
           </button>
@@ -171,15 +164,6 @@ const CompanyList = ({ title, formFields, data, onSubmit, fieldToCompare }) => {
           </div>
         </div>
       </div>
-
-      {/* Modal Component */}
-      <FormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        formTitle={`Add ${title}`}
-        formFields={formFields}
-        onSubmit={onSubmit}
-      />
     </div>
   );
 };

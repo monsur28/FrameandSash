@@ -9,6 +9,8 @@ import Packages from "../Pages/Packages";
 import Products from "../Pages/Products";
 
 import ProductListWrapper from "../Components/ProductListWrapper";
+import Offers from "../Pages/Offer";
+import CompanyDetails from "../Shared/CompanyDetails";
 
 export const router = createBrowserRouter([
   {
@@ -32,8 +34,20 @@ export const router = createBrowserRouter([
         element: <Manufacturer />,
       },
       {
+        path: "/dashboard/manufacturer/:manufacturerName",
+        element: <CompanyDetails />,
+      },
+      {
         path: "/dashboard/reseller",
         element: <Reseller />,
+      },
+      {
+        path: "/dashboard/reseller/:resellerName",
+        element: <CompanyDetails />,
+      },
+      {
+        path: "/dashboard/offers",
+        element: <Offers />,
       },
       {
         path: "/dashboard/packages",

@@ -74,17 +74,22 @@ export default function MonthlyOrdersChart() {
     datasets: [
       {
         data: [45, 45, 35, 33, 15, 30, 20, 35, 35, 45, 35, 35],
-        backgroundColor: "#E2F8F8",
+        backgroundColor: "#009DAA",
         borderRadius: 4,
       },
       {
         data: [50, 25, 40, 19, 25, 37, 32, 40, 40, 52, 42, 47],
-        backgroundColor: "#00A19C",
+        backgroundColor: "#252526",
         borderRadius: 4,
       },
       {
         data: [42, 42, 48, 41, 35, 32, 35, 45, 48, 45, 55, 50],
-        backgroundColor: "#FF4444",
+        backgroundColor: "#CC4646",
+        borderRadius: 4,
+      },
+      {
+        data: [42, 42, 48, 41, 35, 32, 35, 45, 48, 45, 55, 50],
+        backgroundColor: "#03ADD9",
         borderRadius: 4,
       },
     ],

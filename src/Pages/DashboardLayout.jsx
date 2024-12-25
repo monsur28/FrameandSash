@@ -41,7 +41,11 @@ const DashboardLayout = () => {
       label: "Re-Seller",
       link: "/dashboard/reseller",
     },
-    { icon: <Tag className="w-5 h-5" />, label: "Offer", link: "/offers" },
+    {
+      icon: <Tag className="w-5 h-5" />,
+      label: "Offer",
+      link: "/dashboard/offers",
+    },
     {
       icon: <Layers className="w-5 h-5" />,
       label: "Packages",

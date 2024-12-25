@@ -20,6 +20,9 @@ export default function Header() {
     case "/dashboard/rolemanagement":
       title = "Role Management";
       break;
+    case "/dashboard/offers":
+      title = "Offers";
+      break;
     default:
       title = "Dashboard";
       break;

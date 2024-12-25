@@ -111,7 +111,7 @@ export default function RoleManagement() {
       />
 
       {/* The rest of the RoleManagement component */}
-      <div className="flex flex-col md:flex-row items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
         <h1 className="text-3xl font-bold mb-4 md:mb-0">Role List</h1>
         <button
           onClick={() =>
