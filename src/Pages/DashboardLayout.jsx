@@ -16,6 +16,7 @@ import {
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
 import { UseSidebar } from "../Shared/SidebarContext";
+import { SweetAlertProvider } from "../Router/SweetAlertContext";
 
 const DashboardLayout = () => {
   const { isOpen, toggleSidebar } = UseSidebar();
@@ -91,50 +92,52 @@ const DashboardLayout = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row w-full bg-gradient-to-r from-[#FFFFFF] to-[#009DAA7D]">
-      {/* Sidebar */}
-      <div
-        className={`fixed z-20 inset-y-0 left-0 w-56 bg-[#009DAA] transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto`}
-      >
-        <Sidebar menuItems={menuItems} />
-      </div>
-
-      {/* Backdrop for Mobile Sidebar */}
-      {isOpen && (
+    <SweetAlertProvider>
+      <div className="flex flex-col lg:flex-row w-full bg-gradient-to-r from-[#FFFFFF] to-[#009DAA7D]">
+        {/* Sidebar */}
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
-          onClick={toggleSidebar}
-        />
-      )}
+          className={`fixed z-20 inset-y-0 left-0 w-56 bg-[#009DAA] transform ${
+            isOpen ? "translate-x-0" : "-translate-x-full"
+          } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto`}
+        >
+          <Sidebar menuItems={menuItems} />
+        </div>
 
-      {/* Main Content */}
-      <div className="flex-1 lg:ml-56 flex flex-col">
-        <Header />
-        <main className="p-4 md:p-6 flex-grow">
-          <Outlet />
-        </main>
+        {/* Backdrop for Mobile Sidebar */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+            onClick={toggleSidebar}
+          />
+        )}
+
+        {/* Main Content */}
+        <div className="flex-1 lg:ml-56 flex flex-col">
+          <Header />
+          <main className="p-4 md:p-6 flex-grow">
+            <Outlet />
+          </main>
+        </div>
+
+        {/* Hide Scrollbars */}
+        <style>
+          {`
+        /* Hide scrollbar for webkit-based browsers */
+        .overflow-y-auto::-webkit-scrollbar {
+          display: none;
+        }
+        /* Hide scrollbar for Firefox */
+        .overflow-y-auto {
+          scrollbar-width: none; /* Firefox */
+        }
+        /* Hide scrollbar for IE and Edge */
+        .overflow-y-auto {
+          -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+      `}
+        </style>
       </div>
-
-      {/* Hide Scrollbars */}
-      <style>
-        {`
-          /* Hide scrollbar for webkit-based browsers */
-          .overflow-y-auto::-webkit-scrollbar {
-            display: none;
-          }
-          /* Hide scrollbar for Firefox */
-          .overflow-y-auto {
-            scrollbar-width: none; /* Firefox */
-          }
-          /* Hide scrollbar for IE and Edge */
-          .overflow-y-auto {
-            -ms-overflow-style: none; /* Internet Explorer 10+ */
-          }
-        `}
-      </style>
-    </div>
+    </SweetAlertProvider>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import MonthlyOrdersChart from "../Components/MonthlyOrdersChart";
-import RevenueCard from "./RevenueCard";
+import RevenueCard from "../Shared/RevenueCard";
 
 const windows = [
   {
@@ -42,7 +42,7 @@ const windows = [
 
 // Header Component
 const ManufacturerHeader = ({ logo, name }) => (
-  <div className="bg-white p-6 rounded-lg shadow-sm mb-6 flex justify-between items-center">
+  <div className="border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg p-6 shadow-sm mb-6 flex justify-between items-center">
     <div className="flex items-center gap-4">
       <img
         src={logo}
@@ -63,7 +63,7 @@ const ManufacturerHeader = ({ logo, name }) => (
 
 // Chart Section Component
 const ChartSection = ({ title, onDownload, chartComponent, cardComponent }) => (
-  <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+  <div className="border-white bg-white/50 backdrop-blur-[16.5px] p-6 rounded-lg shadow-sm mb-6">
     <div className="flex justify-between items-center mb-6">
       <h2 className="text-xl font-semibold">{title}</h2>
       <button
@@ -82,7 +82,7 @@ const ChartSection = ({ title, onDownload, chartComponent, cardComponent }) => (
 
 // Windows Table Component
 const WindowsTable = () => (
-  <div className="bg-white p-6 rounded-lg shadow-sm">
+  <div className="border-white bg-white/50 backdrop-blur-[16.5px] p-6 rounded-lg shadow-sm">
     <div className="grid grid-cols-5 gap-4 mb-4 px-4 text-gray-500">
       <div>Windows Type</div>
       <div>Accessories</div>
@@ -109,7 +109,7 @@ const WindowsTable = () => (
 );
 
 // Main ManufacturerDetails Component
-export default function CompanyDetails({ windowsData }) {
+export default function ManufacturerDetails({ windowsData }) {
   const location = useLocation();
   const { logo, name } = location.state; // Extract the logo and name from the passed state
 
@@ -118,7 +118,7 @@ export default function CompanyDetails({ windowsData }) {
     name: name,
   };
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6  min-h-screen">
       <ManufacturerHeader {...headerData} />
       <ChartSection
         title="Monthly Orders"

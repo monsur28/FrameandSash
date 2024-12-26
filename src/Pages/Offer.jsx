@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 const orders = [
   {
     logo: "https://i.ibb.co/ryTWxGF/plygem.webp",
@@ -23,39 +25,53 @@ const orders = [
 ];
 
 export default function Offers() {
-  return (
-    <div className="p-6 border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg h-screen">
-      <div className="grid grid-cols-4 mb-4 px-4">
-        <h2 className="text-gray-500 font-medium">Company Name</h2>
-        <h2 className="text-gray-500 font-medium">Active Order</h2>
-        <h2 className="text-gray-500 font-medium">Completed Order</h2>
-        <h2 className="text-gray-500 font-medium">Canceled Order</h2>
-      </div>
+  const navigate = useNavigate();
 
-      <div className="space-y-3">
-        {orders.map((order, index) => (
-          <div
-            key={index}
-            className="grid grid-cols-4 items-center bg-[#7ac7c4] rounded-xl p-4 text-white"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                <img
-                  src={order.logo}
-                  alt={`${order.name} logo`}
-                  width={24}
-                  height={24}
-                  className="object-contain"
-                />
-              </div>
-              <span className="font-medium">{order.name}</span>
-            </div>
-            <span>{order.orderNumber}</span>
-            <span>{order.amount}</span>
-            <span>{order.rating}</span>
-          </div>
-        ))}
-      </div>
+  const handleCompanyClick = (ordersName) => {
+    const companyOffer = orders.find((item) => item.name === ordersName);
+    const encodedName = encodeURIComponent(ordersName);
+    navigate(`/dashboard/offers/${encodedName}`, {
+      state: companyOffer, // Passing the manufacturer data to the next page
+    });
+  };
+
+  return (
+    <div className="p-6 border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg h-screen overflow-x-auto">
+      <table className="table-auto w-full rounded-lg shadow-md">
+        <thead className=" text-gray-600">
+          <tr>
+            <th className="px-6 py-3 text-left font-medium">Company Name</th>
+            <th className="px-6 py-3 text-left font-medium">Active Order</th>
+            <th className="px-6 py-3 text-left font-medium">Completed Order</th>
+            <th className="px-6 py-3 text-left font-medium">Canceled Order</th>
+          </tr>
+        </thead>
+        <tbody className="rounded-lg divide-y-8 divide-white">
+          {orders.map((order, index) => (
+            <tr
+              key={index}
+              onClick={() => handleCompanyClick(order.name)}
+              className="bg-[#7ac7c4] text-white rounded-lg"
+            >
+              <td className="px-6 py-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                  <img
+                    src={order.logo}
+                    alt={`${order.name} logo`}
+                    width={24}
+                    height={24}
+                    className="object-contain"
+                  />
+                </div>
+                <span className="font-medium">{order.name}</span>
+              </td>
+              <td className="px-6 py-4">{order.orderNumber}</td>
+              <td className="px-6 py-4">{order.amount}</td>
+              <td className="px-6 py-4">{order.rating}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

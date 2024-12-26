@@ -10,7 +10,11 @@ import Products from "../Pages/Products";
 
 import ProductListWrapper from "../Components/ProductListWrapper";
 import Offers from "../Pages/Offer";
-import CompanyDetails from "../Shared/CompanyDetails";
+import ResellerDetails from "../Components/ResellerDetails";
+import ManufacturerDetails from "../Components/ManufacturerDetails";
+import CompanyOffer from "../Shared/CompanyOffer";
+import AddManufacturerForm from "../Components/AddManufacturerForm";
+import AddResellerForm from "../Components/AddResellerForm";
 
 export const router = createBrowserRouter([
   {
@@ -35,7 +39,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/manufacturer/:manufacturerName",
-        element: <CompanyDetails />,
+        element: <ManufacturerDetails />,
+      },
+      {
+        path: "/dashboard/manufacturer/addmanufacturer",
+        element: <AddManufacturerForm />,
       },
       {
         path: "/dashboard/reseller",
@@ -43,11 +51,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/reseller/:resellerName",
-        element: <CompanyDetails />,
+        element: <ResellerDetails />,
+      },
+      {
+        path: "/dashboard/reseller/addreseller",
+        element: <AddResellerForm />,
       },
       {
         path: "/dashboard/offers",
         element: <Offers />,
+      },
+      {
+        path: "/dashboard/offers/:CompanyName",
+        element: <CompanyOffer />,
       },
       {
         path: "/dashboard/packages",
