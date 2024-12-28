@@ -62,24 +62,24 @@ export default function AddProduct() {
         </div>
 
         {/* Right side - Actions */}
-        <div className="space-y-4 flex flex-row lg:flex-col  gap-4 xl:gap-0">
-          <button className="w-28 xl:w-full bg-teal-500 text-white rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-teal-600 transition-colors">
+        <div className="space-y-4 flex flex-col sm:flex-row sm:space-y-0 sm:space-x-4 lg:flex-col lg:space-y-4 lg:space-x-0">
+          <button className="w-full max-w-[420px] bg-teal-500 text-white rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-teal-600 transition-colors">
             <Edit className="w-5 h-5" />
             <span>Edit</span>
           </button>
-          <button className="w-28 xl:w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+          <button className="w-full max-w-[420px] bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
             <DoorOpen className="w-5 h-5" />
             <span>Open</span>
           </button>
-          <button className="w-28 xl:w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+          <button className="w-full max-w-[420px] bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
             <DoorClosed className="w-5 h-5" />
             <span>Close</span>
           </button>
-          <button className="w-28 xl:w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+          <button className="w-full max-w-[420px] bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
             <ZoomIn className="w-5 h-5" />
             <span>Zoom In</span>
           </button>
-          <button className="w-28 xl:w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+          <button className="w-full max-w-[420px] bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
             <ZoomOut className="w-5 h-5" />
             <span>Zoom Out</span>
           </button>
