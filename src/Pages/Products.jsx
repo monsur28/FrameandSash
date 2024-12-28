@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Plus, AppWindowIcon as Window } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Products() {
   const navigate = useNavigate();
 
-  const [products, setProducts] = useState([
+  const [products] = useState([
     {
       id: 1,
       title: "Windows",
@@ -34,30 +34,6 @@ export default function Products() {
     },
   ]);
 
-  const [showModal, setShowModal] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    title: "",
-    types: 0,
-    available: true,
-  });
-
-  const handleAddProduct = () => {
-    if (newProduct.title && newProduct.types) {
-      setProducts([
-        ...products,
-        {
-          id: products.length + 1,
-          title: newProduct.title,
-          icon: <Window className="w-6 h-6 text-gray-600" />,
-          types: Number(newProduct.types),
-          available: newProduct.available,
-        },
-      ]);
-      setNewProduct({ title: "", types: 0, available: true });
-      setShowModal(false);
-    }
-  };
-
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8">
       {/* Header */}
@@ -66,7 +42,7 @@ export default function Products() {
           Product List
         </h1>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => navigate("/dashboard/products/create-product")}
           className="mt-4 sm:mt-0 bg-[#009DAA] hover:bg-teal-600 text-white px-3 sm:px-2 lg:px-2 py-1 lg:py-2 rounded-full flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />
@@ -107,76 +83,6 @@ export default function Products() {
           </tbody>
         </table>
       </div>
-
-      {/* Add Product Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Add New Product</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Product Title
-                </label>
-                <input
-                  type="text"
-                  value={newProduct.title}
-                  onChange={(e) =>
-                    setNewProduct({ ...newProduct, title: e.target.value })
-                  }
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Types
-                </label>
-                <input
-                  type="number"
-                  value={newProduct.types || ""}
-                  onChange={(e) =>
-                    setNewProduct({
-                      ...newProduct,
-                      types: Number(e.target.value),
-                    })
-                  }
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={newProduct.available}
-                  onChange={(e) =>
-                    setNewProduct({
-                      ...newProduct,
-                      available: e.target.checked,
-                    })
-                  }
-                  className="rounded text-teal-500 focus:ring-teal-500"
-                />
-                <label className="text-sm font-medium text-gray-700">
-                  Available
-                </label>
-              </div>
-              <div className="flex justify-end gap-3 mt-6">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleAddProduct}
-                  className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
-                >
-                  Add Product
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

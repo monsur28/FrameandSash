@@ -316,18 +316,30 @@ export default function AddManufacturerForm() {
             </div>
 
             {/* Company Logo */}
-            <div className="flex flex-col">
-              <label
-                className="text-sm font-medium mb-2"
-                htmlFor="company-logo"
-              >
-                Company Logo
+            <div className="mb-6">
+              <label className="block text-sm font-semibold mb-2">
+                Product Image<span className="text-red-500">*</span>
               </label>
-              <input
-                type="file"
-                id="company-logo"
-                className="w-full p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
+              <div className="flex gap-4 items-center rounded-[24px] border-2 border-[#009DAA] bg-[#CDE8E9]/60">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("fileInput")?.click()}
+                  className="bg-teal-500 text-white px-6 py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
+                >
+                  Choose File
+                </button>
+                <span className="text-gray-500">
+                  {formData.selectedFile
+                    ? formData.selectedFile.name
+                    : "No File Chosen"}
+                </span>
+                <input
+                  id="fileInput"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                />
+              </div>
             </div>
 
             {/* First Name */}
@@ -344,15 +356,30 @@ export default function AddManufacturerForm() {
             </div>
 
             {/* Upload NID */}
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-2" htmlFor="upload-nid">
-                Upload NID
+            <div className="mb-6">
+              <label className="block text-sm font-semibold mb-2">
+                Upload NID<span className="text-red-500">*</span>
               </label>
-              <input
-                type="file"
-                id="upload-nid"
-                className="w-full p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
+              <div className="flex gap-4 items-center rounded-[24px] border-2 border-[#009DAA] bg-[#CDE8E9]/60">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("fileInput")?.click()}
+                  className="bg-teal-500 text-white px-6 py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
+                >
+                  Choose File
+                </button>
+                <span className="text-gray-500">
+                  {formData.selectedFile
+                    ? formData.selectedFile.name
+                    : "No File Chosen"}
+                </span>
+                <input
+                  id="fileInput"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                />
+              </div>
             </div>
 
             {/* Email Address */}

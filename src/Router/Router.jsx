@@ -15,6 +15,8 @@ import ManufacturerDetails from "../Components/ManufacturerDetails";
 import CompanyOffer from "../Shared/CompanyOffer";
 import AddManufacturerForm from "../Components/AddManufacturerForm";
 import AddResellerForm from "../Components/AddResellerForm";
+import CreateProductCategory from "../Components/CreateProductCategory";
+import AddProduct from "../Components/AddProduct";
 
 export const router = createBrowserRouter([
   {
@@ -30,8 +32,16 @@ export const router = createBrowserRouter([
         element: <Products />,
       },
       {
+        path: "/dashboard/products/create-product",
+        element: <CreateProductCategory />,
+      },
+      {
         path: "/dashboard/products/:title",
         element: <ProductListWrapper />,
+      },
+      {
+        path: "/dashboard/products/add-product",
+        element: <AddProduct />,
       },
       {
         path: "/dashboard/manufacturer",
