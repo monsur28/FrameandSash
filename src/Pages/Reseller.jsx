@@ -1,9 +1,11 @@
 import { Download } from "lucide-react";
 import MonthlyOrdersChart from "../Components/MonthlyOrdersChart";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Reseller = () => {
   const navigate = useNavigate();
+  const [activeYear, setActiveYear] = useState("thisYear");
   const reseller = [
     {
       logo: "https://i.ibb.co/ryTWxGF/plygem.webp",
@@ -60,10 +62,24 @@ const Reseller = () => {
               ChartBoard
             </h2>
             <div className="flex flex-wrap gap-2 mt-4">
-              <button className="bg-[#009DAA] text-white px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-base">
+              <button
+                className={`px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-base ${
+                  activeYear === "thisYear"
+                    ? "bg-[#009DAA] text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setActiveYear("thisYear")}
+              >
                 This Year
               </button>
-              <button className="bg-gray-200 text-gray-700 px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-base">
+              <button
+                className={`px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-base ${
+                  activeYear === "lastYear"
+                    ? "bg-[#009DAA] text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setActiveYear("lastYear")}
+              >
                 Last Year
               </button>
             </div>
@@ -80,7 +96,7 @@ const Reseller = () => {
         </div>
         <div className="flex flex-col lg:flex-row gap-2 mt-4 justify-between items-start">
           <div className="w-full lg:w-3/4 rounded-lg">
-            <MonthlyOrdersChart />
+            <MonthlyOrdersChart activeYear={activeYear} />
           </div>
           <div className="w-full lg:w-auto">
             <button className="w-full lg:w-auto bg-[#009DAA] text-white px-3 py-1 md:px-4 md:py-2 mt-2 lg:mt-4 rounded-lg flex items-center justify-center space-x-2 text-sm md:text-base">
