@@ -104,7 +104,7 @@ export default function CreateProductCategory() {
               <span className="text-gray-500 truncate">
                 {formState.selectedFile
                   ? formState.selectedFile.name
-                  : "No File Chosen"}
+                  : "No File Chossen"}
               </span>
               <input
                 id="fileInput"

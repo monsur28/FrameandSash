@@ -42,20 +42,22 @@ const windows = [
 
 // Header Component
 const ManufacturerHeader = ({ logo, name }) => (
-  <div className="border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg p-6 shadow-sm mb-6 flex justify-between items-center">
+  <div className="border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg p-4 sm:p-6 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    {/* Left Section: Logo and Details */}
     <div className="flex items-center gap-4">
       <img
         src={logo}
-        className="w-12 h-12 bg-[#00A7A0] rounded-lg"
+        className="w-12 h-12 sm:w-16 sm:h-16 bg-[#00A7A0] rounded-lg"
         alt="Logo"
       />
       <div>
-        <h1 className="text-xl font-semibold">{name}</h1>
-        <p className="text-gray-500 text-sm">5020 weston parkway, Suite 400</p>
-        <p className="text-gray-500 text-sm">cary, NC 27513</p>
+        <h1 className="text-lg sm:text-xl font-semibold">{name}</h1>
+        <p className="text-gray-500 text-sm">5020 Weston Parkway, Suite 400</p>
+        <p className="text-gray-500 text-sm">Cary, NC 27513</p>
       </div>
     </div>
-    <div className="bg-[#00A7A0] text-white px-6 py-2 rounded-lg">
+    {/* Right Section: Package Info */}
+    <div className="bg-[#00A7A0] text-white px-4 sm:px-6 py-2 rounded-lg text-center sm:text-right w-full sm:w-auto">
       Gold Package
     </div>
   </div>
@@ -63,48 +65,58 @@ const ManufacturerHeader = ({ logo, name }) => (
 
 // Chart Section Component
 const ChartSection = ({ title, onDownload, chartComponent, cardComponent }) => (
-  <div className="border-white bg-white/50 backdrop-blur-[16.5px] p-6 rounded-lg shadow-sm mb-6">
-    <div className="flex justify-between items-center mb-6">
-      <h2 className="text-xl font-semibold">{title}</h2>
+  <div className="border-white bg-white/50 backdrop-blur-[16.5px] p-4 sm:p-6 rounded-lg shadow-sm mb-6">
+    {/* Header Section */}
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+      <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-0">{title}</h2>
       <button
-        className="bg-[#00A7A0] text-white px-6 py-2 rounded-lg"
+        className="bg-[#00A7A0] text-white px-4 sm:px-6 py-2 rounded-lg w-full sm:w-auto"
         onClick={onDownload}
       >
         Download
       </button>
     </div>
-    <div className="flex gap-6">
-      <div className="flex-1">{chartComponent}</div>
-      <div className="w-64">{cardComponent}</div>
+    {/* Chart and Card Section */}
+    <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 items-center">
+      <div className="lg:col-span-2 ">{chartComponent}</div>
+      <div className="lg:col-span-1">{cardComponent}</div>
     </div>
   </div>
 );
 
 // Windows Table Component
 const WindowsTable = () => (
-  <div className="border-white bg-white/50 backdrop-blur-[16.5px] p-6 rounded-lg shadow-sm">
-    <div className="grid grid-cols-5 gap-4 mb-4 px-4 text-gray-500">
-      <div>Windows Type</div>
-      <div>Accessories</div>
-      <div>Market Price</div>
-      <div>Average Rating</div>
-      <div>Total Order</div>
-    </div>
-    {windows.map((window, index) => (
-      <div
-        key={index}
-        className="grid grid-cols-5 gap-4 bg-[#7AC7C4] text-white rounded-xl p-4 mb-3"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-lg" />
-          {window.type}
-        </div>
-        <div>{window.accessories}</div>
-        <div>{window.price}</div>
-        <div>{window.rating}</div>
-        <div>{window.orders}</div>
-      </div>
-    ))}
+  <div className="border-white  bg-white/50 backdrop-blur-[16.5px] p-6 rounded-lg shadow-sm overflow-x-auto">
+    <table className="table-auto w-full text-left">
+      <thead>
+        <tr className="text-gray-500 bg-gray-100">
+          <th className="p-4">Windows Type</th>
+          <th className="p-4">Accessories</th>
+          <th className="p-4">Market Price</th>
+          <th className="p-4">Average Rating</th>
+          <th className="p-4">Total Order</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y-8">
+        {windows.map((window, index) => (
+          <tr
+            key={index}
+            className={`bg-[#7AC7C4] text-white ${
+              index % 2 === 0 ? "bg-opacity-90" : "bg-opacity-80"
+            }`}
+          >
+            <td className="p-4 flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-lg" />
+              {window.type}
+            </td>
+            <td className="p-4">{window.accessories}</td>
+            <td className="p-4">{window.price}</td>
+            <td className="p-4">{window.rating}</td>
+            <td className="p-4">{window.orders}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
 );
 

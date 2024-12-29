@@ -54,7 +54,7 @@ const Reseller = () => {
   return (
     <div>
       <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4 md:p-6 lg:p-8">
-        <div className="flex flex-col lg:flex-row items-start justify-between mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-between mb-6">
           <div className="mb-4 lg:mb-0">
             <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold">
               ChartBoard
@@ -68,13 +68,15 @@ const Reseller = () => {
               </button>
             </div>
           </div>
-          <button
-            onClick={() => navigate("/dashboard/Reseller/addReseller")}
-            className="bg-[#009DAA] text-white px-3 py-1 md:px-4 md:py-2 rounded-lg flex items-center space-x-2 text-sm md:text-base"
-          >
-            <span>+</span>
-            <span>Add Reseller</span>
-          </button>
+          <div className="flex items-center justify-start lg:justify-end ">
+            <button
+              onClick={() => navigate("/dashboard/Reseller/addReseller")}
+              className="bg-[#009DAA] text-white px-3 py-1 md:px-4 md:py-2 rounded-lg flex items-center space-x-2 text-sm md:text-base"
+            >
+              <span>+</span>
+              <span>Add Reseller</span>
+            </button>
+          </div>
         </div>
         <div className="flex flex-col lg:flex-row gap-2 mt-4 justify-between items-start">
           <div className="w-full lg:w-3/4 rounded-lg">

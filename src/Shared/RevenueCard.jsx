@@ -29,8 +29,10 @@ const RevenueCard = () => {
           </svg>
         </svg>
         <div className="absolute flex flex-col items-center">
-          <div className="text-2xl font-bold text-gray-900">10,000</div>
-          <div>28% Last Year</div>
+          <div className="text-lg lg:text-xl  font-bold text-gray-900">
+            10,000
+          </div>
+          <div className="text-sm lg:text-base">28% Last Year</div>
         </div>
       </div>
     </div>
