@@ -16,7 +16,10 @@ import CompanyOffer from "../Shared/CompanyOffer";
 import AddManufacturerForm from "../Components/AddManufacturerForm";
 import AddResellerForm from "../Components/AddResellerForm";
 import CreateProductCategory from "../Components/CreateProductCategory";
+import EditProduct from "../Components/EditProduct";
 import AddProduct from "../Components/AddProduct";
+import Blogs from "../Pages/Blogs";
+import Contact from "../Pages/Contact";
 
 export const router = createBrowserRouter([
   {
@@ -40,8 +43,12 @@ export const router = createBrowserRouter([
         element: <ProductListWrapper />,
       },
       {
-        path: "/dashboard/products/add-product",
+        path: "/dashboard/products/addproduct",
         element: <AddProduct />,
+      },
+      {
+        path: "/dashboard/products/EditProduct",
+        element: <EditProduct />,
       },
       {
         path: "/dashboard/manufacturer",
@@ -82,6 +89,14 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/rolemanagement",
         element: <RoleManagement />,
+      },
+      {
+        path: "/dashboard/blog",
+        element: <Blogs />,
+      },
+      {
+        path: "/dashboard/contact",
+        element: <Contact />,
       },
     ],
   },

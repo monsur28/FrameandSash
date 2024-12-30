@@ -68,11 +68,15 @@ const DashboardLayout = () => {
       label: "Languages",
       link: "/languages",
     },
-    { icon: <FileText className="w-5 h-5" />, label: "Blogs", link: "/blogs" },
+    {
+      icon: <FileText className="w-5 h-5" />,
+      label: "Blogs",
+      link: "/dashboard/blog",
+    },
     {
       icon: <MessageSquare className="w-5 h-5" />,
       label: "Contact",
-      link: "/contact",
+      link: "/dashboard/contact",
     },
     {
       icon: <Percent className="w-5 h-5" />,

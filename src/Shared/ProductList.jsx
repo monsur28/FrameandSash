@@ -99,7 +99,7 @@ export default function ProductList() {
           Product List | {productName}
         </h1>
         <button
-          onClick={() => navigate("/dashboard/products/add-product")}
+          onClick={() => navigate("/dashboard/products/AddProduct")}
           className="mt-4 sm:mt-0 bg-teal-500 hover:bg-teal-600 text-white px-9 sm:px-2 lg:px-8 py-2 lg:py-4 rounded-full flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />
@@ -140,7 +140,10 @@ export default function ProductList() {
                 <td className="p-4 text-teal-500">{product.wholesellPrice}</td>
                 <td className="p-4 text-teal-500">{product.marketPrice}</td>
                 <td className="p-4 flex justify-center gap-2">
-                  <button className="p-2 text-blue-500 hover:bg-blue-100 rounded-full">
+                  <button
+                    onClick={() => navigate("/dashboard/products/EditProduct")}
+                    className="p-2 text-blue-500 hover:bg-blue-100 rounded-full"
+                  >
                     <Edit className="w-5 h-5" />
                   </button>
                   <button
