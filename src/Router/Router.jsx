@@ -32,7 +32,7 @@ import UpdateProfile from "../Components/UpdateProfile";
 
 export const router = createBrowserRouter([
   {
-    path: "/dashboard",
+    path: "/",
     element: (
       <ProtectedRoute>
         <DashboardLayout />
