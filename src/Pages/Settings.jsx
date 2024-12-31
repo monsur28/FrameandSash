@@ -1,10 +1,9 @@
 import { Edit, Users, Activity, MessageCircle } from "lucide-react";
 import useAuth from "../Router/UseAuth";
-import { useNavigate } from "react-router-dom";
 
 export default function AdminProfile() {
   const { user } = useAuth();
-  const navigate = useNavigate();
+
   // Dummy Admin Data
   const admin = {
     name: "Twintech Soft. Ltd",

@@ -92,7 +92,7 @@ export default function EditProduct() {
               <img
                 src={handleOptions.find((h) => h.id === selectedHandle)?.image}
                 alt="Selected Handle"
-                className="absolute left-[80px] lg:left-96 top- lg:top-36 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] object-contain pointer-events-none"
+                className="absolute left-[80px] lg:left-96 top-28 lg:top-36 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] object-contain pointer-events-none"
               />
             )}
           </div>
