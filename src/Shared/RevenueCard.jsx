@@ -1,6 +1,6 @@
 const RevenueCard = () => {
   return (
-    <div className="p-6 rounded-2xl bg-white/70 border border-solid border-gray-200 backdrop-blur-lg shadow-md">
+    <div className="p-6 rounded-2xl bg-white/70 border border-solid border-gray-200 backdrop-blur-[16.5px] shadow-md">
       <h3 className="text-center mb-4 text-gray-700 font-medium">Revenue</h3>
       <div className="relative flex items-center justify-center">
         <svg

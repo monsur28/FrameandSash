@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const initialBlogPosts = [
   {
@@ -20,26 +21,26 @@ const initialBlogPosts = [
   },
   {
     id: 3,
-    title: "The Benefits of Triple Glazing",
-    author: "Mike Johnson",
-    category: "Technology",
-    date: "2023-06-20",
+    title: "Top Trends in Modern Window Design",
+    author: "Emily Brown",
+    category: "Design",
+    date: "2023-07-01",
     status: "Published",
   },
   {
     id: 4,
-    title: "Window Styles for Modern Homes",
-    author: "Emily Brown",
-    category: "Design",
-    date: "2023-06-22",
+    title: "How to Reduce Heat Loss Through Windows",
+    author: "Chris Wilson",
+    category: "Energy Efficiency",
+    date: "2023-07-10",
     status: "Draft",
   },
   {
     id: 5,
-    title: "Maintaining Your Windows: A Complete Guide",
-    author: "Chris Wilson",
-    category: "Maintenance",
-    date: "2023-06-25",
+    title: "Understanding Double vs. Triple Glazing",
+    author: "Mike Johnson",
+    category: "Technology",
+    date: "2023-07-15",
     status: "Published",
   },
 ];
@@ -47,6 +48,7 @@ const initialBlogPosts = [
 export default function Blogs() {
   const [blogPosts, setBlogPosts] = useState(initialBlogPosts);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   const handleDelete = (id) => {
     setBlogPosts(blogPosts.filter((post) => post.id !== id));
@@ -60,67 +62,77 @@ export default function Blogs() {
   );
 
   return (
-    <div className="h-screen p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px]shadow-lg">
-      <h1 className="text-2xl font-bold mb-6">Blog Posts</h1>
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search posts..."
-          className="w-full p-2 border border-gray-300 rounded"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+    <div className="h-screen p-6">
+      <div className="flex justify-between items-center mb-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
+        <h1 className="text-xl lg:text-3xl font-bold">Blog Posts</h1>
+        <button
+          onClick={() => navigate("/dashboard/blogs/add-blog")}
+          className="px-6 py-3  bg-teal-500 text-white rounded-lg hover:bg-teal-600"
+        >
+          Add Blog
+        </button>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="py-2 px-4 border-b text-left">Title</th>
-              <th className="py-2 px-4 border-b text-left">Author</th>
-              <th className="py-2 px-4 border-b text-left">Category</th>
-              <th className="py-2 px-4 border-b text-left">Date</th>
-              <th className="py-2 px-4 border-b text-left">Status</th>
-              <th className="py-2 px-4 border-b text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPosts.map((post) => (
-              <tr key={post.id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b">{post.title}</td>
-                <td className="py-2 px-4 border-b">{post.author}</td>
-                <td className="py-2 px-4 border-b">{post.category}</td>
-                <td className="py-2 px-4 border-b">{post.date}</td>
-                <td className="py-2 px-4 border-b">
-                  <span
-                    className={`px-2 py-1 rounded text-sm ${
-                      post.status === "Published"
-                        ? "bg-green-200 text-green-800"
-                        : "bg-yellow-200 text-yellow-800"
-                    }`}
-                  >
-                    {post.status}
-                  </span>
-                </td>
-                <td className="py-2 px-4 border-b">
-                  <div className="flex space-x-2">
-                    <button className="text-blue-500 hover:text-blue-700">
-                      <Eye size={18} />
-                    </button>
-                    <button className="text-green-500 hover:text-green-700">
-                      <Pencil size={18} />
-                    </button>
-                    <button
-                      className="text-red-500 hover:text-red-700"
-                      onClick={() => handleDelete(post.id)}
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
+      <div className="">
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search posts..."
+            className="w-full p-2 border border-gray-300 rounded"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-2 px-4 border-b text-left">Title</th>
+                <th className="py-2 px-4 border-b text-left">Author</th>
+                <th className="py-2 px-4 border-b text-left">Category</th>
+                <th className="py-2 px-4 border-b text-left">Date</th>
+                <th className="py-2 px-4 border-b text-left">Status</th>
+                <th className="py-2 px-4 border-b text-left">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredPosts.map((post) => (
+                <tr key={post.id} className="hover:bg-gray-50">
+                  <td className="py-2 px-4 border-b">{post.title}</td>
+                  <td className="py-2 px-4 border-b">{post.author}</td>
+                  <td className="py-2 px-4 border-b">{post.category}</td>
+                  <td className="py-2 px-4 border-b">{post.date}</td>
+                  <td className="py-2 px-4 border-b">
+                    <span
+                      className={`px-2 py-1 rounded text-sm ${
+                        post.status === "Published"
+                          ? "bg-green-200 text-green-800"
+                          : "bg-yellow-200 text-yellow-800"
+                      }`}
+                    >
+                      {post.status}
+                    </span>
+                  </td>
+                  <td className="py-2 px-4 border-b">
+                    <div className="flex space-x-2">
+                      <button className="text-blue-500 hover:text-blue-700">
+                        <Eye size={18} />
+                      </button>
+                      <button className="text-green-500 hover:text-green-700">
+                        <Pencil size={18} />
+                      </button>
+                      <button
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => handleDelete(post.id)}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

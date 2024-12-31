@@ -20,11 +20,24 @@ import EditProduct from "../Components/EditProduct";
 import AddProduct from "../Components/AddProduct";
 import Blogs from "../Pages/Blogs";
 import Contact from "../Pages/Contact";
+import AddBlog from "../Components/AddBlog";
+import AdminProfile from "../Pages/Settings";
+import Discount from "../Pages/Discount";
+import SiteInfo from "../Pages/SiteInfo";
+import SiteImage from "../Pages/SiteImage";
+import PushNotification from "../Pages/PushNotification";
+import ImageUpload from "../Pages/ImageUpload";
+import ProtectedRoute from "./ProtectedRoute";
+import UpdateProfile from "../Components/UpdateProfile";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <DashboardLayout />,
+    path: "/dashboard",
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/dashboard",
@@ -95,8 +108,40 @@ export const router = createBrowserRouter([
         element: <Blogs />,
       },
       {
+        path: "/dashboard/blogs/add-blog",
+        element: <AddBlog />,
+      },
+      {
         path: "/dashboard/contact",
         element: <Contact />,
+      },
+      {
+        path: "/dashboard/discount",
+        element: <Discount />,
+      },
+      {
+        path: "/dashboard/imageupload",
+        element: <ImageUpload />,
+      },
+      {
+        path: "/dashboard/settings",
+        element: <AdminProfile />,
+      },
+      {
+        path: "/dashboard/settings/siteinfo",
+        element: <SiteInfo />,
+      },
+      {
+        path: "/dashboard/settings/siteimage",
+        element: <SiteImage />,
+      },
+      {
+        path: "/dashboard/settings/pushnotification",
+        element: <PushNotification />,
+      },
+      {
+        path: "/dashboard/settings/update-profile",
+        element: <UpdateProfile />,
       },
     ],
   },

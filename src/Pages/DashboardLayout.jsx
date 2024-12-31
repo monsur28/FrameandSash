@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import {
   FileText,
-  Globe,
+  // Globe,
   Home,
   // Home,
   Layers,
@@ -61,13 +61,13 @@ const DashboardLayout = () => {
     {
       icon: <Upload className="w-5 h-5" />,
       label: "Image Upload",
-      link: "/upload",
+      link: "/dashboard/imageupload",
     },
-    {
-      icon: <Globe className="w-5 h-5" />,
-      label: "Languages",
-      link: "/languages",
-    },
+    // {
+    //   icon: <Globe className="w-5 h-5" />,
+    //   label: "Languages",
+    //   link: "/languages",
+    // },
     {
       icon: <FileText className="w-5 h-5" />,
       label: "Blogs",
@@ -81,17 +81,19 @@ const DashboardLayout = () => {
     {
       icon: <Percent className="w-5 h-5" />,
       label: "Discount",
-      link: "/discount",
+      link: "/dashboard/discount",
     },
     {
       icon: <Settings className="w-5 h-5" />,
       label: "Settings",
-      link: "/settings",
+      link: "/dashboard/settings",
       subItems: [
-        { label: "Site Info", link: "/settings/site-info" },
-        { label: "Site Image", link: "/settings/site-image" },
-        { label: "SEO", link: "/settings/seo" },
-        { label: "Push Notification", link: "/settings/push-notification" },
+        { label: "Site Info", link: "/dashboard/settings/siteinfo" },
+        { label: "Site Image", link: "/dashboard/settings/siteimage" },
+        // {
+        //   label: "Push Notification",
+        //   link: "/dashboard/settings/pushnotification",
+        // },
       ],
     },
   ];
