@@ -1,9 +1,9 @@
 [
     {
-      "origin": ["http://localhost:5173", "https://frameandsash.vercel.app/"],
+      "origin": ["https://frameandsash.vercel.app"],
       "method": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      "responseHeader": ["Content-Type", "Authorization"],
-      "maxAgeSeconds": 3600
+      "maxAgeSeconds": 3600,
+      "responseHeader": ["Content-Type", "Authorization"]
     }
   ]
   
