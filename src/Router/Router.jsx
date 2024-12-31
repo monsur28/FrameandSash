@@ -27,11 +27,17 @@ import SiteInfo from "../Pages/SiteInfo";
 import SiteImage from "../Pages/SiteImage";
 import PushNotification from "../Pages/PushNotification";
 import ImageUpload from "../Pages/ImageUpload";
+import ProtectedRoute from "./ProtectedRoute";
+import UpdateProfile from "../Components/UpdateProfile";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <DashboardLayout />,
+    path: "/dashboard",
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/dashboard",
@@ -132,6 +138,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/settings/pushnotification",
         element: <PushNotification />,
+      },
+      {
+        path: "/dashboard/settings/update-profile",
+        element: <UpdateProfile />,
       },
     ],
   },

@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Mail, EyeOff, Eye } from "lucide-react";
 import loginBanner from "../assets/Login copy.jpg";
+import { toast, ToastContainer } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
+import useAuth from "../Router/UseAuth";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,9 +13,42 @@ export default function Login() {
     password: "",
   });
 
+  const { loginUser } = useAuth(); // Get loginUser from context
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login attempted with:", formData);
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    loginUser(email, password)
+      .then(() => {
+        // Show success toast
+        toast.success("Login Successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
+        // Navigate after the toast has been shown
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000); // Delay the navigation to allow the toast to show
+      })
+      .catch((error) => {
+        toast.error(`Oops... ${error.message}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      });
   };
 
   return (
@@ -30,8 +67,8 @@ export default function Login() {
         {/* Logo Circle */}
         <div className="bg-white rounded-full p-8 mb-3 shadow-lg">
           <div className="w-16 h-16 relative">
-            {/* Logo squares */}
-            <img src="https://i.ibb.co.com/sQsdjgJ/Logo.webp" alt="" />
+            {/* Logo */}
+            <img src="https://i.ibb.co.com/sQsdjgJ/Logo.webp" alt="Logo" />
           </div>
         </div>
 
@@ -44,6 +81,7 @@ export default function Login() {
           <div className="relative">
             <input
               type="email"
+              name="email"
               placeholder="Email Address"
               className="w-full px-4 py-3 bg-gray-100/90 rounded-full pr-10 focus:outline-none focus:ring-2 focus:ring-[#00B2B2]"
               value={formData.email}
@@ -58,6 +96,7 @@ export default function Login() {
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
+              name="password"
               placeholder="Password"
               className="w-full px-4 py-3 bg-gray-100/90 rounded-full pr-10 focus:outline-none focus:ring-2 focus:ring-[#00B2B2]"
               value={formData.password}
@@ -87,6 +126,9 @@ export default function Login() {
           </button>
         </form>
       </div>
+
+      {/* ToastContainer for React-Toastify notifications */}
+      <ToastContainer />
     </div>
   );
 }

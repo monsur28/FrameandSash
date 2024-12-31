@@ -4,13 +4,16 @@ import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./Router/Router";
 import { SidebarProvider } from "./Shared/SidebarContext";
+import AuthProvider from "./Router/AuthProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <SidebarProvider>
-      <div className="inter">
-        <RouterProvider router={router} />
-      </div>
+      <AuthProvider>
+        <div className="inter">
+          <RouterProvider router={router} />
+        </div>
+      </AuthProvider>
     </SidebarProvider>
   </StrictMode>
 );

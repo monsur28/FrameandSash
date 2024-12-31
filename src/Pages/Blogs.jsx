@@ -64,10 +64,10 @@ export default function Blogs() {
   return (
     <div className="h-screen p-6">
       <div className="flex justify-between items-center mb-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
-        <h1 className="text-2xl font-bold">Blog Posts</h1>
+        <h1 className="text-xl lg:text-3xl font-bold">Blog Posts</h1>
         <button
           onClick={() => navigate("/dashboard/blogs/add-blog")}
-          className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
+          className="px-6 py-3  bg-teal-500 text-white rounded-lg hover:bg-teal-600"
         >
           Add Blog
         </button>

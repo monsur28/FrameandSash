@@ -1,6 +1,10 @@
-import { Edit, Settings, Users, Activity, MessageCircle } from "lucide-react";
+import { Edit, Users, Activity, MessageCircle } from "lucide-react";
+import useAuth from "../Router/UseAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminProfile() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   // Dummy Admin Data
   const admin = {
     name: "Admin Name",
@@ -15,21 +19,30 @@ export default function AdminProfile() {
   };
 
   return (
-    <div className="p-6">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="h-full p-6">
+      <div className="rounded-[24px] bg-white/50 backdrop-blur-[16.5px] overflow-hidden">
         {/* Header Section */}
-        <div className="relative">
-          <div className="bg-gradient-to-r from-teal-500 to-blue-500 h-40"></div>
-          <div className="absolute top-1/2 left-6 transform -translate-y-1/2 flex items-center space-x-4">
+        <div className="relative ">
+          <div className="rounded-[24px] mt-10 h-40"></div>
+          <div className="absolute top-1/2 left-6 transform -translate-y-1/2 flex flex-col lg:flex-row items-center justify-between space-x-4">
             <img
               src={admin.profilePicture}
               alt="Admin Profile"
               className="w-24 h-24 rounded-full border-4 border-white shadow-md"
             />
             <div>
-              <h1 className="text-xl font-bold text-white">{admin.name}</h1>
-              <p className="text-sm text-white">{admin.role}</p>
-              <p className="text-sm text-white">{admin.email}</p>
+              <h1 className="text-xl font-bold ">{user.name}</h1>
+              <p className="text-sm">{admin.role}</p>
+              <p className="text-sm ">{user.email}</p>
+            </div>
+            <div className="flex justify-around p-6 border-t">
+              <button
+                onClick={() => navigate("/dashboard/settings/update-profile")}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600"
+              >
+                <Edit size={18} />
+                <span>Edit Profile</span>
+              </button>
             </div>
           </div>
         </div>
@@ -37,31 +50,19 @@ export default function AdminProfile() {
         {/* Stats Section */}
         <div className="p-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-            <div>
+            <div className="border-2 flex flex-col justify-center items-center border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.totalUsers}</h2>
               <p className="text-gray-500">Total Users</p>
             </div>
-            <div>
+            <div className="border-2 flex flex-col justify-center items-center border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.totalPosts}</h2>
               <p className="text-gray-500">Total Posts</p>
             </div>
-            <div>
+            <div className="border-2 flex flex-col justify-center items-center border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.messages}</h2>
               <p className="text-gray-500">Messages</p>
             </div>
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-around p-6 border-t">
-          <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600">
-            <Edit size={18} />
-            <span>Edit Profile</span>
-          </button>
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gray-500 text-white rounded-md shadow hover:bg-gray-600">
-            <Settings size={18} />
-            <span>Settings</span>
-          </button>
         </div>
 
         {/* Recent Activity */}
