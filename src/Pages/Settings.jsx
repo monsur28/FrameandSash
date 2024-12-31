@@ -7,9 +7,9 @@ export default function AdminProfile() {
   const navigate = useNavigate();
   // Dummy Admin Data
   const admin = {
-    name: "Admin Name",
+    name: "Twintech Soft. Ltd",
     role: "Administrator",
-    email: "admin@fameandshash.com",
+    email: "admin@twintechsoft.com",
     profilePicture:
       "https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w",
     joinedDate: "January 2021",
@@ -31,15 +31,12 @@ export default function AdminProfile() {
               className="w-24 h-24 rounded-full border-4 border-white shadow-md"
             />
             <div>
-              <h1 className="text-xl font-bold ">{user.name}</h1>
+              <h1 className="text-xl font-bold ">{admin.name}</h1>
               <p className="text-sm">{admin.role}</p>
               <p className="text-sm ">{user.email}</p>
             </div>
             <div className="flex justify-around p-6 border-t">
-              <button
-                onClick={() => navigate("/dashboard/settings/update-profile")}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600"
-              >
+              <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600">
                 <Edit size={18} />
                 <span>Edit Profile</span>
               </button>

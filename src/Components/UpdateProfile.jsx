@@ -29,6 +29,7 @@ export default function UpdateProfile() {
       // Upload profile picture if a new file is selected
       if (profilePicture) {
         const storage = getStorage();
+        console.log("storage", storage);
         const storageRef = ref(storage, `profilePictures/${user.uid}`);
         setUploading(true);
         await uploadBytes(storageRef, profilePicture);
