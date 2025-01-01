@@ -3,6 +3,7 @@ import Stepper from "./Stepper";
 import CreateWindows from "./CreateWindows";
 import CreateAccessories from "./CreateAccessories";
 import Submission from "./Submission";
+import { UseSweetAlert } from "../Router/SweetAlertContext";
 
 const steps = [
   { icon: "📝", title: "Create Windows" },
@@ -12,9 +13,19 @@ const steps = [
 
 export default function AddProduct() {
   const [currentStep, setCurrentStep] = useState(0);
+  const { showAlert } = UseSweetAlert();
 
   const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+    if (currentStep === steps.length - 1) {
+      // Show SweetAlert when the user completes the submission
+      showAlert(
+        "Submission Successful!",
+        "Your product has been successfully submitted.",
+        "success"
+      );
+    } else {
+      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+    }
   };
 
   const handlePrevious = () => {
@@ -22,14 +33,16 @@ export default function AddProduct() {
   };
 
   return (
-    <div className="">
+    <div>
       <Stepper currentStep={currentStep} steps={steps} />
 
       {currentStep === 0 && <CreateWindows onNext={handleNext} />}
       {currentStep === 1 && (
         <CreateAccessories onNext={handleNext} onPrevious={handlePrevious} />
       )}
-      {currentStep === 2 && <Submission onPrevious={handlePrevious} />}
+      {currentStep === 2 && (
+        <Submission onNext={handleNext} onPrevious={handlePrevious} />
+      )}
     </div>
   );
 }

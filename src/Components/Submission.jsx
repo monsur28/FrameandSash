@@ -1,4 +1,4 @@
-export default function Submission({ onPrevious }) {
+export default function Submission({ onPrevious, onNext }) {
   return (
     <div className="h-[500px] p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow">
       <div className="space-y-6">
@@ -37,7 +37,10 @@ export default function Submission({ onPrevious }) {
           >
             Previous
           </button>
-          <button className="px-4 py-2 bg-teal-500 text-white rounded-md">
+          <button
+            onClick={onNext}
+            className="px-4 py-2 bg-teal-500 text-white rounded-md"
+          >
             Save
           </button>
         </div>

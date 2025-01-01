@@ -2,8 +2,8 @@ import { useState } from "react";
 
 export default function CreateAccessories({ onNext, onPrevious }) {
   const [accessories, setAccessories] = useState([
-    { name: "Handle", values: Array(7).fill("") },
-    { name: "Frame", values: Array(7).fill("") },
+    { name: "Handle", values: Array(5).fill("") },
+    { name: "Frame", values: Array(5).fill("") },
   ]);
 
   const [formData, setFormData] = useState({
@@ -17,8 +17,9 @@ export default function CreateAccessories({ onNext, onPrevious }) {
   });
 
   return (
-    <div className=" p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow">
+    <div className="p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow">
       <div className="space-y-6">
+        {/* Accessories List */}
         <div>
           <h3 className="text-lg font-medium mb-4">Ingredients List</h3>
           <button
@@ -35,10 +36,10 @@ export default function CreateAccessories({ onNext, onPrevious }) {
 
           {accessories.map((item, index) => (
             <div key={index} className="flex items-center space-x-4 mb-4">
-              <div className="bg-teal-100 px-4 py-2 rounded-md w-24">
+              <div className="bg-teal-100 px-4 py-2 rounded-md w-24 text-center">
                 {item.name}
               </div>
-              <div className="flex-1 grid grid-cols-7 gap-2">
+              <div className="flex flex-col lg:flex-row gap-5">
                 {item.values.map((_, valueIndex) => (
                   <input
                     key={valueIndex}
@@ -47,13 +48,14 @@ export default function CreateAccessories({ onNext, onPrevious }) {
                   />
                 ))}
               </div>
-              <button className="px-4 py-2 bg-teal-500 text-white rounded-md">
+              <button className="mt-2 md:mt-0 px-4 py-2 bg-teal-500 text-white rounded-md">
                 + Add
               </button>
             </div>
           ))}
         </div>
 
+        {/* Form Section */}
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -69,7 +71,7 @@ export default function CreateAccessories({ onNext, onPrevious }) {
             />
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap lg:flex-nowrap space-y-4 lg:space-y-0 lg:space-x-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Minimum Size & Unit
@@ -101,12 +103,12 @@ export default function CreateAccessories({ onNext, onPrevious }) {
                 </select>
               </div>
             </div>
-            <button className="mt-6 px-4 py-2 bg-teal-500 text-white rounded-md">
+            <button className="mt-4 lg:mt-6 px-4 py-2 bg-teal-500 text-white rounded-md">
               + Add Size & Price
             </button>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Manufacturing Cost
@@ -141,25 +143,6 @@ export default function CreateAccessories({ onNext, onPrevious }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Increasing Size
-              </label>
-              <input
-                type="text"
-                value={formData.increasingSize}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    increasingSize: e.target.value,
-                  }))
-                }
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-50"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
                 Wholesale
               </label>
               <input
@@ -174,26 +157,11 @@ export default function CreateAccessories({ onNext, onPrevious }) {
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-50"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Market Price
-              </label>
-              <input
-                type="text"
-                value={formData.marketPrice}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    marketPrice: e.target.value,
-                  }))
-                }
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md bg-gray-50"
-              />
-            </div>
           </div>
         </div>
 
-        <div className="flex justify-end space-x-4">
+        {/* Navigation Buttons */}
+        <div className="flex flex-wrap justify-end space-y-2 md:space-y-0 md:space-x-4">
           <button
             onClick={onPrevious}
             className="px-4 py-2 border border-gray-300 rounded-md"
