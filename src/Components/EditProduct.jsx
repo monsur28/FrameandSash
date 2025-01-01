@@ -50,8 +50,8 @@ export default function EditProduct() {
   const toggleOpen = () => setIsOpen((prev) => !prev);
 
   // Handle zoom
-  const zoomIn = () => setZoomLevel((prev) => Math.min(prev + 0.1, 2)); // Limit max zoom to 2x
-  const zoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.1, 0.5)); // Limit min zoom to 0.5x
+  const zoomIn = () => setZoomLevel((prev) => Math.min(prev + 0.1, 2));
+  const zoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.1, 0.5));
 
   return (
     <div className="p-6 border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl shadow-lg">
@@ -62,28 +62,28 @@ export default function EditProduct() {
           <div
             className={`relative bg-gray-100 p-4 rounded-lg ${
               isOpen ? "border-teal-500" : "border-gray-200"
-            } border-4`}
+            } border-4 aspect-[3/4] w-full max-w-md mx-auto`}
+            style={{ transform: `scale(${zoomLevel})` }}
           >
-            {/* Main Door Image */}
-            <img
-              src={
-                isOpen
-                  ? "https://i.ibb.co/0QgPgW8/open-exit-door-svgrepo-com-7.png"
-                  : "https://i.ibb.co/rZ5BRwy/closed-filled-rectangular-door-2.png"
-              }
-              alt={isOpen ? "Open Door" : "Closed Door"}
-              style={{ transform: `scale(${zoomLevel})` }}
-              width={250}
-              height={250}
-              className="mx-auto max-w-full transition-transform"
-            />
+            {/* Main Image */}
+            {!selectedHandle && !selectedFrame && (
+              <img
+                src={
+                  isOpen
+                    ? "https://i.ibb.co.com/0QgPgW8/open-exit-door-svgrepo-com-7.png"
+                    : "https://i.ibb.co.com/rZ5BRwy/closed-filled-rectangular-door-2.png"
+                }
+                alt={isOpen ? "Open Door" : "Closed Door"}
+                className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+              />
+            )}
 
             {/* Overlay: Selected Frame */}
             {selectedFrame && (
               <img
                 src={frameOptions.find((f) => f.id === selectedFrame)?.image}
                 alt="Selected Frame"
-                className="absolute inset-0 mx-auto w-full h-full object-contain pointer-events-none"
+                className="absolute inset-0 w-full h-full object-contain pointer-events-none"
               />
             )}
 
@@ -92,7 +92,7 @@ export default function EditProduct() {
               <img
                 src={handleOptions.find((h) => h.id === selectedHandle)?.image}
                 alt="Selected Handle"
-                className="absolute left-[80px] lg:left-96 top-28 lg:top-36 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] object-contain pointer-events-none"
+                className="absolute left-20 375:left-24 425:left-[110px] md:left-36 lg:left-36 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[70px] md:h-[70px] lg:w-[80px] lg:h-[80px] object-contain pointer-events-none"
               />
             )}
           </div>
@@ -158,6 +158,7 @@ export default function EditProduct() {
           <button
             className="w-full max-w-[420px] bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
             onClick={toggleOpen}
+            disabled={selectedHandle || selectedFrame}
           >
             {isOpen ? (
               <DoorClosed className="w-5 h-5" />
@@ -180,75 +181,6 @@ export default function EditProduct() {
             <ZoomOut className="w-5 h-5" />
             <span>Zoom Out</span>
           </button>
-        </div>
-      </div>
-
-      {/* Product Details */}
-      <div className="mt-6">
-        {selectedHandle && (
-          <div className="text-gray-600 mt-9">
-            Selected Handle:{" "}
-            {handleOptions.find((h) => h.id === selectedHandle)?.name}
-          </div>
-        )}
-        {selectedFrame && (
-          <div className="text-gray-600">
-            Selected Frame:{" "}
-            {frameOptions.find((f) => f.id === selectedFrame)?.name}
-          </div>
-        )}
-      </div>
-      {/* Product Details Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
-        {/* Ingredient */}
-        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] ">
-          <h3 className="text-xl text-gray-500">Ingredient</h3>
-          <div className="rounded-lg p-6 shadow-sm space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <span>1×1m Contains</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <span>4m of frame</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <span>4m of frame</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <span>1m² of glass</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <span>1 set of hardware</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Working Hour */}
-        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
-          <h3 className="text-xl text-gray-500">Working Hour</h3>
-          <div>
-            <div className="text-4xl font-medium text-center">05</div>
-          </div>
-        </div>
-
-        {/* Wholesale Price */}
-        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
-          <h3 className="text-xl text-gray-500">Wholesale Price</h3>
-          <div>
-            <div className="text-4xl font-medium text-center">$80</div>
-          </div>
-        </div>
-
-        {/* Market Price */}
-        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
-          <h3 className="text-xl text-gray-500">Market Price</h3>
-          <div>
-            <div className="text-4xl font-medium text-center">$100</div>
-          </div>
         </div>
       </div>
     </div>
