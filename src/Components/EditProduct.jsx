@@ -183,6 +183,59 @@ export default function EditProduct() {
           </button>
         </div>
       </div>
+      {/* Product Details Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
+        {/* Ingredient */}
+        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] ">
+          <h3 className="text-xl text-gray-500">Ingredient</h3>
+          <div className="rounded-lg p-6 shadow-sm space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gray-400" />
+              <span>1×1m Contains</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gray-400" />
+              <span>4m of frame</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gray-400" />
+              <span>4m of frame</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gray-400" />
+              <span>1m² of glass</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gray-400" />
+              <span>1 set of hardware</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Working Hour */}
+        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
+          <h3 className="text-xl text-gray-500">Working Hour</h3>
+          <div>
+            <div className="text-4xl font-medium text-center">05</div>
+          </div>
+        </div>
+
+        {/* Wholesale Price */}
+        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
+          <h3 className="text-xl text-gray-500">Wholesale Price</h3>
+          <div>
+            <div className="text-4xl font-medium text-center">$80</div>
+          </div>
+        </div>
+
+        {/* Market Price */}
+        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
+          <h3 className="text-xl text-gray-500">Market Price</h3>
+          <div>
+            <div className="text-4xl font-medium text-center">$100</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
