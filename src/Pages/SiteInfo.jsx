@@ -1,183 +1,156 @@
 import { useState } from "react";
+import Swal from "sweetalert2";
 
-export default function SiteInfo() {
-  const [siteInfo, setSiteInfo] = useState({
-    siteName: "Fame and Sash",
-    logoUrl: "https://i.ibb.co.com/ZJ9hDdn/Brand-Logo.webp", // Replace with your site logo URL
-    description: "A brief description of the website.",
-    status: "Active", // Active or Inactive
-    contactEmail: "admin@example.com",
-    contactPhone: "+1234567890",
+export default function SiteInfoForm() {
+  const [formData, setFormData] = useState({
+    shortDescription:
+      "Frame And Sash is one of the best Furniture companies in Bangladesh.",
+    copyright: "© 2023 Frame And Sash. All rights reserved.",
+    address: "Naogaon, Dhaka, Bangladesh",
+    addressMapLink: "",
+    email: "official@Frame And Sash.com",
+    phone: "+8801645452145",
   });
 
-  const [isEditing, setIsEditing] = useState(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission here
+    console.log("Form submitted:", formData);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setSiteInfo((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSave = () => {
-    setIsEditing(false);
-    // Logic to save changes (e.g., API call)
-    console.log("Saved site info:", siteInfo);
+    Swal.fire({
+      title: "Success!",
+      text: "Your information is saved",
+      icon: "success",
+      confirmButtonColor: "#6366f1",
+    });
   };
 
   return (
-    <div className="p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow">
-      <h2 className="text-2xl font-bold mb-4">Site Information</h2>
-      <div className="space-y-6">
-        {/* Site Logo */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Logo
-          </label>
-          {isEditing ? (
+    <div className="p-6">
+      <h2 className="text-2xl font-semibold mb-6">Site Info</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-4">
+          <div>
+            <label
+              htmlFor="shortDescription"
+              className="block text-sm font-medium mb-1"
+            >
+              Short Description
+            </label>
             <input
               type="text"
-              name="logoUrl"
-              value={siteInfo.logoUrl}
-              onChange={handleChange}
-              className="block w-full p-2 border border-gray-300 rounded-md"
+              id="shortDescription"
+              value={formData.shortDescription}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  shortDescription: e.target.value,
+                }))
+              }
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
             />
-          ) : (
-            <img
-              src={siteInfo.logoUrl}
-              alt="Site Logo"
-              className="w-96 h-96 rounded-md"
-            />
-          )}
-        </div>
+          </div>
 
-        {/* Site Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Site Name
-          </label>
-          {isEditing ? (
+          <div>
+            <label
+              htmlFor="copyright"
+              className="block text-sm font-medium mb-1"
+            >
+              Copyright
+            </label>
             <input
               type="text"
-              name="siteName"
-              value={siteInfo.siteName}
-              onChange={handleChange}
-              className="block w-full p-2 border border-gray-300 rounded-md"
+              id="copyright"
+              value={formData.copyright}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, copyright: e.target.value }))
+              }
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
             />
-          ) : (
-            <p className="text-lg font-medium">{siteInfo.siteName}</p>
-          )}
-        </div>
+          </div>
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Description
-          </label>
-          {isEditing ? (
-            <textarea
-              name="description"
-              value={siteInfo.description}
-              onChange={handleChange}
-              rows="4"
-              className="block w-full p-2 border border-gray-300 rounded-md"
-            ></textarea>
-          ) : (
-            <p>{siteInfo.description}</p>
-          )}
-        </div>
+          <div>
+            <label htmlFor="address" className="block text-sm font-medium mb-1">
+              Address
+            </label>
+            <input
+              type="text"
+              id="address"
+              value={formData.address}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, address: e.target.value }))
+              }
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            />
+          </div>
 
-        {/* Site Status */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Status
-          </label>
-          {isEditing ? (
-            <select
-              name="status"
-              value={siteInfo.status}
-              onChange={handleChange}
-              className="block w-full p-2 border border-gray-300 rounded-md"
+          <div>
+            <label
+              htmlFor="addressMapLink"
+              className="block text-sm font-medium mb-1"
             >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          ) : (
-            <p
-              className={`px-3 py-1 inline-block rounded-md text-sm font-medium ${
-                siteInfo.status === "Active"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }`}
-            >
-              {siteInfo.status}
-            </p>
-          )}
-        </div>
+              Address Map Link
+            </label>
+            <input
+              type="url"
+              id="addressMapLink"
+              value={formData.addressMapLink}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  addressMapLink: e.target.value,
+                }))
+              }
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
 
-        {/* Contact Information */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Contact Email
-          </label>
-          {isEditing ? (
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium mb-1">
+              Email
+            </label>
             <input
               type="email"
-              name="contactEmail"
-              value={siteInfo.contactEmail}
-              onChange={handleChange}
-              className="block w-full p-2 border border-gray-300 rounded-md"
+              id="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, email: e.target.value }))
+              }
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
             />
-          ) : (
-            <p>{siteInfo.contactEmail}</p>
-          )}
-        </div>
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Contact Phone
-          </label>
-          {isEditing ? (
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium mb-1">
+              Phone
+            </label>
             <input
-              type="text"
-              name="contactPhone"
-              value={siteInfo.contactPhone}
-              onChange={handleChange}
-              className="block w-full p-2 border border-gray-300 rounded-md"
+              type="tel"
+              id="phone"
+              value={formData.phone}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, phone: e.target.value }))
+              }
+              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
             />
-          ) : (
-            <p>{siteInfo.contactPhone}</p>
-          )}
+          </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-end space-x-4">
-          {isEditing ? (
-            <>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 bg-teal-500 text-white rounded-md"
-              >
-                Save
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="px-4 py-2 bg-teal-500 text-white rounded-md"
-            >
-              Edit
-            </button>
-          )}
-        </div>
-      </div>
+        <div className="text-sm text-gray-500">Fields marked are required</div>
+
+        <button
+          type="submit"
+          className="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
 }

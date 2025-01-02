@@ -2,12 +2,12 @@ import { Info } from "lucide-react";
 
 const StatsCard = ({ title, value, description, icon, showInfo = false }) => {
   return (
-    <div className="stat bg-white rounded-lg shadow p-6 lg:p-8 flex flex-col items-center justify-center text-center border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
+    <div className="rounded-[24px] shadow p-6 lg:p-8 flex flex-col items-center justify-center text-center border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
       {/* Icon or Stat Figure */}
       {icon && <div className="stat-figure text-primary mb-4">{icon}</div>}
 
       {/* Stat Details */}
-      <div>
+      <div className="">
         <div className="stat-title text-gray-500 text-lg md:text-xl lg:text-xl font-semibold">
           {title}
         </div>

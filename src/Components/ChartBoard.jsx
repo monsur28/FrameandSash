@@ -1,53 +1,140 @@
+import { useState } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
   Tooltip,
   Legend,
-  ResponsiveContainer,
-} from "recharts";
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 
-const data = [
-  { month: "Jan", Revenue: 3000, Profit: 1400 },
-  { month: "Feb", Revenue: 4500, Profit: 2300 },
-  { month: "Mar", Revenue: 3200, Profit: 1200 },
-  { month: "Apr", Revenue: 4200, Profit: 2100 },
-  { month: "May", Revenue: 3800, Profit: 1800 },
-  { month: "Jun", Revenue: 3100, Profit: 1300 },
-  { month: "Jul", Revenue: 3600, Profit: 1600 },
-  { month: "Aug", Revenue: 4100, Profit: 2000 },
-  { month: "Sep", Revenue: 4800, Profit: 2500 },
-  { month: "Oct", Revenue: 5200, Profit: 2800 },
-  { month: "Nov", Revenue: 4900, Profit: 2600 },
-  { month: "Dec", Revenue: 5500, Profit: 3000 },
-];
+// Register the necessary components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function ChartBoard() {
+  const [activeData, setActiveData] = useState(["revenue", "profit"]);
+
+  const toggleData = (key) => {
+    setActiveData((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+    );
+  };
+
+  // Define chart options
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        mode: "index",
+        intersect: false,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        grid: {
+          color: "#E5E7EB",
+        },
+        ticks: {
+          stepSize: 1000,
+          max: 7000,
+        },
+        border: {
+          display: false,
+        },
+      },
+    },
+    barPercentage: 0.8,
+    categoryPercentage: 0.7,
+  };
+
+  // Define data for the chart
+  const labels = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const data = {
+    labels,
+    datasets: [
+      activeData.includes("revenue") && {
+        label: "Revenue",
+        data: [
+          5000, 4800, 5500, 3800, 6000, 4800, 3200, 3200, 4800, 5500, 3800,
+          4500,
+        ],
+        backgroundColor: "#06b6d4",
+        borderRadius: 4,
+      },
+      activeData.includes("profit") && {
+        label: "Profit",
+        data: [
+          4500, 3800, 3200, 3000, 5000, 3800, 3600, 3500, 3800, 3200, 3000,
+          3800,
+        ],
+        backgroundColor: "#000000",
+        borderRadius: 4,
+      },
+    ].filter(Boolean), // Filter out null/undefined values
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl mx-auto mt-8 border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
-      {/* Flex container to justify-between */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#009daa]">
+    <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4 sm:p-6 shadow-sm">
+      <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-4">
+        <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
           Chart Board
-        </h3>
+        </h2>
+        <div className="flex flex-wrap items-center gap-4">
+          <button
+            className={`flex items-center gap-2 ${
+              activeData.includes("revenue") ? "opacity-100" : "opacity-50"
+            }`}
+            onClick={() => toggleData("revenue")}
+          >
+            <div className="h-3 w-3 rounded-full bg-[#06b6d4]" />
+            <span className="text-sm text-gray-500">Revenue</span>
+          </button>
+          <button
+            className={`flex items-center gap-2 ${
+              activeData.includes("profit") ? "opacity-100" : "opacity-50"
+            }`}
+            onClick={() => toggleData("profit")}
+          >
+            <div className="h-3 w-3 rounded-full bg-black" />
+            <span className="text-sm text-gray-500">Profit</span>
+          </button>
+        </div>
       </div>
-
-      {/* Responsive container for the chart */}
-      <ResponsiveContainer width="100%" height={400}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-
-          {/* Bars to display data */}
-          <Bar dataKey="Revenue" fill="#3B82F6" />
-          <Bar dataKey="Profit" fill="#10B981" />
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="h-[300px] sm:h-[400px] w-full min-h-[300px]">
+        <Bar options={options} data={data} />
+      </div>
     </div>
   );
 }

@@ -13,7 +13,7 @@ const TopSellingTable = () => {
   ];
 
   return (
-    <div className=" rounded-lg p-6 shadow-sm border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
+    <div className=" rounded-[24px] p-6 shadow-sm border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
       <div className="flex justify-center mb-4 space-x-4">
         <button
           onClick={() => setActiveTab("top")}
@@ -44,7 +44,8 @@ const TopSellingTable = () => {
         {salesData.map((item, index) => (
           <div
             key={index}
-            className="grid grid-cols-2 p-3 border-b border-teal-100 hover:bg-teal-50 mb-4"
+            style={{ background: "rgba(0, 157, 170, 0.15)" }}
+            className="grid grid-cols-2 p-3 rounded-[60px] border-b border-teal-100 hover:bg-teal-50 mb-4"
           >
             <div>{item.product}</div>
             <div className="text-right">{item.units}</div>

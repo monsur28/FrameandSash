@@ -1,87 +1,145 @@
 import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 
-const ImageUpload = () => {
-  const [images, setImages] = useState([
-    // Adding some demo image URLs
-    "https://i.ibb.co.com/ZJ9hDdn/Brand-Logo.webp",
-    "https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w",
-    "https://i.ibb.co.com/G2PV8yB/Logo-white.webp",
+export default function PhotoManagement() {
+  const [order, setOrder] = useState("0");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [photos, setPhotos] = useState([
+    { id: 1, url: "https://i.ibb.co.com/ZJ9hDdn/Brand-Logo.webp", order: 1 },
+    {
+      id: 2,
+      url: "https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w",
+      order: 2,
+    },
+    { id: 3, url: "https://i.ibb.co.com/G2PV8yB/Logo-white.webp", order: 3 },
   ]);
-  const [imagePreview, setImagePreview] = useState(null);
 
-  // Handle image file selection
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Create a preview URL for the selected image
-      setImagePreview(URL.createObjectURL(file));
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
     }
   };
 
-  // Handle uploading the image
-  const handleUpload = () => {
-    setImages([...images, imagePreview]);
-    setImagePreview(null); // Clear preview after upload
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (selectedFile) {
+      const newPhoto = {
+        id: photos.length + 1,
+        url: URL.createObjectURL(selectedFile), // Generate a temporary URL
+        order: parseInt(order, 10),
+      };
+
+      setPhotos((prevPhotos) => [...prevPhotos, newPhoto]);
+      setSelectedFile(null); // Reset file input
+      setOrder("0"); // Reset order input
+    }
   };
 
-  // Handle image removal from gallery
-  const handleRemove = (image) => {
-    setImages(images.filter((img) => img !== image));
+  const copyImageLink = (url) => {
+    navigator.clipboard.writeText(url);
   };
 
   return (
-    <div className="h-screen p-4">
-      <div className="mb-4">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="p-2 rounded-md border border-gray-300"
-        />
-        {imagePreview && (
-          <div className="mt-4 flex justify-center">
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-32 h-32 object-cover rounded-md"
-            />
-            <button
-              onClick={handleUpload}
-              className="ml-4 p-2 bg-blue-500 text-white rounded-md"
+    <div className="p-6">
+      {/* Add Photo Form */}
+      <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow-sm p-6 mb-8">
+        <h2 className="text-xl font-semibold mb-6">Add Photo</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="order"
+              className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Upload
-            </button>
+              Order
+            </label>
+            <input
+              type="number"
+              id="order"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
-        )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Image (.svg, .jpg, .jpeg, .png){" "}
+              <span className="text-red-500">*</span>
+            </label>
+            <div className="flex items-center">
+              <label className="block">
+                <span className="sr-only">Choose file</span>
+                <input
+                  type="file"
+                  className="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-gray-50 file:text-gray-700
+                    hover:file:bg-gray-100"
+                  accept=".svg,.jpg,.jpeg,.png"
+                  onChange={handleFileChange}
+                />
+              </label>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Submit
+          </button>
+        </form>
       </div>
 
-      {/* Image Gallery */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {images.map((image, index) => (
-          <div
-            key={index}
-            className="relative"
-            onClick={() => handleRemove(image)}
-          >
-            <img
-              src={image}
-              alt={`Gallery Image ${index + 1}`}
-              className="w-full h-40 object-cover rounded-lg cursor-pointer hover:opacity-80"
-            />
-            <button
-              className="absolute top-2 right-5 text-white bg-red-500 rounded-full p-1"
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent image click handler from firing
-                handleRemove(image);
-              }}
+      {/* Photos Grid */}
+      <div>
+        <h2 className="text-xl font-semibold mb-6">Photos</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {photos.map((photo) => (
+            <div
+              key={photo.id}
+              className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow-sm p-4 space-y-4"
             >
-              X
-            </button>
-          </div>
-        ))}
+              <div className="relative aspect-video">
+                <img
+                  src={photo.url}
+                  alt="Uploaded photo"
+                  className="object-cover rounded-lg"
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    value={photo.url}
+                    readOnly
+                    className="flex-1 px-3 py-1 text-sm border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => copyImageLink(photo.url)}
+                    className="w-full bg-teal-500 text-white px-4 py-2 rounded-md text-sm hover:bg-teal-600 transition-colors"
+                  >
+                    Copy Image Link
+                  </button>
+                </div>
+                <div className="flex items-center justify-end space-x-2">
+                  <button className="p-1 text-blue-600 hover:text-blue-700">
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  <button className="p-1 text-red-600 hover:text-red-700">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
-};
-
-export default ImageUpload;
+}
