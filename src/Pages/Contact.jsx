@@ -9,6 +9,7 @@ const Contact = () => {
 
   const [newContact, setNewContact] = useState({ icon: "", title: "", desc: "", order: 0 });
   const [editId, setEditId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const handleChange = (e) => {
     setNewContact({ ...newContact, [e.target.name]: e.target.value });
@@ -22,78 +23,69 @@ const Contact = () => {
       setContacts([...contacts, { ...newContact, id: Date.now() }]);
     }
     setNewContact({ icon: "", title: "", desc: "", order: 0 });
+    setShowModal(false);
   };
 
   const handleEdit = (id) => {
     const contact = contacts.find(contact => contact.id === id);
     setNewContact(contact);
     setEditId(id);
+    setShowModal(true);
   };
 
   const handleDelete = (id) => {
     setContacts(contacts.filter(contact => contact.id !== id));
   };
 
-  return (
-    <div className="container mt-5">
-      <h3>Contact</h3>
-      <div className="mb-3">
-        <input
-          type="text"
-          placeholder="Icon (e.g., map-marker-alt)"
-          name="icon"
-          value={newContact.icon}
-          onChange={handleChange}
-          className="form-control mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Title"
-          name="title"
-          value={newContact.title}
-          onChange={handleChange}
-          className="form-control mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          name="desc"
-          value={newContact.desc}
-          onChange={handleChange}
-          className="form-control mb-2"
-        />
-        <button onClick={handleAdd} className="btn btn-primary">
-          {editId ? "Update Contact" : "Add Contact"}
-        </button>
-      </div>
+  const handleShowModal = () => {
+    setNewContact({ icon: "", title: "", desc: "", order: 0 });
+    setEditId(null);
+    setShowModal(true);
+  };
 
-      <table className="table table-bordered">
+  return (
+    <div className="container mx-auto p-5">
+      <h3 className="text-2xl font-bold mb-5">Contact</h3>
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        onClick={handleShowModal}
+      >
+        + Add Contact
+      </button>
+
+      <table className="table-auto w-full border-collapse border border-gray-300 mt-5 text-left">
         <thead>
-          <tr>
-            <th>#</th>
-            <th>Icon</th>
-            <th>Title</th>
-            <th>Content</th>
-            <th>Order</th>
-            <th>Action</th>
+          <tr className="bg-gray-100">
+            <th className="border border-gray-300 px-4 py-2">#</th>
+            <th className="border border-gray-300 px-4 py-2">Icon</th>
+            <th className="border border-gray-300 px-4 py-2">Title</th>
+            <th className="border border-gray-300 px-4 py-2">Content</th>
+            <th className="border border-gray-300 px-4 py-2">Order</th>
+            <th className="border border-gray-300 px-4 py-2">Action</th>
           </tr>
         </thead>
         <tbody>
           {contacts.map((contact, index) => (
             <tr key={contact.id}>
-              <td>{index + 1}</td>
-              <td>
+              <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
+              <td className="border border-gray-300 px-4 py-2">
                 {contact.icon === "map-marker-alt" && <FaMapMarkerAlt />}
                 {contact.icon === "envelope" && <FaEnvelope />}
               </td>
-              <td>{contact.title}</td>
-              <td>{contact.desc}</td>
-              <td>{contact.order}</td>
-              <td>
-                <button onClick={() => handleEdit(contact.id)} className="btn btn-sm btn-warning me-2">
+              <td className="border border-gray-300 px-4 py-2">{contact.title}</td>
+              <td className="border border-gray-300 px-4 py-2">{contact.desc}</td>
+              <td className="border border-gray-300 px-4 py-2">{contact.order}</td>
+              <td className="border border-gray-300 px-4 py-2 flex space-x-2">
+                <button
+                  onClick={() => handleEdit(contact.id)}
+                  className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                >
                   <FaEdit />
                 </button>
-                <button onClick={() => handleDelete(contact.id)} className="btn btn-sm btn-danger">
+                <button
+                  onClick={() => handleDelete(contact.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                >
                   <FaTrash />
                 </button>
               </td>
@@ -101,6 +93,55 @@ const Contact = () => {
           ))}
         </tbody>
       </table>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white w-11/12 md:w-1/2 p-5 rounded shadow-lg">
+            <h2 className="text-xl font-bold mb-4">{editId ? "Edit Contact" : "Add Contact"}</h2>
+            <div className="mb-3">
+              <input
+                type="text"
+                name="icon"
+                value={newContact.icon}
+                onChange={handleChange}
+                placeholder="Icon (e.g., map-marker-alt)"
+                className="w-full border border-gray-300 rounded px-3 py-2 mb-2"
+              />
+              <input
+                type="text"
+                name="title"
+                value={newContact.title}
+                onChange={handleChange}
+                placeholder="Title"
+                className="w-full border border-gray-300 rounded px-3 py-2 mb-2"
+              />
+              <input
+                type="text"
+                name="desc"
+                value={newContact.desc}
+                onChange={handleChange}
+                placeholder="Description"
+                className="w-full border border-gray-300 rounded px-3 py-2"
+              />
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                onClick={handleAdd}
+              >
+                {editId ? "Update Contact" : "Add Contact"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
