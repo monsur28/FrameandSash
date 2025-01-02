@@ -44,59 +44,61 @@ const Contact = () => {
   };
 
   return (
-    <div className="p-5">
+    <div className="container mx-auto p-5">
       <h3 className="text-2xl font-bold mb-5">Contact</h3>
       <button
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition mb-5"
         onClick={handleShowModal}
       >
         + Add Contact
       </button>
 
-      <table className="table-auto w-full border-collapse border border-gray-300 mt-5 text-left">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">#</th>
-            <th className="border border-gray-300 px-4 py-2">Icon</th>
-            <th className="border border-gray-300 px-4 py-2">Title</th>
-            <th className="border border-gray-300 px-4 py-2">Content</th>
-            <th className="border border-gray-300 px-4 py-2">Order</th>
-            <th className="border border-gray-300 px-4 py-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contacts.map((contact, index) => (
-            <tr key={contact.id}>
-              <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
-              <td className="border border-gray-300 px-4 py-2">
-                {contact.icon === "map-marker-alt" && <FaMapMarkerAlt />}
-                {contact.icon === "envelope" && <FaEnvelope />}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">{contact.title}</td>
-              <td className="border border-gray-300 px-4 py-2">{contact.desc}</td>
-              <td className="border border-gray-300 px-4 py-2">{contact.order}</td>
-              <td className="border border-gray-300 px-4 py-2 flex space-x-2">
-                <button
-                  onClick={() => handleEdit(contact.id)}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() => handleDelete(contact.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                >
-                  <FaTrash />
-                </button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-300 text-left">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 px-4 py-2">#</th>
+              <th className="border border-gray-300 px-4 py-2">Icon</th>
+              <th className="border border-gray-300 px-4 py-2">Title</th>
+              <th className="border border-gray-300 px-4 py-2">Content</th>
+              <th className="border border-gray-300 px-4 py-2">Order</th>
+              <th className="border border-gray-300 px-4 py-2">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {contacts.map((contact, index) => (
+              <tr key={contact.id}>
+                <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {contact.icon === "map-marker-alt" && <FaMapMarkerAlt />}
+                  {contact.icon === "envelope" && <FaEnvelope />}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">{contact.title}</td>
+                <td className="border border-gray-300 px-4 py-2">{contact.desc}</td>
+                <td className="border border-gray-300 px-4 py-2">{contact.order}</td>
+                <td className="border border-gray-300 px-4 py-2 flex space-x-2">
+                  <button
+                    onClick={() => handleEdit(contact.id)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(contact.id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                  >
+                    <FaTrash />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white w-11/12 md:w-1/2 p-5 rounded shadow-lg">
             <h2 className="text-xl font-bold mb-4">{editId ? "Edit Contact" : "Add Contact"}</h2>
             <div className="mb-3">
