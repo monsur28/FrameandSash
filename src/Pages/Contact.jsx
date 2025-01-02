@@ -44,7 +44,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="container mx-auto p-5">
+    <div className="h-screen p-5">
       <h3 className="text-2xl font-bold mb-5">Contact</h3>
       <button
         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition mb-5"
