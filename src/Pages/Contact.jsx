@@ -1,173 +1,151 @@
 import { useState } from "react";
-import { Send, AlertCircle } from "lucide-react";
+import { FaEdit, FaTrash, FaMapMarkerAlt, FaEnvelope } from "react-icons/fa";
 
-export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+const Contact = () => {
+  const [contacts, setContacts] = useState([
+    { id: 1, icon: "map-marker-alt", title: "Address", desc: "Arji Naogaon, Mridhapara, Naogaon Sadar, 6500, Naogaon", order: 0 },
+    { id: 2, icon: "envelope", title: "E-mail", desc: "official@twintechsoft.com", order: 0 },
+  ]);
+
+  const [newContact, setNewContact] = useState({ icon: "", title: "", desc: "", order: 0 });
+  const [editId, setEditId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
+    setNewContact({ ...newContact, [e.target.name]: e.target.value });
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "Email is invalid";
-    if (!formData.subject.trim()) newErrors.subject = "Subject is required";
-    if (!formData.message.trim()) newErrors.message = "Message is required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleAdd = () => {
+    if (editId) {
+      setContacts(contacts.map(contact => contact.id === editId ? { ...newContact, id: editId } : contact));
+      setEditId(null);
+    } else {
+      setContacts([...contacts, { ...newContact, id: Date.now() }]);
+    }
+    setNewContact({ icon: "", title: "", desc: "", order: 0 });
+    setShowModal(false);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  const handleEdit = (id) => {
+    const contact = contacts.find(contact => contact.id === id);
+    setNewContact(contact);
+    setEditId(id);
+    setShowModal(true);
+  };
 
-    setIsSubmitting(true);
-    setSubmitStatus(null);
+  const handleDelete = (id) => {
+    setContacts(contacts.filter(contact => contact.id !== id));
+  };
 
-    // Simulating an API call
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
-      // If the API call is successful:
-      setSubmitStatus("success");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (error) {
-      setSubmitStatus("error", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleShowModal = () => {
+    setNewContact({ icon: "", title: "", desc: "", order: 0 });
+    setEditId(null);
+    setShowModal(true);
   };
 
   return (
-    <div className=" p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px]shadow-lg">
-      <h1 className="text-2xl font-bold mb-6">Contact Form</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className={`mt-1 block w-full rounded-md shadow-sm ${
-              errors.name ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-          )}
-        </div>
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className={`mt-1 block w-full rounded-md shadow-sm ${
-              errors.email ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-          )}
-        </div>
-        <div>
-          <label
-            htmlFor="subject"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Subject
-          </label>
-          <input
-            type="text"
-            id="subject"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            className={`mt-1 block w-full rounded-md shadow-sm ${
-              errors.subject ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.subject && (
-            <p className="mt-1 text-sm text-red-500">{errors.subject}</p>
-          )}
-        </div>
-        <div>
-          <label
-            htmlFor="message"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Message
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            rows={4}
-            value={formData.message}
-            onChange={handleChange}
-            className={`mt-1 block w-full rounded-md shadow-sm ${
-              errors.message ? "border-red-500" : "border-gray-300"
-            }`}
-          ></textarea>
-          {errors.message && (
-            <p className="mt-1 text-sm text-red-500">{errors.message}</p>
-          )}
-        </div>
-        <div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-              isSubmitting
-                ? "bg-gray-400"
-                : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            }`}
-          >
-            {isSubmitting ? "Sending..." : "Send Message"}
-            <Send className="ml-2 h-5 w-5" />
-          </button>
-        </div>
-      </form>
-      {submitStatus === "success" && (
-        <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-md">
-          Your message has been sent successfully!
-        </div>
-      )}
-      {submitStatus === "error" && (
-        <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md flex items-center">
-          <AlertCircle className="mr-2 h-5 w-5" />
-          There was an error sending your message. Please try again.
+    <div className="h-screen p-5">
+      <h3 className="text-2xl font-bold mb-5">Contact</h3>
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition mb-5"
+        onClick={handleShowModal}
+      >
+        + Add Contact
+      </button>
+
+      <div className="overflow-x-auto">
+        <table className="table-auto w-full border-collapse border border-gray-300 text-left">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 px-4 py-2">#</th>
+              <th className="border border-gray-300 px-4 py-2">Icon</th>
+              <th className="border border-gray-300 px-4 py-2">Title</th>
+              <th className="border border-gray-300 px-4 py-2">Content</th>
+              <th className="border border-gray-300 px-4 py-2">Order</th>
+              <th className="border border-gray-300 px-4 py-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contacts.map((contact, index) => (
+              <tr key={contact.id}>
+                <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {contact.icon === "map-marker-alt" && <FaMapMarkerAlt />}
+                  {contact.icon === "envelope" && <FaEnvelope />}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">{contact.title}</td>
+                <td className="border border-gray-300 px-4 py-2">{contact.desc}</td>
+                <td className="border border-gray-300 px-4 py-2">{contact.order}</td>
+                <td className="border border-gray-300 px-4 py-2 flex space-x-2">
+                  <button
+                    onClick={() => handleEdit(contact.id)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(contact.id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                  >
+                    <FaTrash />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white w-11/12 md:w-1/2 p-5 rounded shadow-lg">
+            <h2 className="text-xl font-bold mb-4">{editId ? "Edit Contact" : "Add Contact"}</h2>
+            <div className="mb-3">
+              <input
+                type="text"
+                name="icon"
+                value={newContact.icon}
+                onChange={handleChange}
+                placeholder="Icon (e.g., map-marker-alt)"
+                className="w-full border border-gray-300 rounded px-3 py-2 mb-2"
+              />
+              <input
+                type="text"
+                name="title"
+                value={newContact.title}
+                onChange={handleChange}
+                placeholder="Title"
+                className="w-full border border-gray-300 rounded px-3 py-2 mb-2"
+              />
+              <input
+                type="text"
+                name="desc"
+                value={newContact.desc}
+                onChange={handleChange}
+                placeholder="Description"
+                className="w-full border border-gray-300 rounded px-3 py-2"
+              />
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                onClick={handleAdd}
+              >
+                {editId ? "Update Contact" : "Add Contact"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default Contact;
