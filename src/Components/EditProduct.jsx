@@ -92,7 +92,7 @@ export default function EditProduct() {
               <img
                 src={handleOptions.find((h) => h.id === selectedHandle)?.image}
                 alt="Selected Handle"
-                className="absolute left-20 540:left-[141px] 412:left-[105px] 375:left-24 425:left-[120px] md:left-72 lg:left-24 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none"
+                className="absolute left-20 540:left-[141px] 412:left-[105px] 375:left-24 360:left-[85px] 425:left-[120px] md:left-72 lg:left-24 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none"
               />
             )}
           </div>

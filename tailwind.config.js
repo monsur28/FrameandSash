@@ -8,6 +8,7 @@ export default {
         375: "375px", // Custom breakpoint for 375px
         412: "412px", // Custom breakpoint for 412px
         540: "540px", // Custom breakpoint for 540px
+        360: "360px", // Custom breakpoint for 360px
       },
     },
   },
