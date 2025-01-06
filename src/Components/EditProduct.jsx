@@ -62,7 +62,7 @@ export default function EditProduct() {
           <div
             className={`relative bg-gray-100 p-4 rounded-lg ${
               isOpen ? "border-teal-500" : "border-gray-200"
-            } border-4 aspect-[3/4] w-full max-w-md mx-auto`}
+            } border-4 aspect-[3/4] w-full lg:w-72 h-72 lg:h-96`}
             style={{ transform: `scale(${zoomLevel})` }}
           >
             {/* Main Image */}
@@ -92,7 +92,7 @@ export default function EditProduct() {
               <img
                 src={handleOptions.find((h) => h.id === selectedHandle)?.image}
                 alt="Selected Handle"
-                className="absolute left-20 540:left-[141px] 412:left-[105px] 375:left-24 425:left-[110px] md:left-36 lg:left-36 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[70px] md:h-[70px] lg:w-[80px] lg:h-[80px] object-contain pointer-events-none"
+                className="absolute left-20 540:left-[141px] 412:left-[105px] 375:left-24 425:left-[120px] md:left-72 lg:left-24 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none"
               />
             )}
           </div>
@@ -105,7 +105,7 @@ export default function EditProduct() {
                 <button
                   key={handle.id}
                   onClick={() => setSelectedHandle(handle.id)}
-                  className={`w-16 h-16 rounded-lg border-2 flex-shrink-0 ${
+                  className={`w-12 h-12 rounded-lg border-2 flex-shrink-0 ${
                     selectedHandle === handle.id
                       ? "border-teal-500 bg-teal-50"
                       : "border-gray-200 bg-gray-100"

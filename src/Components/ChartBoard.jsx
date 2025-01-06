@@ -132,7 +132,7 @@ export default function ChartBoard() {
           </button>
         </div>
       </div>
-      <div className="h-[300px] sm:h-[400px] w-full min-h-[300px]">
+      <div className="h-[425px] sm:h-[400px] w-full min-h-[425px]">
         <Bar options={options} data={data} />
       </div>
     </div>
