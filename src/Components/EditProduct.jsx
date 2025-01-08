@@ -96,7 +96,7 @@ export default function EditProduct() {
                     handleOptions.find((h) => h.id === selectedHandle)?.image
                   }
                   alt="Selected Handle"
-                  className="absolute left-20 932:left-[370px] 896:left-[350px] 882:left-[340px] 844:left-[320px] 820:left-[300px] 812:left-[305px] 740:left-[280px] 720:left-[270px] 667:left-[245px] 414:left-28 540:left-[175px] 424:left-[115px] 412:left-[110px] 375:left-24 360:left-[85px] 425:left-[120px] md:left-72 lg:left-24 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none"
+                  className="absolute left-20 932:left-[370px] 896:left-[350px] 882:left-[340px] 844:left-[320px] 820:left-[300px] 812:left-[305px] 740:left-[280px] 720:left-[270px] 667:left-[245px] 414:left-28 540:left-[175px] 450:left-[130px] 424:left-[115px] 412:left-[110px] 375:left-24 360:left-[85px] 425:left-[120px] md:left-72 lg:left-24 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none"
                 />
               )}
             </div>
