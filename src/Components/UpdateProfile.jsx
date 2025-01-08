@@ -58,7 +58,7 @@ export default function UpdateProfile() {
 
   return (
     <div className="h-screen flex items-center justify-center p-6">
-      <div className=" rounded-[24px] mt-10  bg-white/50 backdrop-blur-[16.5px] p-6 shadow-lg">
+      <div className=" rounded-[24px] mt-10  bg-white50 backdrop-blur-16.5 p-6 shadow-lg">
         <h2 className="text-2xl font-bold mb-4">Update Profile</h2>
         <form onSubmit={handleUpdate} className="space-y-4">
           <div>

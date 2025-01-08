@@ -108,7 +108,7 @@ export default function ProductList() {
       </div>
 
       {/* Product Table */}
-      <div className="border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-sm overflow-x-auto">
+      <div className="border-2 border-white bg-white50 backdrop-blur-16.5 rounded-lg shadow-sm overflow-x-auto">
         <table className="w-full text-gray-500 text-sm sm:text-base">
           <thead className="bg-gray-100">
             <tr>

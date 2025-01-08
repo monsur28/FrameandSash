@@ -66,7 +66,7 @@ export default function CreateProductCategory() {
   };
 
   return (
-    <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
+    <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
       <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center mb-8">
           {/* Project Title */}
@@ -93,7 +93,7 @@ export default function CreateProductCategory() {
             <label className="block text-lg lg:text-xl font-semibold mb-2">
               Product Image<span className="text-red-500">*</span>
             </label>
-            <div className="flex  gap-4 items-center rounded-[24px] border-2 border-[#009DAA] bg-[#CDE8E9]/60">
+            <div className="flex  gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
               <button
                 type="button"
                 onClick={() => document.getElementById("fileInput")?.click()}

@@ -54,51 +54,56 @@ export default function EditProduct() {
   const zoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.1, 0.5));
 
   return (
-    <div className="p-6 border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl shadow-lg">
+    <div className="p-6 border-2 border-white bg-white50 backdrop-blur-16.5 rounded-3xl shadow-lg">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr,120px] xl:grid-cols-[1fr,300px] gap-6">
         {/* Left side - Product image and selections */}
         <div className="space-y-8">
           {/* Product Image with Overlays */}
-          <div
-            className={`relative bg-gray-100 p-4 rounded-lg ${
-              isOpen ? "border-teal-500" : "border-gray-200"
-            } border-4 aspect-[3/4] w-full lg:w-72 h-72 lg:h-96`}
-            style={{ transform: `scale(${zoomLevel})` }}
-          >
-            {/* Main Image */}
-            {!selectedFrame && (
-              <img
-                src={
-                  isOpen
-                    ? "https://i.ibb.co.com/0QgPgW8/open-exit-door-svgrepo-com-7.png"
-                    : "https://i.ibb.co.com/rZ5BRwy/closed-filled-rectangular-door-2.png"
-                }
-                alt={isOpen ? "Open Door" : "Closed Door"}
-                className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-              />
-            )}
+          <div className="space-y-8">
+            {/* Product Image with Overlays */}
+            <div
+              className={`relative bg-gray-100 p-4 sm:p-6 rounded-lg ${
+                isOpen ? "border-teal-500" : "border-gray-200"
+              } border-4 aspect-[3/4] w-full lg:w-72 h-72 lg:h-96`}
+              style={{ transform: `scale(${zoomLevel})` }}
+            >
+              {/* Main Image */}
+              {!selectedFrame && (
+                <img
+                  src={
+                    isOpen
+                      ? "https://i.ibb.co.com/0QgPgW8/open-exit-door-svgrepo-com-7.png"
+                      : "https://i.ibb.co.com/rZ5BRwy/closed-filled-rectangular-door-2.png"
+                  }
+                  alt={isOpen ? "Open Door" : "Closed Door"}
+                  className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                />
+              )}
 
-            {/* Overlay: Selected Frame */}
-            {selectedFrame && (
-              <img
-                src={frameOptions.find((f) => f.id === selectedFrame)?.image}
-                alt="Selected Frame"
-                className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-              />
-            )}
+              {/* Overlay: Selected Frame */}
+              {selectedFrame && (
+                <img
+                  src={frameOptions.find((f) => f.id === selectedFrame)?.image}
+                  alt="Selected Frame"
+                  className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                />
+              )}
 
-            {/* Overlay: Selected Handle */}
-            {selectedHandle && (
-              <img
-                src={handleOptions.find((h) => h.id === selectedHandle)?.image}
-                alt="Selected Handle"
-                className="absolute left-20 540:left-[141px] 412:left-[105px] 375:left-24 360:left-[85px] 425:left-[120px] md:left-72 lg:left-24 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none"
-              />
-            )}
+              {/* Overlay: Selected Handle */}
+              {selectedHandle && (
+                <img
+                  src={
+                    handleOptions.find((h) => h.id === selectedHandle)?.image
+                  }
+                  alt="Selected Handle"
+                  className="absolute left-20 932:left-[370px] 896:left-[350px] 882:left-[340px] 844:left-[320px] 820:left-[300px] 812:left-[305px] 740:left-[280px] 720:left-[270px] 667:left-[245px] 414:left-28 540:left-[175px] 424:left-[115px] 412:left-[110px] 375:left-24 360:left-[85px] 425:left-[120px] md:left-72 lg:left-24 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none"
+                />
+              )}
+            </div>
           </div>
 
           {/* Handle Selection */}
-          <div className="space-y-2 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6 shadow-sm">
+          <div className="space-y-2 rounded-2xl border-2 border-white bg-white50 backdrop-blur-16.5 p-6 shadow-sm">
             <div className="text-xl font-medium">Handle:</div>
             <div className="flex gap-2 overflow-x-auto pb-2">
               {handleOptions.map((handle) => (
@@ -122,7 +127,7 @@ export default function EditProduct() {
           </div>
 
           {/* Frame Selection */}
-          <div className="space-y-2 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6 shadow-sm">
+          <div className="space-y-2 rounded-2xl border-2 border-white bg-white50 backdrop-blur-16.5 p-6 shadow-sm">
             <div className="text-xl font-medium">Frames:</div>
             <div className="flex gap-2 overflow-x-auto pb-2">
               {frameOptions.map((frame) => (
@@ -186,7 +191,7 @@ export default function EditProduct() {
       {/* Product Details Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
         {/* Ingredient */}
-        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] ">
+        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white50 backdrop-blur-16.5 ">
           <h3 className="text-xl text-gray-500">Ingredient</h3>
           <div className="rounded-lg p-6 shadow-sm space-y-2">
             <div className="flex items-center gap-2">
@@ -213,7 +218,7 @@ export default function EditProduct() {
         </div>
 
         {/* Working Hour */}
-        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
+        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white50 backdrop-blur-16.5 p-4">
           <h3 className="text-xl text-gray-500">Working Hour</h3>
           <div>
             <div className="text-4xl font-medium text-center">05</div>
@@ -221,7 +226,7 @@ export default function EditProduct() {
         </div>
 
         {/* Wholesale Price */}
-        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
+        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white50 backdrop-blur-16.5 p-4">
           <h3 className="text-xl text-gray-500">Wholesale Price</h3>
           <div>
             <div className="text-4xl font-medium text-center">$80</div>
@@ -229,7 +234,7 @@ export default function EditProduct() {
         </div>
 
         {/* Market Price */}
-        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4">
+        <div className="flex flex-col justify-center items-center space-y-4 rounded-2xl border-2 border-white bg-white50 backdrop-blur-16.5 p-4">
           <h3 className="text-xl text-gray-500">Market Price</h3>
           <div>
             <div className="text-4xl font-medium text-center">$100</div>

@@ -63,7 +63,7 @@ export default function Blogs() {
 
   return (
     <div className="h-screen p-6">
-      <div className="flex justify-between items-center mb-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
+      <div className="flex justify-between items-center mb-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
         <h1 className="text-xl lg:text-3xl font-bold">Blog Posts</h1>
         <button
           onClick={() => navigate("/dashboard/blogs/add-blog")}
@@ -83,7 +83,7 @@ export default function Blogs() {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
+          <table className="min-w-full rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5">
             <thead className="bg-gray-100">
               <tr>
                 <th className="py-2 px-4 border-b text-left">Title</th>

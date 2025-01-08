@@ -100,10 +100,10 @@ const DashboardLayout = () => {
 
   return (
     <SweetAlertProvider>
-      <div className="flex flex-col lg:flex-row w-full bg-gradient-to-r from-[#FFFFFF] to-[#009DAA7D]">
+      <div className="flex flex-col lg:flex-row w-full bg-gradient-to-r from-custom-light to-custom-dark">
         {/* Sidebar */}
         <div
-          className={`fixed z-20 inset-y-0 left-0 w-56 bg-[#009DAA] transform ${
+          className={`fixed z-20 inset-y-0 left-0 w-56 bg-primary transform ${
             isOpen ? "translate-x-0" : "-translate-x-full"
           } lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto`}
         >

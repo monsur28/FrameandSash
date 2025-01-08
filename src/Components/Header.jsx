@@ -132,7 +132,7 @@ export default function Header() {
               )}
             </button>
             {showNotifications && (
-              <div className="absolute -right-28 lg:right-0 mt-2 w-72 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow-lg p-4 z-50">
+              <div className="absolute -right-28 lg:right-0 mt-2 w-72 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg p-4 z-50">
                 <h2 className="font-semibold text-gray-800 mb-2">
                   Notifications
                 </h2>
@@ -160,7 +160,7 @@ export default function Header() {
               <Mail className="w-6 h-6 text-gray-700" />
             </button>
             {showMessages && (
-              <div className="absolute -right-16 lg:right-0 mt-2 w-72 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow-lg p-4 z-50">
+              <div className="absolute -right-16 lg:right-0 mt-2 w-72 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg p-4 z-50">
                 <h2 className="font-semibold text-gray-800 mb-2">Messages</h2>
                 {messages.map((message) => (
                   <div
@@ -195,7 +195,7 @@ export default function Header() {
               />
             </button>
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-64 md:w-72 lg:w-96 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow-lg p-4 z-50">
+              <div className="absolute right-0 mt-2 w-64 md:w-72 lg:w-96 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg p-4 z-50">
                 <div className="flex items-center space-x-4">
                   <img
                     src="https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w"
@@ -222,7 +222,7 @@ export default function Header() {
                     <div>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-white bg-[#009daa] rounded-md"
+                        className="w-full text-left px-4 py-2 text-white bg-primary rounded-md"
                       >
                         Sign out
                       </button>
@@ -230,7 +230,7 @@ export default function Header() {
                     <div>
                       <button
                         onClick={() => setShowDropdown(false)}
-                        className="w-full text-left px-4 py-2 text-white bg-[#009daa] rounded-md"
+                        className="w-full text-left px-4 py-2 text-white bg-primary rounded-md"
                       >
                         Close
                       </button>

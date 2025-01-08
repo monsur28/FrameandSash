@@ -155,11 +155,11 @@ export default function PricingTable() {
 
   return (
     <div className="p-4 space-y-8">
-      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
         <h1 className="text-2xl lg:text-3xl font-bold">Packages Details</h1>
         <button
           onClick={() => handleOpenModal()}
-          className="bg-[#009DAA] mt-4 lg:mt-0 hover:bg-teal-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
+          className="bg-primary mt-4 lg:mt-0 hover:bg-teal-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
         >
           <span className="text-xl">+</span> Add Package
         </button>
@@ -171,7 +171,7 @@ export default function PricingTable() {
             onClick={() => setActiveTab("manufacturer")}
             className={`flex items-center gap-2 px-6 py-3 ${
               activeTab === "manufacturer"
-                ? "bg-[#009DAA] text-white"
+                ? "bg-primary text-white"
                 : "bg-white border-2 border-gray-200 "
             } hover:bg-teal-600 hover:text-white transition-colors `}
           >
@@ -181,7 +181,7 @@ export default function PricingTable() {
             onClick={() => setActiveTab("reseller")}
             className={`flex items-center gap-2 px-6 py-3 ${
               activeTab === "reseller"
-                ? "bg-[#009DAA] text-white"
+                ? "bg-primary text-white"
                 : "bg-white border-2 border-gray-200"
             } hover:bg-teal-600 hover:text-white transition-colors`}
           >
@@ -194,9 +194,9 @@ export default function PricingTable() {
         {packages[activeTab].map((pkg, index) => (
           <div
             key={pkg.name}
-            className=" bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-lg overflow-hidden"
+            className=" bg-white50 backdrop-blur-16.5 rounded-lg shadow-lg overflow-hidden"
           >
-            <div className="bg-[#009DAA] text-white py-4 flex justify-between items-center px-4">
+            <div className="bg-primary text-white py-4 flex justify-between items-center px-4">
               <h3 className="text-2xl text-center font-semibold">{pkg.name}</h3>
               <button
                 onClick={() => handleOpenModal(pkg, index)}
@@ -325,7 +325,7 @@ export default function PricingTable() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-[#009DAA] text-white py-2 px-4 rounded-md hover:bg-teal-600 transition-colors"
+                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-teal-600 transition-colors"
               >
                 {editingIndex !== null ? "Save Changes" : "Add Package"}
               </button>

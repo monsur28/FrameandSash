@@ -53,7 +53,7 @@ const CustomerReview = () => {
     reviews[currentReviewIndex];
 
   return (
-    <div className="w-full flex flex-col text-black justify-between rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-8 shadow-md  ">
+    <div className="w-full flex flex-col text-black justify-between rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-8 shadow-md  ">
       {/* Stars */}
       <div className="flex gap-2 mb-4">
         {Array.from({ length: 5 }).map((_, i) => (

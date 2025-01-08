@@ -8,7 +8,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="">
-        <div className="flex flex-col sm:flex-row items-center sm:justify-between border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4 rounded-md shadow-md space-y-4 sm:space-y-0">
+        <div className="flex flex-col sm:flex-row items-center sm:justify-between border-2 border-white bg-white50 backdrop-blur-16.5 p-4 rounded-md shadow-md space-y-4 sm:space-y-0">
           {/* Date Range Picker */}
           <div className="flex items-center space-x-2 border border-gray-300 rounded-md px-4 py-2 text-sm text-gray-600 w-full sm:w-auto">
             <span>Nov 1, 2024 - Nov 24, 2024</span>

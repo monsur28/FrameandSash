@@ -2,7 +2,7 @@ import { Info } from "lucide-react";
 
 const StatsCard = ({ title, value, description, icon, showInfo = false }) => {
   return (
-    <div className="rounded-[24px] shadow p-6 lg:p-8 flex flex-col items-center justify-center text-center border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
+    <div className="rounded-[24px] shadow p-6 lg:p-8 flex flex-col items-center justify-center text-center border-2 border-white bg-white50 backdrop-blur-16.5">
       {/* Icon or Stat Figure */}
       {icon && <div className="stat-figure text-primary mb-4">{icon}</div>}
 

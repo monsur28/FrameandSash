@@ -19,7 +19,7 @@ export default function AdminProfile() {
 
   return (
     <div className="h-full p-6">
-      <div className="rounded-[24px] bg-white/50 backdrop-blur-[16.5px] overflow-hidden">
+      <div className="rounded-[24px] bg-white50 backdrop-blur-16.5 overflow-hidden">
         {/* Header Section */}
         <div className="relative ">
           <div className="rounded-[24px] mt-10 h-40"></div>
@@ -46,15 +46,15 @@ export default function AdminProfile() {
         {/* Stats Section */}
         <div className="p-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-            <div className="border-2 flex flex-col justify-center items-center border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl py-16 px-24 shadow-sm">
+            <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.totalUsers}</h2>
               <p className="text-gray-500">Total Users</p>
             </div>
-            <div className="border-2 flex flex-col justify-center items-center border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl py-16 px-24 shadow-sm">
+            <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.totalPosts}</h2>
               <p className="text-gray-500">Total Posts</p>
             </div>
-            <div className="border-2 flex flex-col justify-center items-center border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl py-16 px-24 shadow-sm">
+            <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.messages}</h2>
               <p className="text-gray-500">Messages</p>
             </div>

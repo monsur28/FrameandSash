@@ -106,7 +106,7 @@ export default function ChartBoard() {
   };
 
   return (
-    <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4 sm:p-6 shadow-sm">
+    <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-4 sm:p-6 shadow-sm">
       <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
           Chart Board

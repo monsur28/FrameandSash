@@ -43,7 +43,7 @@ export default function Products() {
         </h1>
         <button
           onClick={() => navigate("/dashboard/products/addproduct")}
-          className="mt-4 sm:mt-0 bg-[#009DAA] hover:bg-teal-600 text-white px-3 sm:px-2 lg:px-2 py-1 lg:py-2 rounded-full flex items-center gap-2 transition-colors"
+          className="mt-4 sm:mt-0 bg-primary hover:bg-teal-600 text-white px-3 sm:px-2 lg:px-2 py-1 lg:py-2 rounded-full flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />
           Create Product
@@ -51,7 +51,7 @@ export default function Products() {
       </div>
 
       {/* Product Table */}
-      <div className="border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg shadow-sm overflow-x-auto">
+      <div className="border-2 border-white bg-white50 backdrop-blur-16.5 rounded-lg shadow-sm overflow-x-auto">
         <table className="w-full text-gray-500 text-sm sm:text-base">
           <thead className="bg-gray-100">
             <tr className="text-left">

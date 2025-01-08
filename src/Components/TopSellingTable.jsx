@@ -13,12 +13,12 @@ const TopSellingTable = () => {
   ];
 
   return (
-    <div className=" rounded-[24px] p-6 shadow-sm border-2 border-white bg-white/50 backdrop-blur-[16.5px]">
+    <div className=" rounded-[24px] p-6 shadow-sm border-2 border-white bg-white50 backdrop-blur-16.5">
       <div className="flex justify-center mb-4 space-x-4">
         <button
           onClick={() => setActiveTab("top")}
           className={`flex items-center px-6 py-2 rounded-md ${
-            activeTab === "top" ? "bg-[#009daa] text-white" : "text-gray-600"
+            activeTab === "top" ? "bg-primary text-white" : "text-gray-600"
           }`}
         >
           <ArrowUp className="w-4 h-4 mr-2" />
@@ -27,7 +27,7 @@ const TopSellingTable = () => {
         <button
           onClick={() => setActiveTab("low")}
           className={`flex items-center px-6 py-2 rounded-md ${
-            activeTab === "low" ? "bg-[#009daa] text-white" : "text-gray-600"
+            activeTab === "low" ? "bg-primary text-white" : "text-gray-600"
           }`}
         >
           Low Selling

@@ -43,7 +43,7 @@ export default function Discount() {
     <div className="p-6 h-screen ">
       <div className="p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6">
+        <div className="flex items-center justify-between mb-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
           <h1 className="text-2xl font-semibold text-gray-700">
             Manage Discounts
           </h1>

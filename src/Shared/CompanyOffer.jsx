@@ -55,7 +55,7 @@ export default function CompanyOffer() {
       {/* Header Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {/* Company Info Card */}
-        <div className="flex flex-row justify-center border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl p-6 shadow-sm">
+        <div className="flex flex-row justify-center border-2 border-white bg-white50 backdrop-blur-16.5 rounded-3xl p-6 shadow-sm">
           <div className="flex items-center gap-4">
             <img
               src={companyData.logo || ""}
@@ -99,19 +99,19 @@ export default function CompanyOffer() {
           </div>
         </div>
         {/* Revenue Card */}
-        <div className="border-2 flex flex-col justify-center items-center border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl py-16 px-24 shadow-sm">
+        <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl py-16 px-24 shadow-sm">
           <h2 className="text-xl mb-2">Revenue</h2>
           <p className="text-3xl font-bold">$10,000.00</p>
         </div>
         {/* Profit Card */}
-        <div className="border-2 flex flex-col justify-center items-center border-white bg-white/50 backdrop-blur-[16.5px] rounded-3xl p-6 shadow-sm">
+        <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl p-6 shadow-sm">
           <h2 className="text-xl mb-2">Profit</h2>
           <p className="text-3xl font-bold">$5,000.00</p>
         </div>
       </div>
 
       {/* Order Status Tabs */}
-      <div className="border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-2xl p-6 shadow-sm mb-8">
+      <div className="border-2 border-white bg-white50 backdrop-blur-16.5 rounded-2xl p-6 shadow-sm mb-8">
         <div className="flex flex-col lg:flex-row gap-4 mb-6 justify-center items-center ">
           {["active", "completed", "canceled"].map((tab) => (
             <button
@@ -166,7 +166,7 @@ export default function CompanyOffer() {
                 <th className="pb-4 font-medium">Market Price</th>
               </tr>
             </thead>
-            <tbody className="divide-y-[20px] bg-white/50 backdrop-blur-[16.5px] rounded-2xl">
+            <tbody className="divide-y-[20px] bg-white50 backdrop-blur-16.5 rounded-2xl">
               {windows.map((window) => (
                 <tr
                   key={window.id}

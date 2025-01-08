@@ -23,7 +23,7 @@ export default function AddBlog({ onAdd }) {
   };
 
   return (
-    <div className="h-screen p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow-lg">
+    <div className="h-screen p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg">
       <h1 className="text-2xl font-bold mb-6">Add Blog</h1>
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">

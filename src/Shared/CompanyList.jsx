@@ -5,12 +5,12 @@ import MonthlyOrdersChart from "../Components/MonthlyOrdersChart";
 const CompanyList = ({ title, data, fieldToCompare }) => {
   return (
     <div className="p-5">
-      <div className=" rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4 md:p-6 lg:p-8">
+      <div className=" rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-4 md:p-6 lg:p-8">
         <div className="w-full md:w-1/2 lg:w-full flex flex-col lg:flex-row items-start  justify-between mb-6">
           <div className="mb-4 lg:mb-0">
             <h2 className="text-2xl sm:text-3xl font-semibold">ChartBoard</h2>
             <div className="flex flex-wrap gap-2 mt-4">
-              <button className="bg-[#009DAA] text-white px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base">
+              <button className="bg-primary text-white px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base">
                 This Year
               </button>
               <button className="bg-gray-200 text-gray-700 px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base">
@@ -18,7 +18,7 @@ const CompanyList = ({ title, data, fieldToCompare }) => {
               </button>
             </div>
           </div>
-          <button className="bg-[#009DAA] text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center space-x-2 text-sm sm:text-base">
+          <button className="bg-primary text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg flex items-center space-x-2 text-sm sm:text-base">
             <span>+</span>
             <span>Add {title}</span>
           </button>
@@ -28,7 +28,7 @@ const CompanyList = ({ title, data, fieldToCompare }) => {
             <MonthlyOrdersChart />
           </div>
           <div className="w-full lg:w-auto ">
-            <button className="w-full lg:w-auto bg-[#009DAA] text-white px-3 py-1 sm:px-4 sm:py-2 mt-2 lg:mt-4 rounded-lg flex items-center justify-center space-x-2 text-sm sm:text-base">
+            <button className="w-full lg:w-auto bg-primary text-white px-3 py-1 sm:px-4 sm:py-2 mt-2 lg:mt-4 rounded-lg flex items-center justify-center space-x-2 text-sm sm:text-base">
               <Download className="h-4 w-4 sm:h-5 sm:w-5" />
               <span>Download</span>
             </button>
@@ -86,7 +86,7 @@ const CompanyList = ({ title, data, fieldToCompare }) => {
         </div>
       </div>
 
-      <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] mt-4 p-4 sm:p-6 overflow-x-auto">
+      <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 mt-4 p-4 sm:p-6 overflow-x-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
           <h2 className="text-lg lg:text-3xl sm:text-xl font-semibold mb-2 sm:mb-0">
             {title}

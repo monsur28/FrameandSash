@@ -36,7 +36,7 @@ export default function Offers() {
   };
 
   return (
-    <div className="p-6 border-2 border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg h-screen overflow-x-auto">
+    <div className="p-6 border-2 border-white bg-white50 backdrop-blur-16.5 rounded-lg h-screen overflow-x-auto">
       <table className="table-auto w-full rounded-lg shadow-md">
         <thead className=" text-gray-600">
           <tr>

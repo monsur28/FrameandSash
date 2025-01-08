@@ -55,7 +55,7 @@ const Reseller = () => {
 
   return (
     <div>
-      <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-4 md:p-6 lg:p-8">
+      <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-4 md:p-6 lg:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-between mb-6">
           <div className="mb-4 lg:mb-0">
             <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold">
@@ -65,7 +65,7 @@ const Reseller = () => {
               <button
                 className={`px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-base ${
                   activeYear === "thisYear"
-                    ? "bg-[#009DAA] text-white"
+                    ? "bg-primary text-white"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setActiveYear("thisYear")}
@@ -75,7 +75,7 @@ const Reseller = () => {
               <button
                 className={`px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-base ${
                   activeYear === "lastYear"
-                    ? "bg-[#009DAA] text-white"
+                    ? "bg-primary text-white"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setActiveYear("lastYear")}
@@ -87,7 +87,7 @@ const Reseller = () => {
           <div className="flex items-center justify-start lg:justify-end ">
             <button
               onClick={() => navigate("/dashboard/Reseller/addReseller")}
-              className="bg-[#009DAA] text-white px-3 py-1 md:px-4 md:py-2 rounded-lg flex items-center space-x-2 text-sm md:text-base"
+              className="bg-primary text-white px-3 py-1 md:px-4 md:py-2 rounded-lg flex items-center space-x-2 text-sm md:text-base"
             >
               <span>+</span>
               <span>Add Reseller</span>
@@ -99,7 +99,7 @@ const Reseller = () => {
             <MonthlyOrdersChart activeYear={activeYear} />
           </div>
           <div className="w-full lg:w-auto">
-            <button className="w-full lg:w-auto bg-[#009DAA] text-white px-3 py-1 md:px-4 md:py-2 mt-2 lg:mt-4 rounded-lg flex items-center justify-center space-x-2 text-sm md:text-base">
+            <button className="w-full lg:w-auto bg-primary text-white px-3 py-1 md:px-4 md:py-2 mt-2 lg:mt-4 rounded-lg flex items-center justify-center space-x-2 text-sm md:text-base">
               <Download className="h-4 w-4 md:h-5 md:w-5" />
               <span>Download</span>
             </button>
@@ -133,7 +133,7 @@ const Reseller = () => {
         </div>
       </div>
 
-      <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] mt-4 p-4 sm:p-6 overflow-x-auto">
+      <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 mt-4 p-4 sm:p-6 overflow-x-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
           <h2 className="text-lg sm:text-xl lg:text-3xl font-semibold mb-2 sm:mb-0">
             Reseller Company List

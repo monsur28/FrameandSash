@@ -43,7 +43,7 @@ export default function PhotoManagement() {
   return (
     <div className="p-6">
       {/* Add Photo Form */}
-      <div className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow-sm p-6 mb-8">
+      <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-sm p-6 mb-8">
         <h2 className="text-xl font-semibold mb-6">Add Photo</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -101,7 +101,7 @@ export default function PhotoManagement() {
           {photos.map((photo) => (
             <div
               key={photo.id}
-              className="rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow-sm p-4 space-y-4"
+              className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-sm p-4 space-y-4"
             >
               <div className="relative aspect-video">
                 <img

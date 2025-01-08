@@ -320,7 +320,7 @@ export default function AddManufacturerForm() {
               <label className="block text-sm font-semibold mb-2">
                 Product Image<span className="text-red-500">*</span>
               </label>
-              <div className="flex gap-4 items-center rounded-[24px] border-2 border-[#009DAA] bg-[#CDE8E9]/60">
+              <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
                 <button
                   type="button"
                   onClick={() => document.getElementById("fileInput")?.click()}
@@ -360,7 +360,7 @@ export default function AddManufacturerForm() {
               <label className="block text-sm font-semibold mb-2">
                 Upload NID<span className="text-red-500">*</span>
               </label>
-              <div className="flex gap-4 items-center rounded-[24px] border-2 border-[#009DAA] bg-[#CDE8E9]/60">
+              <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
                 <button
                   type="button"
                   onClick={() => document.getElementById("fileInput")?.click()}
@@ -495,7 +495,7 @@ export default function AddManufacturerForm() {
 
   return (
     <div>
-      <div className=" rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] p-6 md:p-8">
+      <div className=" rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6 md:p-8">
         <div className="flex  justify-between mb-8">
           {/* Progress Steps */}
           <div className="flex items-center justify-between mb-8 w-full">
@@ -573,7 +573,7 @@ export default function AddManufacturerForm() {
             <button
               type="button"
               onClick={handleNext}
-              className="flex items-center gap-2 px-4 py-2 rounded-md bg-[#009DAA] text-white"
+              className="flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white"
             >
               {currentStep === 3 ? "Submit" : "Next"}
               {currentStep < 3 && <ChevronRight className="w-4 h-4" />}

@@ -1,6 +1,6 @@
 export default function Submission({ onPrevious, onNext }) {
   return (
-    <div className="h-[500px] p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow">
+    <div className="h-[500px] p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow">
       <div className="space-y-6">
         <div>
           <h3 className="text-lg font-medium mb-4">Is Published?</h3>

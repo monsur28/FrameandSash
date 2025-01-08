@@ -17,7 +17,7 @@ export default function CreateAccessories({ onNext, onPrevious }) {
   });
 
   return (
-    <div className="p-6 rounded-[24px] border-2 border-white bg-white/50 backdrop-blur-[16.5px] shadow">
+    <div className="p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow">
       <div className="space-y-6">
         {/* Accessories List */}
         <div>

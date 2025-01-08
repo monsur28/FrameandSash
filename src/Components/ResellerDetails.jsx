@@ -42,7 +42,7 @@ const windows = [
 
 // Header Component
 const ResellerHeader = ({ logo, name }) => (
-  <div className="border-white bg-white/50 backdrop-blur-[16.5px] rounded-lg p-4 sm:p-6 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+  <div className="border-white bg-white50 backdrop-blur-16.5 rounded-lg p-4 sm:p-6 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
     {/* Left Section: Logo and Details */}
     <div className="flex items-center gap-4">
       <img
@@ -65,7 +65,7 @@ const ResellerHeader = ({ logo, name }) => (
 
 // Chart Section Component
 const ChartSection = ({ title, onDownload, chartComponent, cardComponent }) => (
-  <div className="border-white bg-white/50 backdrop-blur-[16.5px] p-4 sm:p-6 rounded-lg shadow-sm mb-6">
+  <div className="border-white bg-white50 backdrop-blur-16.5 p-4 sm:p-6 rounded-lg shadow-sm mb-6">
     {/* Header Section */}
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
       <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-0">{title}</h2>
@@ -86,7 +86,7 @@ const ChartSection = ({ title, onDownload, chartComponent, cardComponent }) => (
 
 // Windows Table Component
 const WindowsTable = () => (
-  <div className="border-white  bg-white/50 backdrop-blur-[16.5px] p-6 rounded-lg shadow-sm overflow-x-auto">
+  <div className="border-white  bg-white50 backdrop-blur-16.5 p-6 rounded-lg shadow-sm overflow-x-auto">
     <table className="table-auto w-full text-left">
       <thead>
         <tr className="text-gray-500 bg-gray-100">
