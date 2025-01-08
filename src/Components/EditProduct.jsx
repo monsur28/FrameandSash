@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Edit, DoorOpen, DoorClosed, ZoomIn, ZoomOut } from "lucide-react";
 
 export default function EditProduct() {
-  const [selectedHandle, setSelectedHandle] = useState(null);
+  const [selectedHandle, setSelectedHandle] = useState(1);
   const [selectedFrame, setSelectedFrame] = useState(null);
   const [isOpen, setIsOpen] = useState(false); // Tracks open/close state
   const [zoomLevel, setZoomLevel] = useState(1); // Tracks zoom level
@@ -11,16 +11,21 @@ export default function EditProduct() {
     {
       id: 1,
       name: "Handle A",
-      image: "https://i.ibb.co/xqBcyrP/door-handle-svgrepo-com-7.png",
+      image: "https://i.ibb.co.com/0c4mrzG/door-handle-svgrepo-com-3.png",
     },
     {
       id: 2,
       name: "Handle B",
-      image: "https://i.ibb.co/k0rvGdC/door-handle-svgrepo-com-6.png",
+      image: "https://i.ibb.co/xqBcyrP/door-handle-svgrepo-com-7.png",
     },
     {
       id: 3,
       name: "Handle C",
+      image: "https://i.ibb.co/k0rvGdC/door-handle-svgrepo-com-6.png",
+    },
+    {
+      id: 4,
+      name: "Handle D",
       image: "https://i.ibb.co/0s7b5N3/door-handle-svgrepo-com-5.png",
     },
   ];
@@ -96,7 +101,11 @@ export default function EditProduct() {
                     handleOptions.find((h) => h.id === selectedHandle)?.image
                   }
                   alt="Selected Handle"
-                  className="absolute left-20 932:left-[370px] 896:left-[350px] 882:left-[340px] 844:left-[320px] 820:left-[300px] 812:left-[305px] 740:left-[280px] 720:left-[270px] 667:left-[245px] 414:left-28 540:left-[175px] 450:left-[130px] 424:left-[115px] 412:left-[110px] 375:left-24 360:left-[85px] 425:left-[120px] md:left-72 lg:left-24 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none"
+                  className={`absolute ${
+                    selectedFrame || !isOpen
+                      ? "left-20 932:left-[370px] 896:left-[350px] 882:left-[340px] 844:left-[320px] 820:left-[300px] 812:left-[305px] 740:left-[280px] 720:left-[270px] 667:left-[245px] 414:left-28 540:left-[175px] 450:left-[130px] 424:left-[115px] 412:left-[110px] 375:left-24 360:left-[85px] 425:left-[120px] md:left-72 lg:left-24"
+                      : "left-[50%]"
+                  } top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[60px] md:h-[60px] lg:w-[60px] lg:h-[60px] object-contain pointer-events-none`}
                 />
               )}
             </div>
@@ -163,7 +172,7 @@ export default function EditProduct() {
           <button
             className="w-full max-w-[420px] bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
             onClick={toggleOpen}
-            disabled={selectedHandle || selectedFrame}
+            disabled={selectedFrame}
           >
             {isOpen ? (
               <DoorClosed className="w-5 h-5" />

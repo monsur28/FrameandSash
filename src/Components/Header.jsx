@@ -84,8 +84,9 @@ export default function Header() {
   ];
 
   return (
-    <header className="px-4 sm:px-6 py-4  z-10 top-0">
+    <header className="px-4 sm:px-6 py-4 z-10 top-0">
       <div className="flex items-center justify-between">
+        {/* Sidebar toggle button on mobile */}
         <button
           onClick={toggleSidebar}
           className="block lg:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0A9B9B]"
@@ -94,6 +95,7 @@ export default function Header() {
           <Menu className="w-6 h-6 text-gray-700" />
         </button>
 
+        {/* Title only visible on large screens */}
         <h1
           id="header-title"
           className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#0A9B9B] hidden lg:block truncate"
@@ -101,7 +103,8 @@ export default function Header() {
           {title}
         </h1>
 
-        <div className="flex items-center flex-grow max-w-2xl mx-4">
+        {/* Search box on larger screens */}
+        <div className="flex items-center flex-grow max-w-2xl mx-4 ">
           <div className="relative w-full">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -116,14 +119,16 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        {/* Icons Section */}
+        <div className="flex items-center space-x-1 lg:space-x-4">
+          {/* Notifications Icon */}
           <div className="relative" ref={notificationsRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}
               className="relative p-2 rounded-full hover:bg-gray-100"
               aria-label="Notifications"
             >
-              <Bell className="w-6 h-6 text-gray-700" />
+              <Bell className="w-5 lg:w-6 h-5 lg:h-6 text-gray-700" />
               {notifications.length > 0 && (
                 <span
                   className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"
@@ -151,13 +156,14 @@ export default function Header() {
             )}
           </div>
 
+          {/* Messages Icon */}
           <div className="relative" ref={messagesRef}>
             <button
               onClick={() => setShowMessages(!showMessages)}
               className="p-2 rounded-full hover:bg-gray-100"
               aria-label="Messages"
             >
-              <Mail className="w-6 h-6 text-gray-700" />
+              <Mail className="w-5 lg:w-6 h-5 lg:h-6 text-gray-700" />
             </button>
             {showMessages && (
               <div className="absolute -right-16 lg:right-0 mt-2 w-72 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg p-4 z-50">
@@ -182,10 +188,27 @@ export default function Header() {
             )}
           </div>
 
+          {/* Language Selector */}
+          <div className="relative">
+            <select
+              className="appearance-none border-2 border-[#0A9B9B] bg-white50 backdrop-blur-16.5 rounded-full p-2 text-center hover:opacity-90 text-xs lg:text-sm"
+              aria-label="Select Language"
+              defaultValue="en"
+            >
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="zh">中文</option>
+              <option value="bn">বাংলা</option>
+            </select>
+          </div>
+
+          {/* Profile Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center justify-center w-8 lg:w-12 h-8 lg:h-12 rounded-full overflow-hidden border-2 border-[#0A9B9B] hover:opacity-90"
+              className="flex items-center justify-center w-6 lg:w-12 h- lg:h-12 rounded-full overflow-hidden border-2 border-[#0A9B9B] hover:opacity-90"
               aria-label="Profile"
             >
               <img
