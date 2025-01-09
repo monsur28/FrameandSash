@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function Products() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [products] = useState([
     {
@@ -39,14 +41,14 @@ export default function Products() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8">
         <h1 className="text-xl lg:text-3xl  font-bold text-gray-800">
-          Product List
+          {t("productList")}
         </h1>
         <button
           onClick={() => navigate("/dashboard/products/addproduct")}
           className="mt-4 sm:mt-0 bg-primary hover:bg-teal-600 text-white px-3 sm:px-2 lg:px-2 py-1 lg:py-2 rounded-full flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />
-          Create Product
+          {t("createProduct")}
         </button>
       </div>
 

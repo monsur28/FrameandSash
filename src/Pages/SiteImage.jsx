@@ -1,8 +1,8 @@
-"use client";
-
 import { useState } from "react";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function ImageUploadForm() {
+  const { t } = useLanguage();
   const [previews, setPreviews] = useState([
     {
       src: "https://i.ibb.co.com/ZJ9hDdn/Brand-Logo.webp",
@@ -50,7 +50,7 @@ export default function ImageUploadForm() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Site Images</h1>
+      <h1 className="text-2xl font-bold mb-6">{t("SiteImages")}</h1>
 
       <div className="space-y-6">
         {[

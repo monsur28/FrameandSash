@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { ArrowUp, ArrowDown } from "lucide-react";
+import { useLanguage } from "../Router/LanguageContext";
 
 const TopSellingTable = () => {
   const [activeTab, setActiveTab] = useState("top");
+  const { t } = useLanguage();
 
   const salesData = [
     { product: "Window 01", units: "05" },
@@ -22,7 +24,7 @@ const TopSellingTable = () => {
           }`}
         >
           <ArrowUp className="w-4 h-4 mr-2" />
-          Top Selling
+          {t("topSelling")}
         </button>
         <button
           onClick={() => setActiveTab("low")}
@@ -30,15 +32,15 @@ const TopSellingTable = () => {
             activeTab === "low" ? "bg-primary text-white" : "text-gray-600"
           }`}
         >
-          Low Selling
+          {t("lowSelling")}
           <ArrowDown className="w-4 h-4 ml-2" />
         </button>
       </div>
 
       <div>
         <div className="grid grid-cols-2 py-2 text-teal-500 font-semibold border-b border-teal-200">
-          <div>Products</div>
-          <div className="text-right">Unit Sold</div>
+          <div>{t("products")}</div>
+          <div className="text-right">{t("unitSold")}</div>
         </div>
 
         {salesData.map((item, index) => (

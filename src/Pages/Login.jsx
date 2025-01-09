@@ -5,6 +5,7 @@ import loginBanner from "../assets/Login copy.jpg";
 import { toast, ToastContainer } from "react-toastify"; // Import toast
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
 import useAuth from "../Router/UseAuth";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,6 +16,7 @@ export default function Login() {
 
   const { loginUser } = useAuth(); // Get loginUser from context
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,7 +27,7 @@ export default function Login() {
     loginUser(email, password)
       .then(() => {
         // Show success toast
-        toast.success("Login Successfully", {
+        toast.success(`${t("LoginSuccessfully")}`, {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -73,8 +75,10 @@ export default function Login() {
         </div>
 
         {/* Text */}
-        <h1 className="text-white text-4xl font-bold mb-2">ADMIN PANEL</h1>
-        <p className="text-white text-xl mb-8">Login to control</p>
+        <h1 className="text-white text-4xl font-bold mb-2">
+          {t("ADMINPANEL")}
+        </h1>
+        <p className="text-white text-xl mb-8">{t("Logintocontrol")}</p>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4">
@@ -82,7 +86,7 @@ export default function Login() {
             <input
               type="email"
               name="email"
-              placeholder="Email Address"
+              placeholder={t("EmailAddress")}
               className="w-full px-4 py-3 bg-gray-100/90 rounded-full pr-10 focus:outline-none focus:ring-2 focus:ring-[#00B2B2]"
               value={formData.email}
               onChange={(e) =>
@@ -97,7 +101,7 @@ export default function Login() {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Password"
+              placeholder={t("password")}
               className="w-full px-4 py-3 bg-gray-100/90 rounded-full pr-10 focus:outline-none focus:ring-2 focus:ring-[#00B2B2]"
               value={formData.password}
               onChange={(e) =>
@@ -122,7 +126,7 @@ export default function Login() {
             type="submit"
             className="w-full bg-[#40E7E7] text-white font-semibold py-3 px-6 rounded-full hover:bg-[#33b6b6] transition-colors duration-200"
           >
-            Login
+            {t("Login")}
           </button>
         </form>
       </div>

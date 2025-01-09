@@ -2,10 +2,12 @@ import { Download } from "lucide-react";
 import MonthlyOrdersChart from "../Components/MonthlyOrdersChart";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useLanguage } from "../Router/LanguageContext";
 
 const Manufacturer = () => {
   const navigate = useNavigate();
   const [activeYear, setActiveYear] = useState("thisYear");
+  const { t } = useLanguage();
   const manufacturers = [
     {
       logo: "https://i.ibb.co/ryTWxGF/plygem.webp",
@@ -61,7 +63,7 @@ const Manufacturer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-between mb-6">
           <div className="mb-4 lg:mb-0">
             <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold">
-              ChartBoard
+              {t("chartBoard")}
             </h2>
             <div className="flex flex-wrap gap-2 mt-4">
               <button
@@ -72,7 +74,7 @@ const Manufacturer = () => {
                 }`}
                 onClick={() => setActiveYear("thisYear")}
               >
-                This Year
+                {t("thisYear")}
               </button>
               <button
                 className={`px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-base ${
@@ -82,7 +84,7 @@ const Manufacturer = () => {
                 }`}
                 onClick={() => setActiveYear("lastYear")}
               >
-                Last Year
+                {t("lastYear")}
               </button>
             </div>
           </div>
@@ -94,7 +96,7 @@ const Manufacturer = () => {
               className="bg-primary text-white px-3 py-1 md:px-4 md:py-2 rounded-lg flex items-center space-x-2 text-sm md:text-base"
             >
               <span>+</span>
-              <span>Add Manufacturer</span>
+              <span> {t("addManufacturer")} </span>
             </button>
           </div>
         </div>
@@ -105,7 +107,7 @@ const Manufacturer = () => {
           <div className="w-full lg:w-auto">
             <button className="w-full lg:w-auto bg-primary text-white px-3 py-1 md:px-4 md:py-2 mt-2 lg:mt-4 rounded-lg flex items-center justify-center space-x-2 text-sm md:text-base">
               <Download className="h-4 w-4 md:h-5 md:w-5" />
-              <span>Download</span>
+              <span>{t("download")}</span>
             </button>
             <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 lg:gap-2 mt-8 space-y-4">
               <div className="flex items-center gap-2">
@@ -140,14 +142,14 @@ const Manufacturer = () => {
       <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 mt-4 p-4 sm:p-6 overflow-x-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
           <h2 className="text-lg sm:text-xl lg:text-3xl font-semibold mb-2 sm:mb-0">
-            Manufacturer Company List
+            {t("manufacturerCompanyList")}
           </h2>
           <div className="flex items-center gap-2">
             <span className="text-xs sm:text-sm text-gray-500">
-              Compared by
+              {t("comparedBy")}:
             </span>
             <select className="text-xs sm:text-sm p-1 rounded-lg border border-gray-300">
-              <option>Total Sales</option>
+              <option>{t("totalSales")}</option>
             </select>
           </div>
         </div>
@@ -158,22 +160,22 @@ const Manufacturer = () => {
               <thead>
                 <tr>
                   <th className="px-2 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Company Name
+                    {t("companyName")}
                   </th>
                   <th className="px-2 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Re-Seller
+                    {t("reseller")}
                   </th>
                   <th className="px-2 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Total Sales
+                    {t("totalSales")}
                   </th>
                   <th className="px-2 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Average Rating
+                    {t("averageRating")}
                   </th>
                   <th className="px-2 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Packages
+                    {t("package")}
                   </th>
                   <th className="px-2 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Expiry Date
+                    {t("ExpiryDate")}
                   </th>
                 </tr>
               </thead>

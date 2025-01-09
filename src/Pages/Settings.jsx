@@ -1,8 +1,10 @@
 import { Edit, Users, Activity, MessageCircle } from "lucide-react";
 import useAuth from "../Router/UseAuth";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function AdminProfile() {
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   // Dummy Admin Data
   const admin = {
@@ -37,7 +39,7 @@ export default function AdminProfile() {
             <div className="flex justify-around p-6 border-t">
               <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600">
                 <Edit size={18} />
-                <span>Edit Profile</span>
+                <span>{t("EditProfile")}</span>
               </button>
             </div>
           </div>
@@ -48,22 +50,22 @@ export default function AdminProfile() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.totalUsers}</h2>
-              <p className="text-gray-500">Total Users</p>
+              <p className="text-gray-500">{t("TotalUsers")}</p>
             </div>
             <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.totalPosts}</h2>
-              <p className="text-gray-500">Total Posts</p>
+              <p className="text-gray-500">{t("TotalPosts")}</p>
             </div>
             <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl py-16 px-24 shadow-sm">
               <h2 className="text-lg font-semibold">{admin.messages}</h2>
-              <p className="text-gray-500">Messages</p>
+              <p className="text-gray-500">{t("Messages")}</p>
             </div>
           </div>
         </div>
 
         {/* Recent Activity */}
         <div className="p-6">
-          <h3 className="text-lg font-bold mb-4">Recent Activity</h3>
+          <h3 className="text-lg font-bold mb-4">{t("RecentActivity")}</h3>
           <ul className="space-y-4">
             <li className="flex items-center space-x-4">
               <Activity size={20} className="text-teal-500" />

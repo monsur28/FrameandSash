@@ -1,7 +1,9 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function SiteInfoForm() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     shortDescription:
       "Frame And Sash is one of the best Furniture companies in Bangladesh.",
@@ -27,7 +29,7 @@ export default function SiteInfoForm() {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-6">Site Info</h2>
+      <h2 className="text-2xl font-semibold mb-6">{t("siteinfo")}</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
@@ -36,7 +38,7 @@ export default function SiteInfoForm() {
               htmlFor="shortDescription"
               className="block text-sm font-medium mb-1"
             >
-              Short Description
+              {t("ShortDescription")}
             </label>
             <input
               type="text"
@@ -58,7 +60,7 @@ export default function SiteInfoForm() {
               htmlFor="copyright"
               className="block text-sm font-medium mb-1"
             >
-              Copyright
+              {t("Copyright")}
             </label>
             <input
               type="text"
@@ -74,7 +76,7 @@ export default function SiteInfoForm() {
 
           <div>
             <label htmlFor="address" className="block text-sm font-medium mb-1">
-              Address
+              {t("address")}
             </label>
             <input
               type="text"
@@ -93,7 +95,7 @@ export default function SiteInfoForm() {
               htmlFor="addressMapLink"
               className="block text-sm font-medium mb-1"
             >
-              Address Map Link
+              {t("AddressMapLink")}
             </label>
             <input
               type="url"
@@ -111,7 +113,7 @@ export default function SiteInfoForm() {
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email
+              {t("email")}
             </label>
             <input
               type="email"
@@ -127,7 +129,7 @@ export default function SiteInfoForm() {
 
           <div>
             <label htmlFor="phone" className="block text-sm font-medium mb-1">
-              Phone
+              {t("phone")}
             </label>
             <input
               type="tel"

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Edit2, Trash2, Users, Settings } from "lucide-react";
 import UserModal from "../Shared/UserModal";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function RoleManagement() {
   const [activeTab, setActiveTab] = useState("role");
@@ -11,12 +12,13 @@ export default function RoleManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState("4");
   const [currentPage, setCurrentPage] = useState(1);
+  const { t } = useLanguage();
 
   const [roles, setRoles] = useState([
-    { id: 1, name: "Super Admin", canDelete: false },
-    { id: 2, name: "Manufacturer", canDelete: true },
-    { id: 3, name: "Re-Seller", canDelete: true },
-    { id: 4, name: "Staff Access", canDelete: true },
+    { id: 1, name: `${t("superAdmin")}`, canDelete: false },
+    { id: 2, name: `${t("manufacturer")}`, canDelete: true },
+    { id: 3, name: `${t("reseller")}`, canDelete: true },
+    { id: 4, name: `${t("staffAccess")}`, canDelete: true },
   ]);
 
   const [users, setUsers] = useState([
@@ -112,7 +114,7 @@ export default function RoleManagement() {
 
       {/* The rest of the RoleManagement component */}
       <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
-        <h1 className="text-3xl font-bold mb-4 md:mb-0">Role List</h1>
+        <h1 className="text-3xl font-bold mb-4 md:mb-0">{t("RoleList")}</h1>
         <button
           onClick={() =>
             activeTab === "role"
@@ -122,7 +124,7 @@ export default function RoleManagement() {
           className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
         >
           <span className="text-xl">+</span>
-          {activeTab === "role" ? "Add Role" : "Add User"}
+          {activeTab === "role" ? `${t("addRole")}` : `${t("addUser")}`}
         </button>
       </div>
 
@@ -137,7 +139,7 @@ export default function RoleManagement() {
             } hover:bg-teal-600 hover:text-white transition-colors`}
           >
             <Settings className="w-5 h-5" />
-            Role
+            {t("role")}
           </button>
           <button
             onClick={() => setActiveTab("user")}
@@ -148,7 +150,7 @@ export default function RoleManagement() {
             } hover:bg-teal-600 hover:text-white transition-colors`}
           >
             <Users className="w-5 h-5" />
-            User
+            {t("user")}
           </button>
         </div>
       </div>
@@ -186,14 +188,14 @@ export default function RoleManagement() {
             <thead>
               <tr className="border-b">
                 <th className="text-left py-3 px-4">SL.</th>
-                <th className="text-left py-3 px-4">Name</th>
+                <th className="text-left py-3 px-4">{t("Name")}</th>
                 {activeTab === "user" && (
                   <>
-                    <th className="text-left py-3 px-4">Email</th>
-                    <th className="text-left py-3 px-4">Role</th>
+                    <th className="text-left py-3 px-4">{t("email")}</th>
+                    <th className="text-left py-3 px-4">{t("role")}</th>
                   </>
                 )}
-                <th className="text-left py-3 px-4">Action</th>
+                <th className="text-left py-3 px-4">{t("actions")}</th>
               </tr>
             </thead>
             <tbody>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function PhotoManagement() {
   const [order, setOrder] = useState("0");
@@ -13,6 +14,7 @@ export default function PhotoManagement() {
     },
     { id: 3, url: "https://i.ibb.co.com/G2PV8yB/Logo-white.webp", order: 3 },
   ]);
+  const { t } = useLanguage();
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -44,14 +46,14 @@ export default function PhotoManagement() {
     <div className="p-6">
       {/* Add Photo Form */}
       <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-sm p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-6">Add Photo</h2>
+        <h2 className="text-xl font-semibold mb-6">{t("addPhoto")}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
               htmlFor="order"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Order
+              {t("orders")}
             </label>
             <input
               type="number"
@@ -69,7 +71,7 @@ export default function PhotoManagement() {
             </label>
             <div className="flex items-center">
               <label className="block">
-                <span className="sr-only">Choose file</span>
+                <span className="sr-only">{t("chooseFile")}</span>
                 <input
                   type="file"
                   className="block w-full text-sm text-gray-500
@@ -89,7 +91,7 @@ export default function PhotoManagement() {
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
           >
-            Submit
+            {t("submit")}
           </button>
         </form>
       </div>
@@ -124,7 +126,7 @@ export default function PhotoManagement() {
                     onClick={() => copyImageLink(photo.url)}
                     className="w-full bg-teal-500 text-white px-4 py-2 rounded-md text-sm hover:bg-teal-600 transition-colors"
                   >
-                    Copy Image Link
+                    {t("copyImageLink")}
                   </button>
                 </div>
                 <div className="flex items-center justify-end space-x-2">

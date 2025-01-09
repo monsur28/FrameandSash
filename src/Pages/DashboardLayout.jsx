@@ -18,49 +18,51 @@ import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
 import { UseSidebar } from "../Shared/SidebarContext";
 import { SweetAlertProvider } from "../Router/SweetAlertContext";
+import { useLanguage } from "../Router/LanguageContext";
 
 const DashboardLayout = () => {
   const { isOpen, toggleSidebar } = UseSidebar();
+  const { t } = useLanguage();
 
   const menuItems = [
     {
       icon: <Home className="w-5 h-5" />,
-      label: "Dashboard",
+      label: `${t("dashboard")}`,
       link: "/dashboard",
     },
     {
       icon: <Package className="w-5 h-5" />,
-      label: "Products",
+      label: `${t("products")}`,
       link: "/dashboard/products",
     },
     {
       icon: <Users className="w-5 h-5" />,
-      label: "Manufacturer",
+      label: `${t("manufacturer")}`,
       link: "/dashboard/manufacturer",
     },
     {
       icon: <UserPlus className="w-5 h-5" />,
-      label: "Re-Seller",
+      label: `${t("reseller")}`,
       link: "/dashboard/reseller",
     },
     {
       icon: <Tag className="w-5 h-5" />,
-      label: "Offer",
+      label: `${t("offers")}`,
       link: "/dashboard/offers",
     },
     {
       icon: <Layers className="w-5 h-5" />,
-      label: "Packages",
+      label: `${t("packages")}`,
       link: "/dashboard/packages",
     },
     {
       icon: <Users className="w-5 h-5" />,
-      label: "Role Management",
+      label: `${t("rolemanagement")}`,
       link: "/dashboard/rolemanagement",
     },
     {
       icon: <Upload className="w-5 h-5" />,
-      label: "Image Upload",
+      label: `${t("imageupload")}`,
       link: "/dashboard/imageupload",
     },
     // {
@@ -70,26 +72,26 @@ const DashboardLayout = () => {
     // },
     {
       icon: <FileText className="w-5 h-5" />,
-      label: "Blogs",
+      label: `${t("blog")}`,
       link: "/dashboard/blog",
     },
     {
       icon: <MessageSquare className="w-5 h-5" />,
-      label: "Contact",
+      label: `${t("contact")}`,
       link: "/dashboard/contact",
     },
     {
       icon: <Percent className="w-5 h-5" />,
-      label: "Discount",
+      label: `${t("discount")}`,
       link: "/dashboard/discount",
     },
     {
       icon: <Settings className="w-5 h-5" />,
-      label: "Settings",
+      label: `${t("settings")}`,
       link: "/dashboard/settings",
       subItems: [
-        { label: "Site Info", link: "/dashboard/settings/siteinfo" },
-        { label: "Site Image", link: "/dashboard/settings/siteimage" },
+        { label: `${t("siteinfo")}`, link: "/dashboard/settings/siteinfo" },
+        { label: `${t("siteimage")}`, link: "/dashboard/settings/siteimage" },
         // {
         //   label: "Push Notification",
         //   link: "/dashboard/settings/pushnotification",

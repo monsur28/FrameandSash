@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { UseSidebar } from "../Shared/SidebarContext";
 import useAuth from "../Router/UseAuth";
+import useLanguage from "../Shared/UseLanguage";
 
 export default function Header() {
   const location = useLocation();
@@ -12,22 +13,33 @@ export default function Header() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const navigate = useNavigate();
+  const { language, setLanguage, t } = useLanguage();
+
+  const handleLanguageChange = (e) => {
+    setLanguage(e.target.value);
+  };
 
   const dropdownRef = useRef(null); // Profile dropdown ref
   const notificationsRef = useRef(null); // Notifications dropdown ref
   const messagesRef = useRef(null); // Messages dropdown ref
 
   const titles = {
-    "/dashboard/manufacturer": "Manufacturer",
-    "/dashboard/products": "Products",
-    "/dashboard/reseller": "Reseller",
-    "/dashboard/rolemanagement": "Role Management",
-    "/dashboard/packages": "Packages",
-    "/dashboard/imageupload": "Image Upload",
+    "/dashboard/manufacturer": "manufacturer",
+    "/dashboard/products": "products",
+    "/dashboard/reseller": "reseller",
+    "/dashboard/rolemanagement": "rolemanagement",
+    "/dashboard/packages": "packages",
+    "/dashboard/imageupload": "imageupload",
     "/dashboard/blog": "Blogs",
-    "/dashboard/contact": "Contact",
+    "/dashboard/contact": "contact",
+    "/dashboard/settings": "Settings",
+    "/dashboard": "dashboard",
   };
-  const title = titles[location.pathname] || "Dashboard";
+  const title = titles[location.pathname] || "dashboard";
+
+  console.log("Location:", location.pathname); // Current path
+  console.log("Title Key:", title); // Mapped title key
+  console.log("Translated Title:", t(title)); // Translated title
 
   const handleLogout = () => {
     logOut();
@@ -100,7 +112,7 @@ export default function Header() {
           id="header-title"
           className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#0A9B9B] hidden lg:block truncate"
         >
-          {title}
+          {t(title)}
         </h1>
 
         {/* Search box on larger screens */}
@@ -194,13 +206,12 @@ export default function Header() {
               className="appearance-none border-2 border-[#0A9B9B] bg-white50 backdrop-blur-16.5 rounded-full p-2 text-center hover:opacity-90 text-xs lg:text-sm"
               aria-label="Select Language"
               defaultValue="en"
+              value={language}
+              onChange={handleLanguageChange}
             >
               <option value="en">English</option>
               <option value="es">Español</option>
               <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
-              <option value="zh">中文</option>
-              <option value="bn">বাংলা</option>
             </select>
           </div>
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Edit, Trash2, PlusCircle } from "lucide-react";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function Discount() {
   const [discounts, setDiscounts] = useState([
@@ -22,6 +23,7 @@ export default function Discount() {
     description: "",
     expiry: "",
   });
+  const { t } = useLanguage();
 
   const handleAddDiscount = () => {
     if (newDiscount.code && newDiscount.description && newDiscount.expiry) {
@@ -45,14 +47,14 @@ export default function Discount() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
           <h1 className="text-2xl font-semibold text-gray-700">
-            Manage Discounts
+            {t("ManageDiscounts")}
           </h1>
           <button
             className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600"
             onClick={handleAddDiscount}
           >
             <PlusCircle size={20} />
-            <span>Add Discount</span>
+            <span>{t("AddDiscount")}</span>
           </button>
         </div>
 
@@ -62,16 +64,16 @@ export default function Discount() {
             <thead>
               <tr>
                 <th className="px-4 py-2 text-left text-gray-600 font-semibold">
-                  Code
+                  {t("Code")}
                 </th>
                 <th className="px-4 py-2 text-left text-gray-600 font-semibold">
-                  Description
+                  {t("Description")}
                 </th>
                 <th className="px-4 py-2 text-left text-gray-600 font-semibold">
-                  Expiry Date
+                  {t("ExpiryDate")}
                 </th>
                 <th className="px-4 py-2 text-center text-gray-600 font-semibold">
-                  Actions
+                  {t("actions")}
                 </th>
               </tr>
             </thead>
@@ -101,12 +103,12 @@ export default function Discount() {
         {/* Add Discount Form */}
         <div className="mt-6 bg-gray-50 p-4 rounded-lg">
           <h2 className="text-lg font-semibold text-gray-600 mb-4">
-            Add New Discount
+            {t("AddNewDiscount")}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <input
               type="text"
-              placeholder="Discount Code"
+              placeholder={t("DiscountCode")}
               value={newDiscount.code}
               onChange={(e) =>
                 setNewDiscount({ ...newDiscount, code: e.target.value })
@@ -115,7 +117,7 @@ export default function Discount() {
             />
             <input
               type="text"
-              placeholder="Description"
+              placeholder={t("Description")}
               value={newDiscount.description}
               onChange={(e) =>
                 setNewDiscount({ ...newDiscount, description: e.target.value })

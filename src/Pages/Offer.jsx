@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../Router/LanguageContext";
 
 const orders = [
   {
@@ -26,6 +27,7 @@ const orders = [
 
 export default function Offers() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleCompanyClick = (ordersName) => {
     const companyOffer = orders.find((item) => item.name === ordersName);
@@ -40,10 +42,18 @@ export default function Offers() {
       <table className="table-auto w-full rounded-lg shadow-md">
         <thead className=" text-gray-600">
           <tr>
-            <th className="px-6 py-3 text-left font-medium">Company Name</th>
-            <th className="px-6 py-3 text-left font-medium">Active Order</th>
-            <th className="px-6 py-3 text-left font-medium">Completed Order</th>
-            <th className="px-6 py-3 text-left font-medium">Canceled Order</th>
+            <th className="px-6 py-3 text-left font-medium">
+              {t("companyName")}
+            </th>
+            <th className="px-6 py-3 text-left font-medium">
+              {t("activeOrder")}
+            </th>
+            <th className="px-6 py-3 text-left font-medium">
+              {t("completedOrder")}
+            </th>
+            <th className="px-6 py-3 text-left font-medium">
+              {t("canceledOrder")}
+            </th>
           </tr>
         </thead>
         <tbody className="rounded-lg divide-y-8 divide-white">

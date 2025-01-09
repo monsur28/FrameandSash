@@ -9,6 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useLanguage } from "../Router/LanguageContext";
 
 // Register the necessary components
 ChartJS.register(
@@ -22,6 +23,7 @@ ChartJS.register(
 
 export default function ChartBoard() {
   const [activeData, setActiveData] = useState(["revenue", "profit"]);
+  const { t } = useLanguage();
 
   const toggleData = (key) => {
     setActiveData((prev) =>
@@ -85,7 +87,7 @@ export default function ChartBoard() {
     labels,
     datasets: [
       activeData.includes("revenue") && {
-        label: "Revenue",
+        label: `${t("revenue")}`,
         data: [
           5000, 4800, 5500, 3800, 6000, 4800, 3200, 3200, 4800, 5500, 3800,
           4500,
@@ -94,7 +96,7 @@ export default function ChartBoard() {
         borderRadius: 4,
       },
       activeData.includes("profit") && {
-        label: "Profit",
+        label: `${t("profit")}`,
         data: [
           4500, 3800, 3200, 3000, 5000, 3800, 3600, 3500, 3800, 3200, 3000,
           3800,
@@ -109,7 +111,7 @@ export default function ChartBoard() {
     <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-4 sm:p-6 shadow-sm">
       <div className="mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
-          Chart Board
+          {t("chartBoard")}
         </h2>
         <div className="flex flex-wrap items-center gap-4">
           <button
@@ -119,7 +121,7 @@ export default function ChartBoard() {
             onClick={() => toggleData("revenue")}
           >
             <div className="h-3 w-3 rounded-full bg-[#06b6d4]" />
-            <span className="text-sm text-gray-500">Revenue</span>
+            <span className="text-sm text-gray-500">{t("revenue")}</span>
           </button>
           <button
             className={`flex items-center gap-2 ${
@@ -128,7 +130,7 @@ export default function ChartBoard() {
             onClick={() => toggleData("profit")}
           >
             <div className="h-3 w-3 rounded-full bg-black" />
-            <span className="text-sm text-gray-500">Profit</span>
+            <span className="text-sm text-gray-500">{t("profit")}</span>
           </button>
         </div>
       </div>

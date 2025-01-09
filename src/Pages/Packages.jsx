@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import { Check, X, Edit } from "lucide-react";
+import { useLanguage } from "../Router/LanguageContext";
 
 export default function PricingTable() {
   const [activeTab, setActiveTab] = useState("manufacturer");
   const [showModal, setShowModal] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
+  const { t } = useLanguage();
   const [packages, setPackages] = useState({
     manufacturer: [
       {
-        name: "Gold",
+        name: `${t("gold")}`,
         price: 200,
         features: {
           Manufacturer: true,
@@ -24,7 +26,7 @@ export default function PricingTable() {
         },
       },
       {
-        name: "Platinum",
+        name: t("platinum"),
         price: 300,
         features: {
           Manufacturer: true,
@@ -38,7 +40,7 @@ export default function PricingTable() {
         },
       },
       {
-        name: "Diamond",
+        name: t("diamond"),
         price: 500,
         features: {
           Manufacturer: true,
@@ -54,7 +56,7 @@ export default function PricingTable() {
     ],
     reseller: [
       {
-        name: "Basic",
+        name: t("basic"),
         price: 100,
         features: {
           "Re-Seller": true,
@@ -67,7 +69,7 @@ export default function PricingTable() {
         },
       },
       {
-        name: "Pro",
+        name: t("pro"),
         price: 250,
         features: {
           "Re-Seller": true,
@@ -80,7 +82,7 @@ export default function PricingTable() {
         },
       },
       {
-        name: "Enterprise",
+        name: t("enterprise"),
         price: 400,
         features: {
           "Re-Seller": true,
@@ -156,12 +158,14 @@ export default function PricingTable() {
   return (
     <div className="p-4 space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
-        <h1 className="text-2xl lg:text-3xl font-bold">Packages Details</h1>
+        <h1 className="text-2xl lg:text-3xl font-bold">
+          {t("packagesDetails")}
+        </h1>
         <button
           onClick={() => handleOpenModal()}
           className="bg-primary mt-4 lg:mt-0 hover:bg-teal-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors"
         >
-          <span className="text-xl">+</span> Add Package
+          <span className="text-xl">+</span> {t("addPackage")}
         </button>
       </div>
 
@@ -175,7 +179,7 @@ export default function PricingTable() {
                 : "bg-white border-2 border-gray-200 "
             } hover:bg-teal-600 hover:text-white transition-colors `}
           >
-            Manufacturer
+            {t("manufacturer")}
           </button>
           <button
             onClick={() => setActiveTab("reseller")}
@@ -185,7 +189,7 @@ export default function PricingTable() {
                 : "bg-white border-2 border-gray-200"
             } hover:bg-teal-600 hover:text-white transition-colors`}
           >
-            Re-Seller
+            {t("reseller")}
           </button>
         </div>
       </div>
@@ -212,7 +216,7 @@ export default function PricingTable() {
                     key={feature}
                     className="flex items-center justify-between py-2 border-b"
                   >
-                    <span className="font-medium">{feature}</span>
+                    <span className="font-medium">{t(feature)}</span>
                     {isIncluded ? (
                       <Check className="w-5 h-5 text-teal-500" />
                     ) : (
@@ -222,7 +226,7 @@ export default function PricingTable() {
                 ))}
                 <div className="pt-4 text-center">
                   <p className="text-2xl font-bold text-teal-500">
-                    ${pkg.price}/year
+                    ${pkg.price}/{t("year")}
                   </p>
                 </div>
               </div>
@@ -236,7 +240,7 @@ export default function PricingTable() {
           <div className="bg-white rounded-lg p-8 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">
-                {editingIndex !== null ? "Edit Package" : "Add New Package"}
+                {editingIndex !== null ? t("editPackage") : t("addNewPackage")}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -251,7 +255,7 @@ export default function PricingTable() {
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Package Name
+                  {t("packageName")}
                 </label>
                 <input
                   type="text"
@@ -272,7 +276,7 @@ export default function PricingTable() {
                   htmlFor="price"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Price (per year)
+                  {t("pricePerYear")}
                 </label>
                 <input
                   type="number"
@@ -290,7 +294,7 @@ export default function PricingTable() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  Features
+                  {t("features")}
                 </h3>
                 {Object.entries(currentPackage.features).map(
                   ([feature, isIncluded]) => (
@@ -317,18 +321,20 @@ export default function PricingTable() {
                         htmlFor={feature}
                         className="text-sm text-gray-700"
                       >
-                        {feature}
+                        {t(feature)}
                       </label>
                     </div>
                   )
                 )}
               </div>
-              <button
-                type="submit"
-                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-teal-600 transition-colors"
-              >
-                {editingIndex !== null ? "Save Changes" : "Add Package"}
-              </button>
+              <div>
+                <button
+                  type="submit"
+                  className="bg-primary text-white px-4 py-2 rounded-lg"
+                >
+                  {editingIndex !== null ? t("saveChanges") : t("addPackage")}
+                </button>
+              </div>
             </form>
           </div>
         </div>

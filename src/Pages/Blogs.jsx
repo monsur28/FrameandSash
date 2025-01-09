@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../Router/LanguageContext";
 
 const initialBlogPosts = [
   {
@@ -49,6 +50,7 @@ export default function Blogs() {
   const [blogPosts, setBlogPosts] = useState(initialBlogPosts);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleDelete = (id) => {
     setBlogPosts(blogPosts.filter((post) => post.id !== id));
@@ -69,7 +71,7 @@ export default function Blogs() {
           onClick={() => navigate("/dashboard/blogs/add-blog")}
           className="px-6 py-3  bg-teal-500 text-white rounded-lg hover:bg-teal-600"
         >
-          Add Blog
+          {t("addBlog")}
         </button>
       </div>
       <div className="">
@@ -86,12 +88,14 @@ export default function Blogs() {
           <table className="min-w-full rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5">
             <thead className="bg-gray-100">
               <tr>
-                <th className="py-2 px-4 border-b text-left">Title</th>
-                <th className="py-2 px-4 border-b text-left">Author</th>
-                <th className="py-2 px-4 border-b text-left">Category</th>
-                <th className="py-2 px-4 border-b text-left">Date</th>
-                <th className="py-2 px-4 border-b text-left">Status</th>
-                <th className="py-2 px-4 border-b text-left">Actions</th>
+                <th className="py-2 px-4 border-b text-left">{t("title")}</th>
+                <th className="py-2 px-4 border-b text-left">{t("author")} </th>
+                <th className="py-2 px-4 border-b text-left">
+                  {t("category")}
+                </th>
+                <th className="py-2 px-4 border-b text-left">{t("date")}</th>
+                <th className="py-2 px-4 border-b text-left">{t("status")}</th>
+                <th className="py-2 px-4 border-b text-left">{t("actions")}</th>
               </tr>
             </thead>
             <tbody>

@@ -3,8 +3,10 @@ import ChartBoard from "./ChartBoard";
 import TopSellingTable from "./TopSellingTable";
 import CustomerReview from "./CustomerReview";
 import { Calendar } from "lucide-react";
+import { useLanguage } from "../Router/LanguageContext";
 
 const Dashboard = () => {
+  const { t } = useLanguage();
   return (
     <>
       <div>
@@ -17,7 +19,7 @@ const Dashboard = () => {
 
           {/* Export Button */}
           <button className="flex items-center justify-center space-x-2 bg-teal-500 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-teal-600 transition duration-200 w-full sm:w-auto">
-            <span>Export Data</span>
+            <span>{t("exportData")}</span>
           </button>
         </div>
         <main className="p-4 md:p-6">
@@ -25,10 +27,18 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <StatsCard title="Total Visitors" value="19587" info={true} />
-                <StatsCard title="Conversion Rate" value="5%" info={true} />
-                <StatsCard title="AOV" value="$575" info={true} />
-                <StatsCard title="Return Customers" value="55%" info={true} />
+                <StatsCard
+                  title={t("totalVisitors")}
+                  value="19587"
+                  info={true}
+                />
+                <StatsCard title={t("conversionRate")} value="5%" info={true} />
+                <StatsCard title={t("aov")} value="$575" info={true} />
+                <StatsCard
+                  title={t("returnCustomers")}
+                  value="55%"
+                  info={true}
+                />
               </div>
               <div className="lg:col-span-2">
                 <ChartBoard />
