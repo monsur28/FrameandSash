@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 export default function Products() {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export default function Products() {
           {t("productList")}
         </h1>
         <button
-          onClick={() => navigate("/dashboard/products/addproduct")}
+          onClick={() => navigate("/dashboard/products/create-product")}
           className="mt-4 sm:mt-0 bg-primary hover:bg-teal-600 text-white px-3 sm:px-2 lg:px-2 py-1 lg:py-2 rounded-full flex items-center gap-2 transition-colors"
         >
           <Plus className="w-5 h-5" />

@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
-import { UseSidebar } from "../Shared/SidebarContext";
-import { SweetAlertProvider } from "../Router/SweetAlertContext";
-import { useLanguage } from "../Router/LanguageContext";
+import { UseSidebar } from "../ContextProvider/SidebarContext";
+import { SweetAlertProvider } from "../ContextProvider/SweetAlertContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 const DashboardLayout = () => {
   const { isOpen, toggleSidebar } = UseSidebar();
@@ -123,7 +123,7 @@ const DashboardLayout = () => {
         {/* Main Content */}
         <div className="flex-1 lg:ml-56 flex flex-col">
           <Header />
-          <main className="p-4 md:p-6 flex-grow">
+          <main className="p-4 md:p-6 flex-grow h-screen overflow-y-auto">
             <Outlet />
           </main>
         </div>

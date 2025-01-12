@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaEdit, FaTrash, FaMapMarkerAlt, FaEnvelope } from "react-icons/fa";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 const Contact = () => {
   const [contacts, setContacts] = useState([

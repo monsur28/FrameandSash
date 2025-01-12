@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Edit2, Trash2, Users, Settings } from "lucide-react";
 import UserModal from "../Shared/UserModal";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 export default function RoleManagement() {
   const [activeTab, setActiveTab] = useState("role");

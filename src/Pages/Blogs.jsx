@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 const initialBlogPosts = [
   {

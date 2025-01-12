@@ -3,7 +3,7 @@ import ChartBoard from "./ChartBoard";
 import TopSellingTable from "./TopSellingTable";
 import CustomerReview from "./CustomerReview";
 import { Calendar } from "lucide-react";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 const Dashboard = () => {
   const { t } = useLanguage();

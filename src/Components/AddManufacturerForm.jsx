@@ -7,10 +7,12 @@ import {
   UserCircle,
 } from "lucide-react";
 import SweetAlert from "../Shared/SweetAlert";
-import { UseSweetAlert } from "../Router/SweetAlertContext";
+import { UseSweetAlert } from "../ContextProvider/SweetAlertContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 export default function AddManufacturerForm() {
   const { showAlert } = UseSweetAlert();
+  const { t } = useLanguage();
   const [alertConfig, setAlertConfig] = useState({
     show: false,
     title: "",
@@ -92,7 +94,7 @@ export default function AddManufacturerForm() {
                     htmlFor="userId"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    User Id *
+                    {t("UserId")} *
                   </label>
                   <input
                     type="text"
@@ -108,7 +110,7 @@ export default function AddManufacturerForm() {
                     htmlFor="userName"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    User Name *
+                    {t("UserName")} *
                   </label>
                   <input
                     type="text"
@@ -127,7 +129,7 @@ export default function AddManufacturerForm() {
                     htmlFor="firstName"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    First Name
+                    {t("FirstName")} *
                   </label>
                   <input
                     type="text"
@@ -143,7 +145,7 @@ export default function AddManufacturerForm() {
                     htmlFor="lastName"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Last Name *
+                    {t("LastName")} *
                   </label>
                   <input
                     type="text"
@@ -318,7 +320,7 @@ export default function AddManufacturerForm() {
             {/* Company Logo */}
             <div className="mb-6">
               <label className="block text-sm font-semibold mb-2">
-                Product Image<span className="text-red-500">*</span>
+                Company Logo<span className="text-red-500">*</span>
               </label>
               <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
                 <button
@@ -392,22 +394,6 @@ export default function AddManufacturerForm() {
                 id="email"
                 placeholder="Jhon564@gmail.com"
                 className="w-full p-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
-              />
-            </div>
-
-            {/* Confirm Email Address */}
-            <div className="flex flex-col">
-              <label
-                className="text-sm font-medium mb-2"
-                htmlFor="confirm-email"
-              >
-                Email Address *
-              </label>
-              <input
-                type="email"
-                id="confirm-email"
-                placeholder="Jhon564@gmail.com"
-                className="w-full p-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
               />
             </div>
           </div>

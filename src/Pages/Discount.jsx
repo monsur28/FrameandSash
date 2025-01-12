@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Edit, Trash2, PlusCircle } from "lucide-react";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 export default function Discount() {
   const [discounts, setDiscounts] = useState([

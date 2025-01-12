@@ -4,8 +4,8 @@ import { Mail, EyeOff, Eye } from "lucide-react";
 import loginBanner from "../assets/Login copy.jpg";
 import { toast, ToastContainer } from "react-toastify"; // Import toast
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
-import useAuth from "../Router/UseAuth";
-import { useLanguage } from "../Router/LanguageContext";
+import useAuth from "../Hooks/UseAuth";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);

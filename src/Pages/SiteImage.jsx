@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 export default function ImageUploadForm() {
   const { t } = useLanguage();

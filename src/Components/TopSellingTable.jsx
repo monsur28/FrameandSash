@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowUp, ArrowDown } from "lucide-react";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 const TopSellingTable = () => {
   const [activeTab, setActiveTab] = useState("top");

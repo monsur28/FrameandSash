@@ -1,6 +1,6 @@
 import { Edit, Users, Activity, MessageCircle } from "lucide-react";
-import useAuth from "../Router/UseAuth";
-import { useLanguage } from "../Router/LanguageContext";
+import useAuth from "../Hooks/UseAuth";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 export default function AdminProfile() {
   const { user } = useAuth();

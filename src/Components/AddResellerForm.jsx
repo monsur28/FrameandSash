@@ -7,7 +7,7 @@ import {
   UserCircle,
 } from "lucide-react";
 import SweetAlert from "../Shared/SweetAlert";
-import { UseSweetAlert } from "../Router/SweetAlertContext";
+import { UseSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function AddResellerForm() {
   const { showAlert } = UseSweetAlert();

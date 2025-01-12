@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from "../Router/UseAuth";
+import useAuth from "../Hooks/UseAuth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

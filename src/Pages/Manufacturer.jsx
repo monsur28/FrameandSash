@@ -2,7 +2,7 @@ import { Download } from "lucide-react";
 import MonthlyOrdersChart from "../Components/MonthlyOrdersChart";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useLanguage } from "../Router/LanguageContext";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 const Manufacturer = () => {
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import { Bell, Mail, Search, Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { UseSidebar } from "../Shared/SidebarContext";
-import useAuth from "../Router/UseAuth";
-import useLanguage from "../Shared/UseLanguage";
+import { UseSidebar } from "../ContextProvider/SidebarContext";
+import useAuth from "../Hooks/UseAuth";
+import useLanguage from "../Hooks/UseLanguage";
 
 export default function Header() {
   const location = useLocation();
@@ -35,11 +35,6 @@ export default function Header() {
     "/dashboard/settings": "Settings",
     "/dashboard": "dashboard",
   };
-  const title = titles[location.pathname] || "dashboard";
-
-  console.log("Location:", location.pathname); // Current path
-  console.log("Title Key:", title); // Mapped title key
-  console.log("Translated Title:", t(title)); // Translated title
 
   const handleLogout = () => {
     logOut();
@@ -112,7 +107,7 @@ export default function Header() {
           id="header-title"
           className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#0A9B9B] hidden lg:block truncate"
         >
-          {t(title)}
+          {t(titles[location.pathname])}
         </h1>
 
         {/* Search box on larger screens */}

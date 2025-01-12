@@ -72,7 +72,7 @@ export default function CreateProductCategory() {
           {/* Project Title */}
           <div className="mb-6">
             <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Project Title<span className="text-red-500">*</span>
+              Product Title<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
