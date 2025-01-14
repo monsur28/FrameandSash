@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Building2,
   CheckCircle,
   ChevronLeft,
   ChevronRight,
   UserCircle,
+  // Upload,
 } from "lucide-react";
-import SweetAlert from "../Shared/SweetAlert";
-import { UseSweetAlert } from "../ContextProvider/SweetAlertContext";
 import { useLanguage } from "../ContextProvider/LanguageContext";
+import axiosSecure from "../Hooks/AsiosSecure";
+import { UseSweetAlert } from "../ContextProvider/SweetAlertContext";
+import SweetAlert from "../Shared/SweetAlert";
 
 export default function AddManufacturerForm() {
   const { showAlert } = UseSweetAlert();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useLanguage();
   const [alertConfig, setAlertConfig] = useState({
     show: false,
@@ -19,66 +23,183 @@ export default function AddManufacturerForm() {
     message: "",
     type: "success",
   });
-  const [currentStep, setCurrentStep] = useState(0);
+
   const [formData, setFormData] = useState({
-    userId: "",
-    firstName: "",
-    email: "",
+    user_id: "",
+    user_name: "",
+    first_name: "",
+    last_name: "",
+    user_email: "",
     password: "",
-    approved: false,
-    companyLogo: null,
-    uploadNID: null,
-    userName: "",
-    lastName: "",
-    mobileNumber: "",
-    country: "",
+    mobile_number: "",
     language: "",
+    company_name: "",
+    company_image: null,
+    company_email: "",
+    nid: null,
     address: "",
     city: "",
     state: "",
-    zipCode: "",
+    zip_code: "",
+    country_region: "",
+    approved: "false",
   });
 
-  // const handleInputChange = (e) => {
-  //   const { name, value, type } = e.target;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: type === "checkbox" ? e.target.checked : value,
-  //   }));
-  // };
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  // Generate a random user_id when the component mounts
+  useEffect(() => {
+    const randomId = Math.floor(Math.random() * 1000000); // Random 6-digit number
+    setFormData((prevData) => ({
+      ...prevData,
+      user_id: randomId.toString(), // Set it as a string if needed
+    }));
+  }, []); // Empty array ensures this only runs once when the component mounts
+
+  const steps = [
+    {
+      title: "Personal Information",
+      icon: <UserCircle className="w-6 h-6" />,
+      fields: [
+        "user_id",
+        "user_name",
+        "first_name",
+        "last_name",
+        "user_email",
+        "mobile_number",
+        "country_region",
+        "language",
+        "address",
+        "city",
+        "state",
+        "zip_code",
+      ],
+    },
+    {
+      title: "Company Details",
+      icon: <Building2 className="w-6 h-6" />,
+      fields: ["company_name", "companyLogo", "company_email", "nid"],
+    },
+    {
+      title: "Final Steps",
+      icon: <CheckCircle className="w-6 h-6" />,
+      fields: ["approved", "email", "password"],
+    },
+  ];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        [name]: value,
+      };
+
+      // Automatically set user_name from first_name andlast_name
+      if (name === "first_name" || name === "last_name") {
+        updatedData.user_name =
+          `${updatedData.first_name}${updatedData.last_name}`.toLowerCase();
+      }
+
+      return updatedData;
     });
   };
 
-  // const handleFileChange = (e, fieldName) => {
-  //   const file = e.target.files?.[0] || null;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [fieldName]: file,
-  //   }));
-  // };
-
-  const handleNext = () => {
-    if (currentStep === 2) {
-      showAlert(
-        "Congratulations!",
-        "Your email has already been confirmed. You can now login to the application",
-        "success"
-      );
-    } else {
-      setCurrentStep((prev) => Math.min(prev + 1, 3));
+  const handleFileChange = (e, field) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: file,
+      }));
     }
   };
 
-  const handlePrevious = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  const handleNext = async () => {
+    if (!formData) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    if (currentStep === steps.length - 1) {
+      await handleSubmit();
+    } else {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+  const handleSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+
+      // Prepare payload and convert `approved` to 1 or 0
+      const payload = {
+        ...formData,
+      };
+
+      console.log(payload); // Check the transformed payload before submission
+
+      try {
+        const response = await axiosSecure.post(
+          "/manufacturers/store",
+          payload,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          showAlert(
+            "Congratulations!",
+            "Your email has already been confirmed. You can now login to the application",
+            "success"
+          );
+        } else {
+          setCurrentStep((prev) => Math.min(prev + 1, 3));
+        }
+
+        console.log("Success:", response);
+        resetForm();
+      } catch (error) {
+        if (error.response) {
+          console.log("Backend Error:", error.response.data.errors); // Show backend validation errors
+        } else {
+          console.log("Request Error:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting the form:", error);
+      alert("Failed to submit. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCloseAlert = () => {
     setAlertConfig((prev) => ({ ...prev, show: false }));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      user_id: "",
+      user_name: "",
+      first_name: "",
+      last_name: "",
+      user_email: "",
+      password: "",
+      language: "",
+      zip_code: "",
+      mobile_number: "",
+      company_name: "",
+      company_image: null,
+      company_email: "",
+      nid: null,
+      address: "",
+      city: "",
+      state: "",
+      country_region: "",
+      approved: false,
+    });
+    setCurrentStep(0);
   };
 
   const renderStep = () => {
@@ -88,125 +209,125 @@ export default function AddManufacturerForm() {
           <div className="space-y-4">
             {/* Form */}
             <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <label
-                    htmlFor="userId"
+                    htmlFor="user_id"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    {t("UserId")} *
+                    {t("user_id")} *
                   </label>
                   <input
                     type="text"
-                    id="userId"
-                    name="userId"
-                    value={formData.userId}
-                    onChange={handleChange}
+                    id="user_id"
+                    name="user_id"
+                    value={formData.user_id}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="userName"
+                    htmlFor="user_name"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    {t("UserName")} *
+                    {t("user_name")} *
                   </label>
                   <input
                     type="text"
-                    id="userName"
-                    name="userName"
-                    value={formData.userName}
-                    onChange={handleChange}
+                    id="user_name"
+                    name="user_name"
+                    value={formData.user_name}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <label
-                    htmlFor="firstName"
+                    htmlFor="first_name"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    {t("FirstName")} *
+                    {t("first_name")} *
                   </label>
                   <input
                     type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
+                    id="first_name"
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="lastName"
+                    htmlFor="last_name"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     {t("LastName")} *
                   </label>
                   <input
                     type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
+                    id="last_name"
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <label
-                    htmlFor="email"
+                    htmlFor="user_email"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Email Address *
                   </label>
                   <input
                     type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    id="user_email"
+                    name="user_email"
+                    value={formData.user_email}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="mobile"
+                    htmlFor="mobile_number"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Mobile Number *
                   </label>
                   <input
                     type="tel"
-                    id="mobile"
-                    name="mobile"
-                    value={formData.mobile}
-                    onChange={handleChange}
+                    id="mobile_number"
+                    name="mobile_number"
+                    value={formData.mobile_number}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <label
-                    htmlFor="country"
+                    htmlFor="country_region"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Country / Region *
+                    country_region / Region *
                   </label>
                   <input
                     type="text"
-                    id="country"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
+                    id="country_region"
+                    name="country_region"
+                    value={formData.country_region}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
@@ -222,7 +343,7 @@ export default function AddManufacturerForm() {
                     id="language"
                     name="language"
                     value={formData.language}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
@@ -240,12 +361,12 @@ export default function AddManufacturerForm() {
                   id="address"
                   name="address"
                   value={formData.address}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div>
                   <label
                     htmlFor="city"
@@ -258,7 +379,7 @@ export default function AddManufacturerForm() {
                     id="city"
                     name="city"
                     value={formData.city}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
@@ -274,23 +395,23 @@ export default function AddManufacturerForm() {
                     id="state"
                     name="state"
                     value={formData.state}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="zipCode"
+                    htmlFor="zip_code"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Zip Code
                   </label>
                   <input
                     type="text"
-                    id="zipCode"
-                    name="zipCode"
-                    value={formData.zipCode}
-                    onChange={handleChange}
+                    id="zip_code"
+                    name="zip_code"
+                    value={formData.zip_code}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
                   />
                 </div>
@@ -298,12 +419,12 @@ export default function AddManufacturerForm() {
             </div>
           </div>
         );
+
+      /* Secound Step */
+
       case 1:
-        {
-          /* second Step */
-        }
         return (
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* User ID */}
             <div className="flex flex-col">
               <label className="text-sm font-medium mb-2" htmlFor="user-id">
@@ -311,8 +432,11 @@ export default function AddManufacturerForm() {
               </label>
               <input
                 type="text"
-                id="user-id"
+                id="user_id"
+                name="user_id"
                 placeholder="8erytwt345"
+                value={formData.user_id}
+                onChange={handleInputChange}
                 className="w-full p-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
               />
             </div>
@@ -320,25 +444,29 @@ export default function AddManufacturerForm() {
             {/* Company Logo */}
             <div className="mb-6">
               <label className="block text-sm font-semibold mb-2">
-                Company Logo<span className="text-red-500">*</span>
+                Company Logo
+                <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
                 <button
                   type="button"
-                  onClick={() => document.getElementById("fileInput")?.click()}
-                  className="bg-teal-500 text-white px-6 py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
+                  onClick={() =>
+                    document.getElementById("company_imageInput")?.click()
+                  }
+                  className="bg-teal-500 text-white px-4 lg:px-6 py-1 lg:py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
                 >
                   Choose File
                 </button>
                 <span className="text-gray-500">
-                  {formData.selectedFile
-                    ? formData.selectedFile.name
+                  {formData.company_image
+                    ? formData.company_image.name.slice(0, 10)
                     : "No File Chosen"}
                 </span>
                 <input
-                  id="fileInput"
+                  id="company_imageInput"
                   type="file"
                   className="hidden"
+                  onChange={(e) => handleFileChange(e, "company_image")}
                   accept="image/*"
                 />
               </div>
@@ -346,13 +474,19 @@ export default function AddManufacturerForm() {
 
             {/* First Name */}
             <div className="flex flex-col">
-              <label className="text-sm font-medium mb-2" htmlFor="first-name">
-                First Name
+              <label
+                className="text-sm font-medium mb-2"
+                htmlFor="company_name"
+              >
+                Company Name *
               </label>
               <input
                 type="text"
-                id="first-name"
-                placeholder="John"
+                id="company_name"
+                name="company_name"
+                placeholder="company Name"
+                value={formData.company_name}
+                onChange={handleInputChange}
                 className="w-full p-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
               />
             </div>
@@ -360,40 +494,48 @@ export default function AddManufacturerForm() {
             {/* Upload NID */}
             <div className="mb-6">
               <label className="block text-sm font-semibold mb-2">
-                Upload NID<span className="text-red-500">*</span>
+                Upload NID
+                <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
                 <button
                   type="button"
-                  onClick={() => document.getElementById("fileInput")?.click()}
-                  className="bg-teal-500 text-white px-6 py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
+                  onClick={() => document.getElementById("nidInput")?.click()}
+                  className="bg-teal-500 text-white px-4 lg:px-6 py-1 lg:py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
                 >
                   Choose File
                 </button>
                 <span className="text-gray-500">
-                  {formData.selectedFile
-                    ? formData.selectedFile.name
+                  {formData.nid
+                    ? formData.nid.name.slice(0, 10)
                     : "No File Chosen"}
                 </span>
                 <input
-                  id="fileInput"
+                  id="nidInput"
                   type="file"
                   className="hidden"
+                  onChange={(e) => handleFileChange(e, "nid")}
                   accept="image/*"
                 />
               </div>
             </div>
 
-            {/* Email Address */}
-            <div className="flex flex-col">
-              <label className="text-sm font-medium mb-2" htmlFor="email">
-                Email Address *
+            {/* Company Email Address */}
+            <div>
+              <label
+                htmlFor="company_email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Company Email *
               </label>
               <input
                 type="email"
-                id="email"
-                placeholder="Jhon564@gmail.com"
-                className="w-full p-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
+                id="company_email"
+                name="company_email"
+                value={formData.company_email}
+                onChange={handleInputChange}
+                placeholder="Enter your company email"
+                className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
               />
             </div>
           </div>
@@ -406,7 +548,7 @@ export default function AddManufacturerForm() {
               <h2 className="text-xl font-semibold text-gray-700 mb-4">
                 User Management
               </h2>
-              <div className="flex  mt-3 gap-4">
+              <div className="flex mt-3 gap-4">
                 <label className="block font-medium text-gray-600">
                   Approved <span className="text-red-500">*</span>
                 </label>
@@ -415,8 +557,14 @@ export default function AddManufacturerForm() {
                     <input
                       type="radio"
                       name="approved"
-                      checked={formData.approved}
-                      onChange={handleChange}
+                      value={true}
+                      checked={formData.approved === true}
+                      onChange={() =>
+                        setFormData({
+                          ...formData,
+                          approved: true,
+                        })
+                      }
                       className="w-5 h-5 text-teal-500 border-gray-300 focus:ring-teal-500"
                     />
                     <span className="text-gray-700">Yes</span>
@@ -425,8 +573,14 @@ export default function AddManufacturerForm() {
                     <input
                       type="radio"
                       name="approved"
-                      checked={!formData.approved}
-                      onChange={handleChange}
+                      value={false}
+                      checked={formData.approved === false}
+                      onChange={() =>
+                        setFormData({
+                          ...formData,
+                          approved: false,
+                        })
+                      }
                       className="w-5 h-5 text-teal-500 border-gray-300 focus:ring-teal-500"
                     />
                     <span className="text-gray-700">No</span>
@@ -448,8 +602,8 @@ export default function AddManufacturerForm() {
                   <input
                     type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    value={formData.user_email}
+                    onChange={handleInputChange}
                     required
                     placeholder="Enter your email"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gray-50"
@@ -463,7 +617,7 @@ export default function AddManufacturerForm() {
                     type="password"
                     name="password"
                     value={formData.password}
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     required
                     placeholder="Enter your password"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gray-50"
@@ -480,100 +634,101 @@ export default function AddManufacturerForm() {
   };
 
   return (
-    <div>
-      <div className=" rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6 md:p-8">
-        <div className="flex  justify-between mb-8">
-          {/* Progress Steps */}
-          <div className="flex items-center justify-between mb-8 w-full">
-            {[
-              {
-                label: "Basic Information",
-                icon: <UserCircle className="w-6 h-6" />,
-                color: "teal-500",
-                completed: currentStep >= 0,
-              },
-              {
-                label: "Company Information",
-                icon: <Building2 className="w-6 h-6" />,
-                color: "gray-400",
-                completed: currentStep >= 1,
-              },
-              {
-                label: "Confirmation",
-                icon: <CheckCircle className="w-6 h-6" />,
-                color: "gray-400",
-                completed: currentStep >= 2,
-              },
-            ].map((step, index, array) => (
+    <div className=" p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg">
+      {/* Progress Steps */}
+      <div className="flex items-center justify-between mb-8 w-full">
+        {[
+          {
+            label: "Basic Information",
+            icon: <UserCircle className="w-6 h-6" />,
+            color: "teal-500",
+            completed: currentStep >= 0,
+          },
+          {
+            label: "Company Information",
+            icon: <Building2 className="w-6 h-6" />,
+            color: "gray-400",
+            completed: currentStep >= 1,
+          },
+          {
+            label: "Confirmation",
+            icon: <CheckCircle className="w-6 h-6" />,
+            color: "gray-400",
+            completed: currentStep >= 2,
+          },
+        ].map((step, index, array) => (
+          <div key={index} className="flex items-center w-full justify-center">
+            <div className="flex flex-col lg items-center text-center">
+              {/* Step Icon */}
               <div
-                key={index}
-                className="flex items-center w-full justify-center"
+                className={`w-12 h-12 flex items-center justify-center rounded-full ${
+                  step.completed
+                    ? "bg-teal-500 text-white"
+                    : "bg-white border-2 border-gray-200 text-" + step.color
+                }`}
               >
-                <div className="flex flex-col lg items-center text-center">
-                  {/* Step Icon */}
-                  <div
-                    className={`w-12 h-12 flex items-center justify-center rounded-full ${
-                      step.completed
-                        ? "bg-teal-500 text-white"
-                        : "bg-white border-2 border-gray-200 text-" + step.color
-                    }`}
-                  >
-                    {step.icon}
-                  </div>
-                  {/* Step Label */}
-                  <span
-                    className={`mt-2 text-xs lg:text-sm ${
-                      step.completed ? "text-teal-500" : "text-gray-500"
-                    } font-medium`}
-                  >
-                    {step.label}
-                  </span>
-                </div>
-                {/* Horizontal Line */}
-                {index < array.length - 1 && (
-                  <div
-                    className={`flex-grow justify-center items-center h-[4px] w-2 lg:w-56 xl:w-96 ${
-                      step.completed ? "bg-teal-500" : "bg-gray-300"
-                    }`}
-                  ></div>
-                )}
+                {step.icon}
               </div>
-            ))}
+              {/* Step Label */}
+              <span
+                className={`mt-2 text-xs lg:text-sm ${
+                  step.completed ? "text-teal-500" : "text-gray-500"
+                } font-medium`}
+              >
+                {step.label}
+              </span>
+            </div>
+            {/* Horizontal Line */}
+            {index < array.length - 1 && (
+              <div
+                className={`flex-grow justify-center items-center h-[4px] w-2 lg:w-56 xl:w-96 ${
+                  step.completed ? "bg-teal-500" : "bg-gray-300"
+                }`}
+              ></div>
+            )}
           </div>
-        </div>
-
-        <form>
-          {renderStep()}
-
-          <div className="flex justify-between mt-8">
-            <button
-              type="button"
-              onClick={handlePrevious}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md ${
-                currentStep === 0 ? "invisible" : "bg-gray-200"
-              }`}
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Previous
-            </button>
-            <button
-              type="button"
-              onClick={handleNext}
-              className="flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white"
-            >
-              {currentStep === 3 ? "Submit" : "Next"}
-              {currentStep < 3 && <ChevronRight className="w-4 h-4" />}
-            </button>
-          </div>
-        </form>
-        <SweetAlert
-          show={alertConfig.show}
-          title={alertConfig.title}
-          message={alertConfig.message}
-          type={alertConfig.type}
-          onClose={handleCloseAlert}
-        />
+        ))}
       </div>
+
+      {/* Form Fields */}
+      <form className="mt-8" onSubmit={(e) => e.preventDefault()}>
+        {renderStep()}
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-8">
+          <button
+            type="button"
+            onClick={() => setCurrentStep((prev) => prev - 1)}
+            className={`px-6 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 ${
+              currentStep === 0 ? "invisible" : ""
+            }`}
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            onClick={handleNext}
+            disabled={isSubmitting}
+            className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isSubmitting
+              ? "Submitting..."
+              : currentStep === steps.length - 1
+              ? "Submit"
+              : "Next"}
+            {currentStep < steps.length - 1 && (
+              <ChevronRight className="w-5 h-5" />
+            )}
+          </button>
+        </div>
+      </form>
+      <SweetAlert
+        show={alertConfig.show}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        onClose={handleCloseAlert}
+      />
     </div>
   );
 }
