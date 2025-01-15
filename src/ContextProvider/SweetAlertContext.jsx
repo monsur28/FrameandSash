@@ -3,7 +3,7 @@ import SweetAlert from "../Shared/SweetAlert";
 
 const SweetAlertContext = createContext(undefined);
 
-export const UseSweetAlert = () => {
+export const useSweetAlert = () => {
   const context = useContext(SweetAlertContext);
   if (!context) {
     throw new Error("useSweetAlert must be used within a SweetAlertProvider");
@@ -19,10 +19,12 @@ export const SweetAlertProvider = ({ children }) => {
     type: "success",
   });
 
+  // Function to show the alert
   const showAlert = (title, message, type = "success") => {
     setAlertConfig({ show: true, title, message, type });
   };
 
+  // Function to close the alert
   const handleCloseAlert = () => {
     setAlertConfig((prev) => ({ ...prev, show: false }));
   };

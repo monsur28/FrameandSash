@@ -3,7 +3,7 @@ import Stepper from "./Stepper";
 import CreateWindows from "./CreateWindows";
 import CreateAccessories from "./CreateAccessories";
 import Submission from "./Submission";
-import { UseSweetAlert } from "../ContextProvider/SweetAlertContext";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 const steps = [
   { icon: "📝", title: "Create Windows" },
@@ -13,7 +13,7 @@ const steps = [
 
 export default function AddProduct() {
   const [currentStep, setCurrentStep] = useState(0);
-  const { showAlert } = UseSweetAlert();
+  const { showAlert } = useSweetAlert();
 
   const handleNext = () => {
     if (currentStep === steps.length - 1) {

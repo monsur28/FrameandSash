@@ -1,12 +1,10 @@
-"use client";
-
 import { useEffect, useState } from "react";
 
 export default function SweetAlert({
   show,
   title,
   message,
-  type = "success",
+  type = "",
   onClose,
 }) {
   const [isVisible, setIsVisible] = useState(false);

@@ -1,25 +1,67 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import axiosSecure from "../Hooks/AsiosSecure";
+import SweetAlert from "../Shared/SweetAlert";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
-export default function AddBlog({ onAdd }) {
+export default function AddBlog() {
+  const { showAlert } = useSweetAlert();
   const [formData, setFormData] = useState({
-    title: "",
+    blog_title: "",
     author: "",
     category: "",
-    date: "",
-    status: "Draft",
+    blog_content: "",
+    date: new Date().toISOString().split("T")[0], // Automatically set the current date
+    status: "draft",
   });
   const navigate = useNavigate();
+  const [alertConfig, setAlertConfig] = useState({
+    show: false,
+    title: "",
+    message: "",
+    type: "success",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleContentChange = (content) => {
+    setFormData({ ...formData, blog_content: content });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onAdd({ ...formData, id: Date.now() });
-    navigate("/");
+    try {
+      await axiosSecure.post(
+        "/blogs",
+        {
+          blog_title: formData.blog_title,
+          author: formData.author,
+          category: formData.category,
+          blog_content: formData.blog_content,
+          date: formData.date,
+          status: formData.status,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      showAlert("Congratulations!", "Blog added successfully!", "success");
+      navigate("/dashboard/blog");
+    } catch (error) {
+      console.error(
+        "Error adding blog:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  const handleCloseAlert = () => {
+    setAlertConfig((prev) => ({ ...prev, show: false }));
   };
 
   return (
@@ -29,10 +71,10 @@ export default function AddBlog({ onAdd }) {
         <div className="space-y-4">
           <input
             type="text"
-            name="title"
+            name="blog_title"
             placeholder="Title"
             className="w-full p-2 border border-gray-300 rounded"
-            value={formData.title}
+            value={formData.blog_title}
             onChange={handleChange}
             required
           />
@@ -54,13 +96,12 @@ export default function AddBlog({ onAdd }) {
             onChange={handleChange}
             required
           />
-          <input
-            type="date"
-            name="date"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={formData.date}
-            onChange={handleChange}
-            required
+          <ReactQuill
+            value={formData.blog_content}
+            onChange={handleContentChange}
+            className="bg-white border rounded"
+            theme="snow"
+            placeholder="Write your blog content here..."
           />
           <select
             name="status"
@@ -68,9 +109,10 @@ export default function AddBlog({ onAdd }) {
             value={formData.status}
             onChange={handleChange}
           >
-            <option value="Draft">Draft</option>
-            <option value="Published">Published</option>
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
           </select>
+
           <button
             type="submit"
             className="w-full p-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
@@ -79,6 +121,22 @@ export default function AddBlog({ onAdd }) {
           </button>
         </div>
       </form>
+
+      {/* Preview Section */}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">Preview</h2>
+        <div
+          className="p-4 border rounded bg-gray-100"
+          dangerouslySetInnerHTML={{ __html: formData.blog_content }}
+        />
+      </div>
+      <SweetAlert
+        show={alertConfig.show}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        onClose={handleCloseAlert}
+      />
     </div>
   );
 }

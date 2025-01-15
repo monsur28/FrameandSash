@@ -5,15 +5,14 @@ import {
   ChevronLeft,
   ChevronRight,
   UserCircle,
-  // Upload,
 } from "lucide-react";
 import { useLanguage } from "../ContextProvider/LanguageContext";
 import axiosSecure from "../Hooks/AsiosSecure";
-import { UseSweetAlert } from "../ContextProvider/SweetAlertContext";
 import SweetAlert from "../Shared/SweetAlert";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function AddManufacturerForm() {
-  const { showAlert } = UseSweetAlert();
+  const { showAlert } = useSweetAlert();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useLanguage();
@@ -45,14 +44,84 @@ export default function AddManufacturerForm() {
     approved: "false",
   });
 
-  // Generate a random user_id when the component mounts
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  const handleCountryChange = async (e) => {
+    const selectedCountry = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      country_region: selectedCountry,
+      state: "",
+      city: "",
+    }));
+    setStates([]);
+    setCities([]);
+
+    try {
+      const response = await axiosSecure.get(
+        `https://api.locationiq.com/v1/autocomplete.php`,
+        {
+          params: {
+            key: import.meta.env.VITE_LOCATIONIQ_API_KEY,
+            q: selectedCountry,
+            format: "json",
+          },
+        }
+      );
+
+      // Extract states for the selected country
+      if (response.data.length > 0) {
+        const uniqueStates = [
+          ...new Set(
+            response.data.map((item) => item.address.state).filter(Boolean)
+          ),
+        ];
+        setStates(uniqueStates);
+      }
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  const handleStateChange = async (e) => {
+    const selectedState = e.target.value;
+    setFormData((prev) => ({ ...prev, state: selectedState, city: "" }));
+    setCities([]);
+
+    try {
+      const response = await axiosSecure.get(
+        `https://api.locationiq.com/v1/autocomplete.php`,
+        {
+          params: {
+            key: import.meta.env.VITE_LOCATIONIQ_API_KEY,
+            q: `${selectedState}, ${formData.country_region}`,
+            format: "json",
+          },
+        }
+      );
+
+      // Extract cities for the selected state
+      if (response.data.length > 0) {
+        const uniqueCities = [
+          ...new Set(
+            response.data.map((item) => item.address.city).filter(Boolean)
+          ),
+        ];
+        setCities(uniqueCities);
+      }
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+    }
+  };
+
   useEffect(() => {
-    const randomId = Math.floor(Math.random() * 1000000); // Random 6-digit number
+    const randomId = Math.floor(Math.random() * 1000000);
     setFormData((prevData) => ({
       ...prevData,
-      user_id: randomId.toString(), // Set it as a string if needed
+      user_id: randomId.toString(),
     }));
-  }, []); // Empty array ensures this only runs once when the component mounts
+  }, []);
 
   const steps = [
     {
@@ -76,14 +145,27 @@ export default function AddManufacturerForm() {
     {
       title: "Company Details",
       icon: <Building2 className="w-6 h-6" />,
-      fields: ["company_name", "companyLogo", "company_email", "nid"],
+      fields: ["company_name", "company_image", "company_email", "nid"],
     },
     {
       title: "Final Steps",
       icon: <CheckCircle className="w-6 h-6" />,
-      fields: ["approved", "email", "password"],
+      fields: ["approved", "password"],
     },
   ];
+
+  const validateFields = () => {
+    const currentFields = steps[currentStep].fields;
+    for (const field of currentFields) {
+      if (
+        !formData[field] ||
+        (field === "company_image" && !formData[field]?.name)
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -93,7 +175,6 @@ export default function AddManufacturerForm() {
         [name]: value,
       };
 
-      // Automatically set user_name from first_name andlast_name
       if (name === "first_name" || name === "last_name") {
         updatedData.user_name =
           `${updatedData.first_name}${updatedData.last_name}`.toLowerCase();
@@ -114,8 +195,8 @@ export default function AddManufacturerForm() {
   };
 
   const handleNext = async () => {
-    if (!formData) {
-      alert("Please fill in all required fields");
+    if (!validateFields()) {
+      alert("Please fill in all required fields before proceeding.");
       return;
     }
 
@@ -125,46 +206,38 @@ export default function AddManufacturerForm() {
       setCurrentStep((prev) => prev + 1);
     }
   };
+
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
 
-      // Prepare payload and convert `approved` to 1 or 0
       const payload = {
         ...formData,
+        approved: formData.approved === "true" ? 0 : 1,
       };
 
-      console.log(payload); // Check the transformed payload before submission
+      console.log(payload);
 
-      try {
-        const response = await axiosSecure.post(
-          "/manufacturers/store",
-          payload,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
+      const response = await axiosSecure.post("/manufacturers/store", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.status === 200) {
+        showAlert(
+          "Congratulations!",
+          "Your email has already been confirmed. You can now login to the application.",
+          "success"
         );
-
-        if (response.status === 200) {
-          showAlert(
-            "Congratulations!",
-            "Your email has already been confirmed. You can now login to the application",
-            "success"
-          );
-        } else {
-          setCurrentStep((prev) => Math.min(prev + 1, 3));
-        }
-
-        console.log("Success:", response);
         resetForm();
-      } catch (error) {
-        if (error.response) {
-          console.log("Backend Error:", error.response.data.errors); // Show backend validation errors
-        } else {
-          console.log("Request Error:", error);
-        }
+      } else {
+        setAlertConfig({
+          show: true,
+          title: "Error",
+          message: "An error occurred. Please try again.",
+          type: "error",
+        });
       }
     } catch (error) {
       console.error("Error submitting the form:", error);
@@ -172,10 +245,6 @@ export default function AddManufacturerForm() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleCloseAlert = () => {
-    setAlertConfig((prev) => ({ ...prev, show: false }));
   };
 
   const resetForm = () => {
@@ -197,9 +266,13 @@ export default function AddManufacturerForm() {
       city: "",
       state: "",
       country_region: "",
-      approved: false,
+      approved: "false",
     });
     setCurrentStep(0);
+  };
+
+  const handleCloseAlert = () => {
+    setAlertConfig((prev) => ({ ...prev, show: false }));
   };
 
   const renderStep = () => {
@@ -237,6 +310,7 @@ export default function AddManufacturerForm() {
                     type="text"
                     id="user_name"
                     name="user_name"
+                    placeholder="john_doe"
                     value={formData.user_name}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
@@ -256,6 +330,7 @@ export default function AddManufacturerForm() {
                     type="text"
                     id="first_name"
                     name="first_name"
+                    placeholder="John"
                     value={formData.first_name}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
@@ -272,6 +347,7 @@ export default function AddManufacturerForm() {
                     type="text"
                     id="last_name"
                     name="last_name"
+                    placeholder="Doe"
                     value={formData.last_name}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
@@ -282,7 +358,7 @@ export default function AddManufacturerForm() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <label
-                    htmlFor="user_email"
+                    htmlFor="email"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
                     Email Address *
@@ -291,6 +367,7 @@ export default function AddManufacturerForm() {
                     type="email"
                     id="user_email"
                     name="user_email"
+                    placeholder="jhondoe@gmail.com"
                     value={formData.user_email}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
@@ -307,6 +384,7 @@ export default function AddManufacturerForm() {
                     type="tel"
                     id="mobile_number"
                     name="mobile_number"
+                    placeholder="0171***********"
                     value={formData.mobile_number}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
@@ -315,22 +393,34 @@ export default function AddManufacturerForm() {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Country / Region */}
                 <div>
                   <label
                     htmlFor="country_region"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    country_region / Region *
+                    Country / Region *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     id="country_region"
                     name="country_region"
                     value={formData.country_region}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
-                  />
+                    onChange={handleCountryChange}
+                    className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
+                  >
+                    <option value="" disabled>
+                      Select a country
+                    </option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="India">India</option>
+                    <option value="Canada">Canada</option>
+                    {/* Add more countries as needed */}
+                  </select>
                 </div>
+
+                {/* Language */}
                 <div>
                   <label
                     htmlFor="language"
@@ -338,14 +428,23 @@ export default function AddManufacturerForm() {
                   >
                     Language *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     id="language"
                     name="language"
                     value={formData.language}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
-                  />
+                    className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
+                  >
+                    <option value="" disabled>
+                      Select a language
+                    </option>
+                    <option value="English">English</option>
+                    <option value="Bengali">Bengali</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="French">French</option>
+                    {/* Add more languages as needed */}
+                  </select>
                 </div>
               </div>
 
@@ -367,45 +466,51 @@ export default function AddManufacturerForm() {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* City */}
                 <div>
-                  <label
-                    htmlFor="city"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    City *
-                  </label>
-                  <input
-                    type="text"
+                  <label htmlFor="city">City</label>
+                  <select
                     id="city"
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="state"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
+                    disabled={!cities.length}
                   >
-                    State
-                  </label>
-                  <input
-                    type="text"
+                    <option value="" disabled>
+                      Select a city
+                    </option>
+                    {cities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* State */}
+                <div>
+                  <label htmlFor="state">State</label>
+                  <select
                     id="state"
                     name="state"
                     value={formData.state}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-500  rounded-[18px] bg-[rgba(205,232,233,0.60)]"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="zip_code"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    onChange={handleStateChange}
+                    className="w-full px-4 py-2 border border-gray-500 rounded-[18px] bg-[rgba(205,232,233,0.60)]"
+                    disabled={!states.length}
                   >
-                    Zip Code
-                  </label>
+                    <option value="" disabled>
+                      Select a state
+                    </option>
+                    {states.map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Zip Code */}
+                <div>
+                  <label htmlFor="zip_code">Zip Code</label>
                   <input
                     type="text"
                     id="zip_code"

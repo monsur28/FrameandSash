@@ -43,15 +43,15 @@ export default function CreateAccessories({ onNext, onPrevious }) {
     setShowAccessoryForm(false);
   };
 
-  const handleAddImageToNewAccessory = () => {
-    const imageURL = prompt("Enter Image URL");
-    if (imageURL) {
-      setNewAccessory((prev) => ({
-        ...prev,
-        values: [...prev.values, imageURL],
-      }));
-    }
-  };
+  // const handleAddImageToNewAccessory = () => {
+  //   const imageURL = prompt("Enter Image URL");
+  //   if (imageURL) {
+  //     setNewAccessory((prev) => ({
+  //       ...prev,
+  //       values: [...prev.values, imageURL],
+  //     }));
+  //   }
+  // };
 
   return (
     <div className=" p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg">

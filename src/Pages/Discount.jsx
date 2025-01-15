@@ -1,61 +1,130 @@
-import { useState } from "react";
-import { Edit, Trash2, PlusCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Edit, Trash2, PlusCircle, Check, X } from "lucide-react";
 import { useLanguage } from "../ContextProvider/LanguageContext";
+import axiosSecure from "../Hooks/AsiosSecure";
+import Swal from "sweetalert2";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function Discount() {
-  const [discounts, setDiscounts] = useState([
-    {
-      id: 1,
-      code: "SUMMER10",
-      description: "10% off on summer sale",
-      expiry: "2024-07-01",
-    },
-    {
-      id: 2,
-      code: "FESTIVE15",
-      description: "15% off during the festive season",
-      expiry: "2024-12-31",
-    },
-  ]);
-
+  const [discounts, setDiscounts] = useState([]);
   const [newDiscount, setNewDiscount] = useState({
     code: "",
     description: "",
-    expiry: "",
+    expiry_date: "",
   });
+  const [editingDiscount, setEditingDiscount] = useState(null);
   const { t } = useLanguage();
+  const { showAlert } = useSweetAlert(); // Use the context
 
-  const handleAddDiscount = () => {
-    if (newDiscount.code && newDiscount.description && newDiscount.expiry) {
-      setDiscounts([
-        ...discounts,
-        { id: discounts.length + 1, ...newDiscount },
-      ]);
-      setNewDiscount({ code: "", description: "", expiry: "" });
+  // Fetch discounts from the API
+  useEffect(() => {
+    const fetchDiscounts = async () => {
+      try {
+        const response = await axiosSecure.get("/discounts");
+        console.log("Discounts:", response.data);
+        setDiscounts(response.data);
+      } catch (error) {
+        console.error("Error fetching discounts:", error);
+      }
+    };
+    fetchDiscounts();
+  }, []);
+
+  const handleAddDiscount = async () => {
+    if (
+      newDiscount.code &&
+      newDiscount.description &&
+      newDiscount.expiry_date
+    ) {
+      try {
+        const response = await axiosSecure.post("/discounts", newDiscount, {
+          headers: { "Content-Type": "application/json" },
+        });
+        showAlert("Success!", "Discount added successfully.", "success");
+
+        if (response.data && response.data.id) {
+          setDiscounts([...discounts, response.data]);
+          setNewDiscount({ code: "", description: "", expiry_date: "" });
+        } else {
+          console.error("Unexpected response:", response);
+        }
+      } catch (error) {
+        console.error("Error adding discount:", error);
+      }
     } else {
       alert("All fields are required.");
     }
   };
 
-  const handleDelete = (id) => {
-    setDiscounts(discounts.filter((discount) => discount.id !== id));
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This discount will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axiosSecure.delete(`/discounts/${id}`);
+        setDiscounts(discounts.filter((discount) => discount.id !== id));
+        showAlert("Deleted!", "Your discount has been deleted.", "success");
+      } catch (error) {
+        console.error("Error deleting discount:", error);
+        Swal.fire(
+          "Error!",
+          "There was an issue deleting the discount.",
+          "error"
+        );
+      }
+    }
+  };
+
+  const handleEdit = (discount) => {
+    setEditingDiscount(discount);
+  };
+
+  const handleUpdateDiscount = async () => {
+    const updatedDiscount = { ...editingDiscount };
+
+    setDiscounts(
+      discounts.map((discount) =>
+        discount.id === updatedDiscount.id
+          ? { ...discount, ...updatedDiscount }
+          : discount
+      )
+    );
+
+    try {
+      const response = await axiosSecure.put(
+        `/discounts/${updatedDiscount.id}`,
+        updatedDiscount
+      );
+
+      setDiscounts(
+        discounts.map((discount) =>
+          discount.id === updatedDiscount.id ? response.data : discount
+        )
+      );
+
+      setEditingDiscount(null);
+    } catch (error) {
+      console.error("Error updating discount:", error);
+      Swal.fire("Error!", "There was an issue updating the discount.", "error");
+    }
   };
 
   return (
-    <div className="p-6 h-screen ">
+    <div className="p-6 h-screen">
       <div className="p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
           <h1 className="text-2xl font-semibold text-gray-700">
             {t("ManageDiscounts")}
           </h1>
-          <button
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600"
-            onClick={handleAddDiscount}
-          >
-            <PlusCircle size={20} />
-            <span>{t("AddDiscount")}</span>
-          </button>
         </div>
 
         {/* Discount Table */}
@@ -80,20 +149,87 @@ export default function Discount() {
             <tbody>
               {discounts.map((discount) => (
                 <tr key={discount.id} className="bg-white hover:bg-gray-50">
-                  <td className="px-4 py-2 border">{discount.code}</td>
-                  <td className="px-4 py-2 border">{discount.description}</td>
-                  <td className="px-4 py-2 border">{discount.expiry}</td>
-                  <td className="px-4 py-2 border text-center">
-                    <button className="text-green-500 hover:text-green-700 mx-2">
-                      <Edit size={18} />
-                    </button>
-                    <button
-                      className="text-red-500 hover:text-red-700 mx-2"
-                      onClick={() => handleDelete(discount.id)}
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
+                  {editingDiscount && editingDiscount.id === discount.id ? (
+                    <>
+                      <td className="px-4 py-2 border">
+                        <input
+                          type="text"
+                          value={editingDiscount.code}
+                          onChange={(e) =>
+                            setEditingDiscount({
+                              ...editingDiscount,
+                              code: e.target.value,
+                            })
+                          }
+                          className="px-2 py-1 border rounded-md"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          type="text"
+                          value={editingDiscount.description}
+                          onChange={(e) =>
+                            setEditingDiscount({
+                              ...editingDiscount,
+                              description: e.target.value,
+                            })
+                          }
+                          className="px-2 py-1 border rounded-md"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          type="date"
+                          value={editingDiscount.expiry_date}
+                          onChange={(e) =>
+                            setEditingDiscount({
+                              ...editingDiscount,
+                              expiry_date: e.target.value,
+                            })
+                          }
+                          className="px-2 py-1 border rounded-md"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        <button
+                          className="text-green-500 hover:text-green-700 mx-2"
+                          onClick={handleUpdateDiscount}
+                        >
+                          <Check size={18} />
+                        </button>
+                        <button
+                          className="text-red-500 hover:text-red-700 mx-2"
+                          onClick={() => setEditingDiscount(null)}
+                        >
+                          <X size={18} />
+                        </button>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-4 py-2 border">{discount.code}</td>
+                      <td className="px-4 py-2 border">
+                        {discount.description}
+                      </td>
+                      <td className="px-4 py-2 border">
+                        {discount.expiry_date}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        <button
+                          className="text-green-500 hover:text-green-700 mx-2"
+                          onClick={() => handleEdit(discount)}
+                        >
+                          <Edit size={18} />
+                        </button>
+                        <button
+                          className="text-red-500 hover:text-red-700 mx-2"
+                          onClick={() => handleDelete(discount.id)}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -105,7 +241,7 @@ export default function Discount() {
           <h2 className="text-lg font-semibold text-gray-600 mb-4">
             {t("AddNewDiscount")}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <input
               type="text"
               placeholder={t("DiscountCode")}
@@ -126,12 +262,19 @@ export default function Discount() {
             />
             <input
               type="date"
-              value={newDiscount.expiry}
+              value={newDiscount.expiry_date}
               onChange={(e) =>
-                setNewDiscount({ ...newDiscount, expiry: e.target.value })
+                setNewDiscount({ ...newDiscount, expiry_date: e.target.value })
               }
               className="px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
+            <button
+              onClick={handleAddDiscount}
+              className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center justify-center"
+            >
+              <PlusCircle size={20} className="mr-2" />
+              {t("AddDiscount")}
+            </button>
           </div>
         </div>
       </div>
