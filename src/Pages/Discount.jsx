@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Edit, Trash2, PlusCircle, Check, X } from "lucide-react";
 import { useLanguage } from "../ContextProvider/LanguageContext";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 import axiosSecure from "../Hooks/AsiosSecure";
 import Swal from "sweetalert2";
-import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function Discount() {
   const [discounts, setDiscounts] = useState([]);
@@ -13,49 +13,65 @@ export default function Discount() {
     expiry_date: "",
   });
   const [editingDiscount, setEditingDiscount] = useState(null);
+  const [codeExists, setCodeExists] = useState(false); // For checking if the code exists
   const { t } = useLanguage();
-  const { showAlert } = useSweetAlert(); // Use the context
+  const { showAlert } = useSweetAlert();
 
-  // Fetch discounts from the API
+  // Fetch discounts from API
   useEffect(() => {
     const fetchDiscounts = async () => {
       try {
         const response = await axiosSecure.get("/discounts");
-        console.log("Discounts:", response.data);
         setDiscounts(response.data);
       } catch (error) {
-        console.error("Error fetching discounts:", error);
+        console.error(
+          "Error fetching discounts:",
+          error.response || error.message
+        );
+        showAlert("Error!", "Failed to fetch discounts.", "error");
       }
     };
     fetchDiscounts();
-  }, []);
+  }, [showAlert]);
 
+  // Add discount
   const handleAddDiscount = async () => {
-    if (
-      newDiscount.code &&
-      newDiscount.description &&
-      newDiscount.expiry_date
-    ) {
-      try {
-        const response = await axiosSecure.post("/discounts", newDiscount, {
-          headers: { "Content-Type": "application/json" },
-        });
-        showAlert("Success!", "Discount added successfully.", "success");
-
-        if (response.data && response.data.id) {
-          setDiscounts([...discounts, response.data]);
-          setNewDiscount({ code: "", description: "", expiry_date: "" });
-        } else {
-          console.error("Unexpected response:", response);
-        }
-      } catch (error) {
-        console.error("Error adding discount:", error);
+    try {
+      // Check if the code already exists
+      const existingDiscount = discounts.find(
+        (discount) => discount.code === newDiscount.code
+      );
+      if (existingDiscount) {
+        setCodeExists(true);
+        return;
       }
-    } else {
-      alert("All fields are required.");
+      // Proceed to add the new discount
+      const response = await axiosSecure.post("/discounts", newDiscount, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (
+        response.data?.message === "Discount created successfully." &&
+        response.data?.data
+      ) {
+        showAlert("Success!", "Discount added successfully.", "success");
+        setDiscounts((prevDiscounts) => [...prevDiscounts, response.data.data]);
+        setNewDiscount({ code: "", description: "", expiry_date: "" }); // Reset form
+        setCodeExists(false); // Reset the codeExists flag
+      } else {
+        console.error("Unexpected response:", response.data);
+      }
+    } catch (error) {
+      console.error("Error adding discount:", error.response || error.message);
+      showAlert(
+        "Error!",
+        error.response?.data?.message || "Failed to add discount.",
+        "error"
+      );
     }
   };
 
+  // Delete discount
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -71,22 +87,22 @@ export default function Discount() {
       try {
         await axiosSecure.delete(`/discounts/${id}`);
         setDiscounts(discounts.filter((discount) => discount.id !== id));
-        showAlert("Deleted!", "Your discount has been deleted.", "success");
       } catch (error) {
-        console.error("Error deleting discount:", error);
-        Swal.fire(
-          "Error!",
-          "There was an issue deleting the discount.",
-          "error"
+        console.error(
+          "Error deleting discount:",
+          error.response || error.message
         );
+        showAlert("Error!", "Failed to delete discount.", "error");
       }
     }
   };
 
+  // Edit discount
   const handleEdit = (discount) => {
     setEditingDiscount(discount);
   };
 
+  // Update discount
   const handleUpdateDiscount = async () => {
     const updatedDiscount = { ...editingDiscount };
 
@@ -112,8 +128,11 @@ export default function Discount() {
 
       setEditingDiscount(null);
     } catch (error) {
-      console.error("Error updating discount:", error);
-      Swal.fire("Error!", "There was an issue updating the discount.", "error");
+      console.error(
+        "Error updating discount:",
+        error.response || error.message
+      );
+      showAlert("Error!", "Failed to update discount.", "error");
     }
   };
 
@@ -276,6 +295,9 @@ export default function Discount() {
               {t("AddDiscount")}
             </button>
           </div>
+          {codeExists && (
+            <p className="mt-2 text-red-500">{t("DiscountCodeExists")}</p>
+          )}
         </div>
       </div>
     </div>
