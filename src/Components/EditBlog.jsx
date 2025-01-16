@@ -1,76 +1,82 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import "react-quill/dist/quill.snow.css";
-import axiosSecure from "../Hooks/AsiosSecure";
-import SweetAlert from "../Shared/SweetAlert";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
-import ReactQuill from "react-quill"; // Import ReactQuill
+import axiosSecure from "../Hooks/AsiosSecure";
+import { ArrowLeft } from "lucide-react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-export default function AddBlog() {
-  const { showAlert } = useSweetAlert();
+export default function EditBlog() {
   const [formData, setFormData] = useState({
     blog_title: "",
     author: "",
     category: "",
     blog_content: "",
-    date: new Date().toISOString().split("T")[0], // Automatically set the current date
+    date: "",
     status: "draft",
   });
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [alertConfig, setAlertConfig] = useState({
-    show: false,
-    title: "",
-    message: "",
-    type: "success",
-  });
+  const { showAlert } = useSweetAlert();
+
+  // Fetch the existing blog post data by ID
+  useEffect(() => {
+    const fetchBlogPost = async () => {
+      try {
+        const response = await axiosSecure.get(`blogs/${id}`);
+        setFormData(response.data);
+      } catch (error) {
+        console.error("Error fetching blog post:", error);
+      }
+    };
+    fetchBlogPost();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleContentChange = (content) => {
-    setFormData({ ...formData, blog_content: content });
+    setFormData((prev) => ({
+      ...prev,
+      blog_content: content,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Save plain text (strip out HTML tags)
-      const plainTextContent = formData.blog_content.replace(/<[^>]*>/g, "");
-
-      await axiosSecure.post(
-        "/blogs",
+      await axiosSecure.put(
+        `blogs/${id}`,
         {
-          blog_title: formData.blog_title,
-          author: formData.author,
-          category: formData.category,
-          blog_content: plainTextContent, // Send plain text to the database
-          date: formData.date,
-          status: formData.status,
+          ...formData,
         },
         {
           headers: { "Content-Type": "application/json" },
         }
       );
-      showAlert("Congratulations!", "Blog added successfully!", "success");
+      showAlert("Success!", "Blog post updated successfully.", "success");
       navigate("/dashboard/blog");
     } catch (error) {
-      console.error(
-        "Error adding blog:",
-        error.response?.data || error.message
-      );
+      console.error("Error updating blog post:", error);
     }
   };
 
-  const handleCloseAlert = () => {
-    setAlertConfig((prev) => ({ ...prev, show: false }));
-  };
-
   return (
-    <div className="min-h-screen p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg">
-      <h1 className="text-2xl font-bold mb-6">Add Blog</h1>
+    <div className="min-h-screen p-6">
+      <button
+        onClick={() => navigate("/dashboard/blog")}
+        className="mb-8 flex items-center space-x-2 text-teal-700 hover:text-teal-900 transition-colors duration-300"
+      >
+        <ArrowLeft size={20} />
+        <span>Back to Blog List</span>
+      </button>
+
+      <h1 className="text-2xl font-bold mb-6">Edit Blog</h1>
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">
           <input
@@ -121,26 +127,10 @@ export default function AddBlog() {
             type="submit"
             className="w-full p-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
           >
-            Add Blog
+            Update Blog
           </button>
         </div>
       </form>
-
-      {/* Preview Section */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Preview</h2>
-        <div
-          className="p-4 border rounded bg-gray-100"
-          dangerouslySetInnerHTML={{ __html: formData.blog_content }}
-        />
-      </div>
-      <SweetAlert
-        show={alertConfig.show}
-        title={alertConfig.title}
-        message={alertConfig.message}
-        type={alertConfig.type}
-        onClose={handleCloseAlert}
-      />
     </div>
   );
 }

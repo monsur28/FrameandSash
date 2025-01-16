@@ -29,6 +29,8 @@ import PushNotification from "../Pages/PushNotification";
 import ImageUpload from "../Pages/ImageUpload";
 import ProtectedRoute from "./ProtectedRoute";
 import UpdateProfile from "../Components/UpdateProfile";
+import BlogDetail from "../Components/BlogDetail";
+import EditBlog from "../Components/EditBlog";
 
 export const router = createBrowserRouter([
   {
@@ -110,6 +112,14 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/blog",
         element: <Blogs />,
+      },
+      {
+        path: "/dashboard/blogs/:id",
+        element: <BlogDetail />,
+      },
+      {
+        path: "/dashboard/blogs/edit/:id",
+        element: <EditBlog />,
       },
       {
         path: "/dashboard/blogs/add-blog",

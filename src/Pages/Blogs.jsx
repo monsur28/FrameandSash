@@ -1,66 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../ContextProvider/LanguageContext";
-
-const initialBlogPosts = [
-  {
-    id: 1,
-    title: "Introduction to Energy-Efficient Windows",
-    author: "John Doe",
-    category: "Energy Efficiency",
-    date: "2023-06-15",
-    status: "Published",
-  },
-  {
-    id: 2,
-    title: "Choosing the Right Window Frame Material",
-    author: "Jane Smith",
-    category: "Materials",
-    date: "2023-06-18",
-    status: "Draft",
-  },
-  {
-    id: 3,
-    title: "Top Trends in Modern Window Design",
-    author: "Emily Brown",
-    category: "Design",
-    date: "2023-07-01",
-    status: "Published",
-  },
-  {
-    id: 4,
-    title: "How to Reduce Heat Loss Through Windows",
-    author: "Chris Wilson",
-    category: "Energy Efficiency",
-    date: "2023-07-10",
-    status: "Draft",
-  },
-  {
-    id: 5,
-    title: "Understanding Double vs. Triple Glazing",
-    author: "Mike Johnson",
-    category: "Technology",
-    date: "2023-07-15",
-    status: "Published",
-  },
-];
+import axiosSecure from "../Hooks/AsiosSecure";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function Blogs() {
-  const [blogPosts, setBlogPosts] = useState(initialBlogPosts);
+  const [blogPosts, setBlogPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const { showAlert } = useSweetAlert();
   const { t } = useLanguage();
 
-  const handleDelete = (id) => {
-    setBlogPosts(blogPosts.filter((post) => post.id !== id));
+  // Fetch blog posts from API
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      try {
+        const response = await axiosSecure.get("blogs");
+        setBlogPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching blog posts:", error);
+      }
+    };
+
+    fetchBlogPosts();
+  }, []); // Empty dependency array means this will run once when the component is mounted
+
+  // Delete blog post from API and state
+  const handleDelete = async (id) => {
+    try {
+      await axiosSecure.delete(`blogs/${id}`); // Assuming delete API endpoint is set up
+      showAlert.fire("Success!", "Blog post deleted successfully.", "success");
+      setBlogPosts(blogPosts.filter((post) => post.id !== id));
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+    }
   };
 
+  // Filter blog posts based on search term
   const filteredPosts = blogPosts.filter(
     (post) =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchTerm.toLowerCase())
+      (post.blog_title?.toLowerCase() || "").includes(
+        searchTerm.toLowerCase()
+      ) ||
+      (post.author?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (post.category?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -69,7 +53,7 @@ export default function Blogs() {
         <h1 className="text-xl lg:text-3xl font-bold">Blog Posts</h1>
         <button
           onClick={() => navigate("/dashboard/blogs/add-blog")}
-          className="px-6 py-3  bg-teal-500 text-white rounded-lg hover:bg-teal-600"
+          className="px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
         >
           {t("addBlog")}
         </button>
@@ -89,7 +73,7 @@ export default function Blogs() {
             <thead className="bg-gray-100">
               <tr>
                 <th className="py-2 px-4 border-b text-left">{t("title")}</th>
-                <th className="py-2 px-4 border-b text-left">{t("author")} </th>
+                <th className="py-2 px-4 border-b text-left">{t("author")}</th>
                 <th className="py-2 px-4 border-b text-left">
                   {t("category")}
                 </th>
@@ -101,7 +85,7 @@ export default function Blogs() {
             <tbody>
               {filteredPosts.map((post) => (
                 <tr key={post.id} className="hover:bg-gray-50">
-                  <td className="py-2 px-4 border-b">{post.title}</td>
+                  <td className="py-2 px-4 border-b">{post.blog_title}</td>
                   <td className="py-2 px-4 border-b">{post.author}</td>
                   <td className="py-2 px-4 border-b">{post.category}</td>
                   <td className="py-2 px-4 border-b">{post.date}</td>
@@ -118,12 +102,25 @@ export default function Blogs() {
                   </td>
                   <td className="py-2 px-4 border-b">
                     <div className="flex space-x-2">
-                      <button className="text-blue-500 hover:text-blue-700">
+                      {/* Preview Button */}
+                      <button
+                        className="text-blue-500 hover:text-blue-700"
+                        onClick={() => navigate(`/dashboard/blogs/${post.id}`)}
+                      >
                         <Eye size={18} />
                       </button>
-                      <button className="text-green-500 hover:text-green-700">
+
+                      {/* Edit Button */}
+                      <button
+                        className="text-green-500 hover:text-green-700"
+                        onClick={() =>
+                          navigate(`/dashboard/blogs/edit/${post.id}`)
+                        }
+                      >
                         <Pencil size={18} />
                       </button>
+
+                      {/* Delete Button */}
                       <button
                         className="text-red-500 hover:text-red-700"
                         onClick={() => handleDelete(post.id)}
