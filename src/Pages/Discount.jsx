@@ -32,7 +32,7 @@ export default function Discount() {
       }
     };
     fetchDiscounts();
-  }, [showAlert]);
+  }, []); // Empty array means this effect runs only once
 
   // Add discount
   const handleAddDiscount = async () => {

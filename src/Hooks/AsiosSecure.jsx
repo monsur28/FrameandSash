@@ -3,6 +3,7 @@ import Cookies from "js-cookie"; // Ensure you install the js-cookie library: `n
 
 const axiosSecure = axios.create({
   baseURL: "http://frameandsash.great-site.net/api", // Base URL for your API
+  withCredentials: true, // Include cookies in the request
 });
 
 axiosSecure.interceptors.request.use(

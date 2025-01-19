@@ -41,7 +41,7 @@ export default function SiteInfoForm() {
     };
 
     fetchSiteInfo();
-  }, [showAlert]);
+  }, []);
 
   useEffect(() => {
     document.title = siteInfo.siteTitle || "Default Site Title";
