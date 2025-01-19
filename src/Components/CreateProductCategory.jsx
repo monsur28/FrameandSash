@@ -1,14 +1,14 @@
 import { useState } from "react";
+import axiosSecure from "../Hooks/AsiosSecure";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function CreateProductCategory() {
+  const { showAlert } = useSweetAlert();
   const [formState, setFormState] = useState({
-    projectTitle: "",
-    accessories: "available",
-    workingHour: "available",
-    wholesalePrice: "available",
-    marketPrice: "available",
-    selectedFile: null,
-    accessoryFeatures: {
+    category_name: "",
+    category_image: null,
+    accessories_available: false,
+    accessories_attributes: {
       minimumUnit: false,
       minimumSize: false,
       title: false,
@@ -20,7 +20,7 @@ export default function CreateProductCategory() {
       increasingSize: false,
       increasingPrize: false,
     },
-    ingredientFeatures: {
+    ingredients_attributes: {
       minimumUnit: false,
       minimumSize: false,
       title: false,
@@ -32,13 +32,16 @@ export default function CreateProductCategory() {
       increasingSize: false,
       increasingPrize: false,
     },
+    working_hour_available: false,
+    wholesale_price_available: false,
+    market_price_available: false,
   });
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFormState((prev) => ({
         ...prev,
-        selectedFile: e.target.files[0],
+        category_image: e.target.files[0],
       }));
     }
   };
@@ -54,46 +57,99 @@ export default function CreateProductCategory() {
   };
 
   const handleRadioChange = (field, value) => {
+    const booleanValue = value === "true";
     setFormState((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: booleanValue,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formState);
+
+    const formData = new FormData();
+    formData.append("category_name", formState.category_name);
+
+    // Convert boolean values to 1 or 0 before appending
+    formData.append(
+      "accessories_available",
+      formState.accessories_available ? 1 : 0
+    );
+    formData.append(
+      "working_hour_available",
+      formState.working_hour_available ? 1 : 0
+    );
+    formData.append(
+      "wholesale_price_available",
+      formState.wholesale_price_available ? 1 : 0
+    );
+    formData.append(
+      "market_price_available",
+      formState.market_price_available ? 1 : 0
+    );
+
+    if (formState.category_image) {
+      formData.append("category_image", formState.category_image);
+    }
+
+    Object.entries(formState.accessories_attributes).forEach(
+      ([key, value]) =>
+        formData.append(`accessories_attributes[${key}]`, value ? 1 : 0) // Converting  boolean attributes to 0 or 1
+    );
+    Object.entries(formState.ingredients_attributes).forEach(
+      ([key, value]) =>
+        formData.append(`ingredients_attributes[${key}]`, value ? 1 : 0) // Converting  boolean attributes to 0 or 1
+    );
+
+    // Log the formData for debugging
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    try {
+      await axiosSecure.post("/product-categories", formData);
+      showAlert(
+        "Success!",
+        "Product category created successfully.",
+        "success"
+      );
+    } catch (error) {
+      showAlert(
+        "Error!",
+        `${error.response?.data?.message || "An error occurred."}`,
+        "error"
+      );
+    }
   };
 
   return (
     <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
       <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center mb-8">
-          {/* Project Title */}
           <div className="mb-6">
             <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Product Title<span className="text-red-500">*</span>
+              Category Name<span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={formState.projectTitle}
+              value={formState.category_name}
               onChange={(e) =>
                 setFormState((prev) => ({
                   ...prev,
-                  projectTitle: e.target.value,
+                  category_name: e.target.value,
                 }))
               }
               className="w-full lg:w-96 p-3 bg-blue-50/50 rounded-lg"
               placeholder="Windows 12"
+              required // Make sure this field is required
             />
           </div>
 
-          {/* Product Image */}
           <div className="mb-6">
             <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Product Image<span className="text-red-500">*</span>
+              Category Image<span className="text-red-500">*</span>
             </label>
-            <div className="flex  gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
+            <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
               <button
                 type="button"
                 onClick={() => document.getElementById("fileInput")?.click()}
@@ -102,9 +158,9 @@ export default function CreateProductCategory() {
                 Choose File
               </button>
               <span className="text-gray-500 truncate">
-                {formState.selectedFile
-                  ? formState.selectedFile.name
-                  : "No File Chossen"}
+                {formState.category_image
+                  ? formState.category_image.name
+                  : "No File Chosen"}
               </span>
               <input
                 id="fileInput"
@@ -117,64 +173,71 @@ export default function CreateProductCategory() {
           </div>
         </div>
 
-        {/* Accessories */}
         <div className="mb-6">
           <label className="block text-lg lg:text-xl font-semibold mb-2">
-            Accessories<span className="text-red-500">*</span>
+            Accessories Availability<span className="text-red-500">*</span>
           </label>
           <div className="flex gap-6 flex-wrap">
             <label className="flex items-center gap-2">
               <input
                 type="radio"
-                checked={formState.accessories === "available"}
-                onChange={() => handleRadioChange("accessories", "available")}
+                checked={formState.accessories_available === true}
+                onChange={() =>
+                  handleRadioChange("accessories_available", "true")
+                }
                 className="w-5 h-5 bg-teal-500"
+                value="true"
               />
               <span>Available</span>
             </label>
             <label className="flex items-center gap-2">
               <input
                 type="radio"
-                checked={formState.accessories === "unavailable"}
-                onChange={() => handleRadioChange("accessories", "unavailable")}
+                checked={formState.accessories_available === false}
+                onChange={() =>
+                  handleRadioChange("accessories_available", "false")
+                }
                 className="w-5 h-5 bg-teal-500"
+                value="false"
               />
               <span>Unavailable</span>
             </label>
           </div>
         </div>
 
-        {/* Accessory Features */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-          {Object.entries(formState.accessoryFeatures).map(([key, value]) => (
-            <label key={key} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={value}
-                onChange={() => handleCheckboxChange("accessoryFeatures", key)}
-                className="w-5 h-5 bg-teal-500"
-              />
-              <span className="capitalize">
-                {key.replace(/([A-Z])/g, " $1").trim()}
-              </span>
-            </label>
-          ))}
+          {Object.entries(formState.accessories_attributes).map(
+            ([key, value]) => (
+              <label key={key} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={value}
+                  onChange={() =>
+                    handleCheckboxChange("accessories_attributes", key)
+                  }
+                  className="w-5 h-5 bg-teal-500"
+                />
+                <span className="capitalize">
+                  {key.replace(/([A-Z])/g, " $1").trim()}
+                </span>
+              </label>
+            )
+          )}
         </div>
 
-        {/* Ingredients Section */}
         <div className="mb-6">
           <label className="block text-lg lg:text-xl font-semibold mb-2">
             Ingredients<span className="text-red-500">*</span>
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {Object.entries(formState.ingredientFeatures).map(
+            {Object.entries(formState.ingredients_attributes).map(
               ([key, value]) => (
                 <label key={key} className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={value}
                     onChange={() =>
-                      handleCheckboxChange("ingredientFeatures", key)
+                      handleCheckboxChange("ingredients_attributes", key)
                     }
                     className="w-5 h-5 bg-teal-500"
                   />
@@ -187,91 +250,98 @@ export default function CreateProductCategory() {
           </div>
         </div>
 
-        {/* Bottom Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-8">
-          {/* Working Hour */}
-          <div>
+          <div className="mb-6">
             <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Working Hour<span className="text-red-500">*</span>
+              Working Hour Availability<span className="text-red-500">*</span>
             </label>
             <div className="flex gap-6 flex-wrap">
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
-                  checked={formState.workingHour === "available"}
-                  onChange={() => handleRadioChange("workingHour", "available")}
+                  checked={formState.working_hour_available === true}
+                  onChange={() =>
+                    handleRadioChange("working_hour_available", "true")
+                  }
                   className="w-5 h-5 bg-teal-500"
+                  value="true"
                 />
                 <span>Available</span>
               </label>
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
-                  checked={formState.workingHour === "unavailable"}
+                  checked={formState.working_hour_available === false}
                   onChange={() =>
-                    handleRadioChange("workingHour", "unavailable")
+                    handleRadioChange("working_hour_available", "false")
                   }
                   className="w-5 h-5 bg-teal-500"
+                  value="false"
                 />
                 <span>Unavailable</span>
               </label>
             </div>
           </div>
 
-          {/* Wholesale Price */}
-          <div>
+          <div className="mb-6">
             <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Wholesale Price<span className="text-red-500">*</span>
+              Wholesale Price Availability
+              <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-6 flex-wrap">
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
-                  checked={formState.wholesalePrice === "available"}
+                  checked={formState.wholesale_price_available === true}
                   onChange={() =>
-                    handleRadioChange("wholesalePrice", "available")
+                    handleRadioChange("wholesale_price_available", "true")
                   }
                   className="w-5 h-5 bg-teal-500"
+                  value="true"
                 />
                 <span>Available</span>
               </label>
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
-                  checked={formState.wholesalePrice === "unavailable"}
+                  checked={formState.wholesale_price_available === false}
                   onChange={() =>
-                    handleRadioChange("wholesalePrice", "unavailable")
+                    handleRadioChange("wholesale_price_available", "false")
                   }
                   className="w-5 h-5 bg-teal-500"
+                  value="false"
                 />
                 <span>Unavailable</span>
               </label>
             </div>
           </div>
 
-          {/* Market Price */}
-          <div>
+          <div className="mb-6">
             <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Market Price<span className="text-red-500">*</span>
+              Market Price Availability<span className="text-red-500">*</span>
             </label>
             <div className="flex gap-6 flex-wrap">
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
-                  checked={formState.marketPrice === "available"}
-                  onChange={() => handleRadioChange("marketPrice", "available")}
+                  checked={formState.market_price_available === true}
+                  onChange={() =>
+                    handleRadioChange("market_price_available", "true")
+                  }
                   className="w-5 h-5 bg-teal-500"
+                  value="true"
                 />
                 <span>Available</span>
               </label>
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
-                  checked={formState.marketPrice === "unavailable"}
+                  checked={formState.market_price_available === false}
                   onChange={() =>
-                    handleRadioChange("marketPrice", "unavailable")
+                    handleRadioChange("market_price_available", "false")
                   }
                   className="w-5 h-5 bg-teal-500"
+                  value="false"
                 />
                 <span>Unavailable</span>
               </label>
@@ -279,7 +349,6 @@ export default function CreateProductCategory() {
           </div>
         </div>
 
-        {/* Submit Button */}
         <div className="flex justify-end">
           <button
             type="submit"

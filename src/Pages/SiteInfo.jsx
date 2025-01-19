@@ -1,154 +1,211 @@
-import { useState } from "react";
-import Swal from "sweetalert2";
-import { useLanguage } from "../ContextProvider/LanguageContext";
+import { useState, useEffect } from "react";
+
+import { Mail, Phone } from "lucide-react";
+import axiosSecure from "../Hooks/AsiosSecure";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function SiteInfoForm() {
-  const { t } = useLanguage();
+  const { showAlert } = useSweetAlert();
   const [formData, setFormData] = useState({
-    shortDescription:
-      "Frame And Sash is one of the best Furniture companies in Bangladesh.",
-    copyright: "© 2023 Frame And Sash. All rights reserved.",
-    address: "Naogaon, Dhaka, Bangladesh",
-    addressMapLink: "",
-    email: "official@Frame And Sash.com",
-    phone: "+8801645452145",
+    siteTitle: "",
+    short_description: "",
+    copy_right: "",
+    address: "",
+    map_link: "",
+    email: "",
+    phone: "",
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
+  const [errors, setErrors] = useState({});
+  const [siteInfo, setSiteInfo] = useState({});
 
-    Swal.fire({
-      title: "Success!",
-      text: "Your information is saved",
-      icon: "success",
-      confirmButtonColor: "#6366f1",
-    });
+  useEffect(() => {
+    const fetchSiteInfo = async () => {
+      try {
+        const response = await axiosSecure.get("/site-info");
+        const data = response.data || {};
+        setSiteInfo(data);
+        setFormData({
+          siteTitle: data.siteTitle || "",
+          short_description: data.short_description || "",
+          copy_right: data.copy_right || "",
+          address: data.address || "",
+          map_link: data.map_link || "",
+          email: data.email || "",
+          phone: data.phone || "",
+        });
+      } catch (error) {
+        console.error("Error fetching site info:", error);
+        showAlert("Error!", "Failed to fetch site information.", "error", "OK");
+      }
+    };
+
+    fetchSiteInfo();
+  }, [showAlert]);
+
+  useEffect(() => {
+    document.title = siteInfo.siteTitle || "Default Site Title";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute(
+        "content",
+        siteInfo.short_description || "Default site description"
+      );
+    }
+  }, [siteInfo]);
+
+  const validate = () => {
+    let valid = true;
+    const newErrors = {};
+
+    if (!formData.siteTitle) {
+      newErrors.siteTitle = "Site title is required";
+      valid = false;
+    }
+
+    if (!formData.short_description) {
+      newErrors.short_description = "Short description is required";
+      valid = false;
+    }
+
+    if (!formData.copy_right) {
+      newErrors.copy_right = "CopyRight is required";
+      valid = false;
+    }
+
+    if (!formData.address) {
+      newErrors.address = "Address is required";
+      valid = false;
+    }
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+      valid = false;
+    }
+
+    if (!formData.phone) {
+      newErrors.phone = "Phone is required";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validate()) {
+      try {
+        if (siteInfo.id) {
+          // Update existing site info
+          await axiosSecure.put("/site-info", formData);
+          showAlert(
+            "Success!",
+            "Site information updated successfully!",
+            "success",
+            "OK"
+          );
+        } else {
+          // Create new site info
+          await axiosSecure.post("/site-info", formData);
+          showAlert(
+            "Success!",
+            "Site information created successfully!",
+            "success",
+            "OK"
+          );
+        }
+        setSiteInfo(formData);
+      } catch (error) {
+        showAlert(
+          "Error!",
+          `${error.response?.data?.message || "An error occurred."}`,
+          "error",
+          "OK"
+        );
+      }
+    } else {
+      showAlert(
+        "Error!",
+        "Please fill in all required fields correctly.",
+        "error",
+        "OK"
+      );
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-6">{t("siteinfo")}</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-4">
-          <div>
+    <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 p-6 bg-white rounded-lg shadow-md"
+      >
+        {[
+          { label: "Site Title", name: "siteTitle", type: "text" },
+          {
+            label: "Short Description",
+            name: "short_description",
+            type: "textarea",
+          },
+          { label: "CopyRight", name: "copy_right", type: "text" },
+          { label: "Address", name: "address", type: "text" },
+          { label: "Address Map Link", name: "map_link", type: "text" },
+          { label: "Email", name: "email", type: "email" },
+          { label: "Phone", name: "phone", type: "tel" },
+        ].map((field, idx) => (
+          <div key={idx}>
             <label
-              htmlFor="shortDescription"
-              className="block text-sm font-medium mb-1"
+              htmlFor={field.name}
+              className="block text-sm font-medium text-gray-700"
             >
-              {t("ShortDescription")}
+              {field.label}
             </label>
-            <input
-              type="text"
-              id="shortDescription"
-              value={formData.shortDescription}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  shortDescription: e.target.value,
-                }))
-              }
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
+            {field.type === "textarea" ? (
+              <textarea
+                id={field.name}
+                name={field.name}
+                value={formData[field.name]}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+              />
+            ) : (
+              <div className="relative mt-1">
+                {(field.name === "email" || field.name === "phone") &&
+                  (field.name === "email" ? (
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                  ) : (
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                  ))}
+                <input
+                  id={field.name}
+                  name={field.name}
+                  type={field.type}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  className="pl-10 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            )}
+            {errors[field.name] && (
+              <p className="text-red-500 text-sm mt-1">{errors[field.name]}</p>
+            )}
           </div>
-
-          <div>
-            <label
-              htmlFor="copyright"
-              className="block text-sm font-medium mb-1"
-            >
-              {t("Copyright")}
-            </label>
-            <input
-              type="text"
-              id="copyright"
-              value={formData.copyright}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, copyright: e.target.value }))
-              }
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="address" className="block text-sm font-medium mb-1">
-              {t("address")}
-            </label>
-            <input
-              type="text"
-              id="address"
-              value={formData.address}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, address: e.target.value }))
-              }
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="addressMapLink"
-              className="block text-sm font-medium mb-1"
-            >
-              {t("AddressMapLink")}
-            </label>
-            <input
-              type="url"
-              id="addressMapLink"
-              value={formData.addressMapLink}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  addressMapLink: e.target.value,
-                }))
-              }
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              {t("email")}
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium mb-1">
-              {t("phone")}
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              value={formData.phone}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, phone: e.target.value }))
-              }
-              className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="text-sm text-gray-500">Fields marked are required</div>
-
+        ))}
         <button
           type="submit"
-          className="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+          className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
           Submit
         </button>

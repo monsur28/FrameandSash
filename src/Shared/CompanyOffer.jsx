@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -98,11 +96,13 @@ export default function CompanyOffer() {
             </div>
           </div>
         </div>
+
         {/* Revenue Card */}
         <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl py-16 px-24 shadow-sm">
           <h2 className="text-xl mb-2">Revenue</h2>
           <p className="text-3xl font-bold">$10,000.00</p>
         </div>
+
         {/* Profit Card */}
         <div className="border-2 flex flex-col justify-center items-center border-white bg-white50 backdrop-blur-16.5 rounded-3xl p-6 shadow-sm">
           <h2 className="text-xl mb-2">Profit</h2>
