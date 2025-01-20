@@ -21,7 +21,7 @@ export default function Discount() {
   useEffect(() => {
     const fetchDiscounts = async () => {
       try {
-        const response = await axiosSecure.get("/discounts");
+        const response = await axiosSecure.get("/api/discounts");
         setDiscounts(response.data);
       } catch (error) {
         console.error(
@@ -46,7 +46,7 @@ export default function Discount() {
         return;
       }
       // Proceed to add the new discount
-      const response = await axiosSecure.post("/discounts", newDiscount, {
+      const response = await axiosSecure.post("/api/discounts", newDiscount, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -85,7 +85,7 @@ export default function Discount() {
 
     if (result.isConfirmed) {
       try {
-        await axiosSecure.delete(`/discounts/${id}`);
+        await axiosSecure.delete(`/api/discounts/${id}`);
         setDiscounts(discounts.filter((discount) => discount.id !== id));
       } catch (error) {
         console.error(
@@ -116,7 +116,7 @@ export default function Discount() {
 
     try {
       const response = await axiosSecure.put(
-        `/discounts/${updatedDiscount.id}`,
+        `/api/discounts/${updatedDiscount.id}`,
         updatedDiscount
       );
 

@@ -218,11 +218,15 @@ export default function AddManufacturerForm() {
 
       console.log(payload);
 
-      const response = await axiosSecure.post("/manufacturers/store", payload, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axiosSecure.post(
+        "/api/manufacturers/store",
+        payload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (response.status === 200) {
         showAlert(

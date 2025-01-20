@@ -107,7 +107,7 @@ export default function CreateProductCategory() {
     }
 
     try {
-      await axiosSecure.post("/product-categories", formData);
+      await axiosSecure.post("/api/product-categories", formData);
       showAlert(
         "Success!",
         "Product category created successfully.",

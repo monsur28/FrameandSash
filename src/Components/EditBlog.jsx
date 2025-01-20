@@ -23,7 +23,7 @@ export default function EditBlog() {
   useEffect(() => {
     const fetchBlogPost = async () => {
       try {
-        const response = await axiosSecure.get(`blogs/${id}`);
+        const response = await axiosSecure.get(`/api/blogs/${id}`);
         setFormData(response.data);
       } catch (error) {
         console.error("Error fetching blog post:", error);
@@ -51,7 +51,7 @@ export default function EditBlog() {
     e.preventDefault();
     try {
       await axiosSecure.put(
-        `blogs/${id}`,
+        `/api/blogs/${id}`,
         {
           ...formData,
         },

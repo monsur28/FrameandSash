@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "REACT_APP_API_BASE_URL=http://frameandsash.great-site.net/api react-scripts build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -41,6 +41,8 @@
     "sort-by": "^1.2.0",
     "sweetalert2": "^11.15.5"
   },
+  
+  "proxy": "http://frameandsash.great-site.net",
   "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@types/react": "^18.3.12",

@@ -14,7 +14,7 @@ const BlogDetail = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axiosSecure.get(`blogs/${id}`);
+        const response = await axiosSecure.get(`/api/blogs/${id}`);
         setPost(response.data);
       } catch (error) {
         console.error("Error fetching the post details:", error);

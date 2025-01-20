@@ -73,7 +73,7 @@ const Contact = () => {
   // Fetch contacts from the API
   const fetchContacts = async () => {
     axiosSecure
-      .get("/contacts")
+      .get("/api/contacts")
       .then((response) => {
         console.log("Contacts:", response.data);
         setContacts(response.data); // Ensure response.data is an array
@@ -93,7 +93,7 @@ const Contact = () => {
   const handleAdd = async () => {
     try {
       console.log("Adding contact:", newContact); // Debugging
-      const response = await axiosSecure.post("/contacts", newContact);
+      const response = await axiosSecure.post("/api/contacts", newContact);
       setContacts([...contacts, response.data.contact]);
       setNewContact({ icon: "", title: "", content: "", order: 0 });
       setEditId(null);
@@ -107,7 +107,10 @@ const Contact = () => {
 
   const handleUpdate = async () => {
     try {
-      const response = await axiosSecure.put(`/contacts/${editId}`, newContact);
+      const response = await axiosSecure.put(
+        `/api/contacts/${editId}`,
+        newContact
+      );
       setContacts(
         contacts.map((contact) =>
           contact.id === editId ? response.data.contact : contact

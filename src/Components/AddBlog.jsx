@@ -41,7 +41,7 @@ export default function AddBlog() {
       const plainTextContent = formData.blog_content.replace(/<[^>]*>/g, "");
 
       await axiosSecure.post(
-        "/blogs",
+        "/api/blogs",
         {
           blog_title: formData.blog_title,
           author: formData.author,

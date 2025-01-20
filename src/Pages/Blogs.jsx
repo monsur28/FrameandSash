@@ -16,7 +16,7 @@ export default function Blogs() {
   useEffect(() => {
     const fetchBlogPosts = async () => {
       try {
-        const response = await axiosSecure.get("blogs");
+        const response = await axiosSecure.get("/api/blogs");
         setBlogPosts(response.data);
       } catch (error) {
         console.error("Error fetching blog posts:", error);
@@ -29,7 +29,7 @@ export default function Blogs() {
   // Delete blog post from API and state
   const handleDelete = async (id) => {
     try {
-      await axiosSecure.delete(`blogs/${id}`); // Assuming delete API endpoint is set up
+      await axiosSecure.delete(`/api/blogs/${id}`); // Assuming delete API endpoint is set up
       showAlert.fire("Success!", "Blog post deleted successfully.", "success");
       setBlogPosts(blogPosts.filter((post) => post.id !== id));
     } catch (error) {

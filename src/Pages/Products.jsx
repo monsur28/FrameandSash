@@ -14,7 +14,7 @@ export default function Products() {
     // Fetch product categories from the API
     const fetchProducts = async () => {
       try {
-        const response = await axiosSecure.get("/product-categories"); // Replace with your API endpoint
+        const response = await axiosSecure.get("/api/product-categories"); // Replace with your API endpoint
         const data = response.data || [];
         setProducts(data);
       } catch (error) {

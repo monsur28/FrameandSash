@@ -22,7 +22,7 @@ export default function SiteInfoForm() {
   useEffect(() => {
     const fetchSiteInfo = async () => {
       try {
-        const response = await axiosSecure.get("/site-info");
+        const response = await axiosSecure.get("/api/site-info");
         const data = response.data || {};
         setSiteInfo(data);
         setFormData({
@@ -102,7 +102,7 @@ export default function SiteInfoForm() {
       try {
         if (siteInfo.id) {
           // Update existing site info
-          await axiosSecure.put("/site-info", formData);
+          await axiosSecure.put("/api/site-info", formData);
           showAlert(
             "Success!",
             "Site information updated successfully!",
@@ -111,7 +111,7 @@ export default function SiteInfoForm() {
           );
         } else {
           // Create new site info
-          await axiosSecure.post("/site-info", formData);
+          await axiosSecure.post("/api/site-info", formData);
           showAlert(
             "Success!",
             "Site information created successfully!",
