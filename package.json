@@ -5,16 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "REACT_APP_API_BASE_URL=http://frameandsash.great-site.net/api react-scripts build",
+    "build": "REACT_APP_API_BASE_URL=http://frameandsash.great-site.net react-scripts build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "axios": "^1.7.9",
+    "cors": "^2.8.5",
     "draft-js": "^0.11.7",
     "firebase": "^11.1.0",
     "global": "^4.4.0",
+    "http-proxy-middleware": "^3.0.3",
     "i18next": "^24.2.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
@@ -41,7 +43,6 @@
     "sort-by": "^1.2.0",
     "sweetalert2": "^11.15.5"
   },
-  
   "proxy": "http://frameandsash.great-site.net",
   "devDependencies": {
     "@eslint/js": "^9.15.0",
