@@ -41,7 +41,6 @@
     "sort-by": "^1.2.0",
     "sweetalert2": "^11.15.5"
   },
-  
   "proxy": "http://frameandsash.great-site.net",
   "devDependencies": {
     "@eslint/js": "^9.15.0",

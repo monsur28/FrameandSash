@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const axiosSecure = axios.create({
-  baseURL: "http://frameandsash.great-site.net", // Base URL for your API
+  baseURL: "https://frame.twintechsoft.com", // Base URL for your API
   headers: { "Content-Type": "application/json" },
 });
 

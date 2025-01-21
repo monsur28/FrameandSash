@@ -289,7 +289,7 @@ export default function Discount() {
             />
             <button
               onClick={handleAddDiscount}
-              className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center justify-center"
+              className="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center justify-center"
             >
               <PlusCircle size={20} className="mr-2" />
               {t("AddDiscount")}

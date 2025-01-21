@@ -95,7 +95,7 @@ export default function UpdateProfile() {
           <button
             type="submit"
             disabled={loading || uploading}
-            className={`w-full py-2 px-4 bg-blue-500 text-white font-bold rounded-md ${
+            className={`w-full py-2 px-4 bg-primary text-white font-bold rounded-md ${
               loading || uploading
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-blue-600"

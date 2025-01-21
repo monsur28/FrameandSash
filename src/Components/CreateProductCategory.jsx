@@ -68,52 +68,65 @@ export default function CreateProductCategory() {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("category_name", formState.category_name);
 
-    // Convert boolean values to 1 or 0 before appending
+    // Append all string and boolean values
+    formData.append("category_name", formState.category_name);
     formData.append(
       "accessories_available",
-      formState.accessories_available ? 1 : 0
+      formState.accessories_available ? "1" : "0"
     );
     formData.append(
       "working_hour_available",
-      formState.working_hour_available ? 1 : 0
+      formState.working_hour_available ? "1" : "0"
     );
     formData.append(
       "wholesale_price_available",
-      formState.wholesale_price_available ? 1 : 0
+      formState.wholesale_price_available ? "1" : "0"
     );
     formData.append(
       "market_price_available",
-      formState.market_price_available ? 1 : 0
+      formState.market_price_available ? "1" : "0"
     );
 
+    // Append file input
     if (formState.category_image) {
       formData.append("category_image", formState.category_image);
     }
 
-    Object.entries(formState.accessories_attributes).forEach(
-      ([key, value]) =>
-        formData.append(`accessories_attributes[${key}]`, value ? 1 : 0) // Converting  boolean attributes to 0 or 1
-    );
-    Object.entries(formState.ingredients_attributes).forEach(
-      ([key, value]) =>
-        formData.append(`ingredients_attributes[${key}]`, value ? 1 : 0) // Converting  boolean attributes to 0 or 1
-    );
+    // Append nested objects (e.g., accessories_attributes)
+    Object.entries(formState.accessories_attributes).forEach(([key, value]) => {
+      formData.append(`accessories_attributes[${key}]`, value ? "1" : "0");
+    });
 
-    // Log the formData for debugging
+    Object.entries(formState.ingredients_attributes).forEach(([key, value]) => {
+      formData.append(`ingredients_attributes[${key}]`, value ? "1" : "0");
+    });
+
+    // Debugging: Log all FormData entries
+    console.log("Form Data:");
     for (let [key, value] of formData.entries()) {
-      console.log(key, value);
+      console.log(`${key}: ${value}`);
     }
 
+    // Submit FormData
     try {
-      await axiosSecure.post("/api/product-categories", formData);
+      const response = await axiosSecure.post(
+        "/api/product-categories",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Response:", response.data);
       showAlert(
         "Success!",
         "Product category created successfully.",
         "success"
       );
     } catch (error) {
+      console.error("Error creating product category:", error);
       showAlert(
         "Error!",
         `${error.response?.data?.message || "An error occurred."}`,
@@ -125,6 +138,7 @@ export default function CreateProductCategory() {
   return (
     <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 p-6">
       <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-8">
+        {/* Category Name */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center mb-8">
           <div className="mb-6">
             <label className="block text-lg lg:text-xl font-semibold mb-2">
@@ -140,11 +154,12 @@ export default function CreateProductCategory() {
                 }))
               }
               className="w-full lg:w-96 p-3 bg-blue-50/50 rounded-lg"
-              placeholder="Windows 12"
-              required // Make sure this field is required
+              placeholder="Windows"
+              required
             />
           </div>
 
+          {/* Category Image */}
           <div className="mb-6">
             <label className="block text-lg lg:text-xl font-semibold mb-2">
               Category Image<span className="text-red-500">*</span>
@@ -152,7 +167,7 @@ export default function CreateProductCategory() {
             <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
               <button
                 type="button"
-                onClick={() => document.getElementById("fileInput")?.click()}
+                onClick={() => document.getElementById("fileInput").click()}
                 className="bg-teal-500 text-white px-1 lg:px-6 py-1 lg:py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
               >
                 Choose File
@@ -173,6 +188,7 @@ export default function CreateProductCategory() {
           </div>
         </div>
 
+        {/* Accessories Availability */}
         <div className="mb-6">
           <label className="block text-lg lg:text-xl font-semibold mb-2">
             Accessories Availability<span className="text-red-500">*</span>
@@ -205,6 +221,7 @@ export default function CreateProductCategory() {
           </div>
         </div>
 
+        {/* Accessories Attributes */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {Object.entries(formState.accessories_attributes).map(
             ([key, value]) => (
@@ -349,6 +366,7 @@ export default function CreateProductCategory() {
           </div>
         </div>
 
+        {/* Submit Button */}
         <div className="flex justify-end">
           <button
             type="submit"

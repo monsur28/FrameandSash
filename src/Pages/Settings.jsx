@@ -37,7 +37,7 @@ export default function AdminProfile() {
               <p className="text-sm ">{user.email}</p>
             </div>
             <div className="flex justify-around p-6 border-t">
-              <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600">
+              <button className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-md shadow hover:bg-blue-600">
                 <Edit size={18} />
                 <span>{t("EditProfile")}</span>
               </button>

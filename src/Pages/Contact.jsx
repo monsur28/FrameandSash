@@ -92,7 +92,6 @@ const Contact = () => {
 
   const handleAdd = async () => {
     try {
-      console.log("Adding contact:", newContact); // Debugging
       const response = await axiosSecure.post("/api/contacts", newContact);
       setContacts([...contacts, response.data.contact]);
       setNewContact({ icon: "", title: "", content: "", order: 0 });
@@ -127,7 +126,17 @@ const Contact = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axiosSecure.delete(`/contacts/${id}`);
+      Swal.fire({
+        title: "Are you sure?",
+        text: "This contact will be permanently deleted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel",
+      });
+      await axiosSecure.delete(`/api/contacts/${id}`);
       setContacts(contacts.filter((contact) => contact.id !== id));
       showAlert("Success!", "Contact deleted successfully.", "success");
     } catch (error) {
@@ -141,7 +150,7 @@ const Contact = () => {
       <div className="flex flex-col lg:flex-row justify-between items-center mb-5">
         <h3 className="text-2xl font-bold mb-5">Contact</h3>
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition mb-5"
+          className="bg-primary text-white px-4 py-2 rounded hover:bg-blue-600 transition mb-5"
           onClick={() => {
             setNewContact({ icon: "", title: "", content: "", order: 0 });
             setEditId(null);
@@ -170,7 +179,7 @@ const Contact = () => {
                   {index + 1}
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="px-4 py-2">
                     {FaIcons[contact.icon] &&
                       React.createElement(FaIcons[contact.icon], {
                         className: "text-2xl",
@@ -252,7 +261,7 @@ const Contact = () => {
                 Cancel
               </button>
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                className="bg-primary text-white px-4 py-2 rounded hover:bg-blue-600 transition"
                 onClick={editId ? handleUpdate : handleAdd}
               >
                 {editId ? "Update Contact" : "Add Contact"}
