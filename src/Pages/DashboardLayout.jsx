@@ -55,11 +55,11 @@ const DashboardLayout = () => {
       label: `${t("packages")}`,
       link: "/dashboard/packages",
     },
-    {
-      icon: <Users className="w-5 h-5" />,
-      label: `${t("rolemanagement")}`,
-      link: "/dashboard/rolemanagement",
-    },
+    // {
+    //   icon: <Users className="w-5 h-5" />,
+    //   label: `${t("rolemanagement")}`,
+    //   link: "/dashboard/rolemanagement",
+    // },
     {
       icon: <Upload className="w-5 h-5" />,
       label: `${t("imageupload")}`,

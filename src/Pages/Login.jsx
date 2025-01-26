@@ -6,6 +6,8 @@ import { toast, ToastContainer } from "react-toastify"; // Import toast
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
 import useAuth from "../Hooks/UseAuth";
 import { useLanguage } from "../ContextProvider/LanguageContext";
+import axiosSecure from "../Hooks/AsiosSecure";
+import bcrypt from "bcryptjs"; // bcryptjs for hashing
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,39 +20,94 @@ export default function Login() {
   const navigate = useNavigate();
   const { t } = useLanguage();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
 
-    loginUser(email, password)
-      .then(() => {
-        // Show success toast
-        toast.success(`${t("LoginSuccessfully")}`, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+    try {
+      // Step 1: Attempt Firebase login (SuperAdmin)
+      console.log("Attempting Firebase login...");
+      await loginUser(email, password);
+      console.log("Firebase login successful");
 
-        // Navigate after the toast has been shown
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000); // Delay the navigation to allow the toast to show
-      })
-      .catch((error) => {
-        toast.error(`Oops... ${error.message}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+      // Show success toast for SuperAdmin login
+      toast.success(`${t("Super Admin Login Success")}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
       });
+
+      // Navigate to the SuperAdmin dashboard
+      console.log("Redirecting to SuperAdmin dashboard...");
+      navigate("/dashboard"); // Navigate immediately
+    } catch (firebaseError) {
+      console.error("Firebase login failed:", firebaseError.message);
+
+      // Step 2: If Firebase login fails, check the database for Manufacturer
+      try {
+        console.log("Attempting database login...");
+        const response = await axiosSecure.post("/api/login", {
+          user_email: email,
+          password,
+        });
+        console.log("Database response:", response);
+
+        const user = response.data.user;
+
+        // Compare the provided password with the hashed password from the database
+        console.log("Comparing passwords...");
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log("Passwords match:", isPasswordValid);
+
+        if (response.status === 200) {
+          if (isPasswordValid) {
+            // Show success toast for Manufacturer login
+            toast.success(`${t("Manufacturer Login Success")}`, {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+
+            // Navigate to the Manufacturer dashboard
+            console.log("Redirecting to Manufacturer dashboard...");
+            navigate("/dashboard/packages"); // Navigate immediately
+          } else {
+            console.error("Invalid credentials");
+            throw new Error("Invalid credentials");
+          }
+        } else {
+          console.error("Unexpected response from the server.");
+          throw new Error("Unexpected response from the server.");
+        }
+      } catch (databaseError) {
+        console.error("Database login failed:", databaseError.message);
+
+        // Show error toast for database login failure
+        toast.error(
+          `Oops... ${
+            databaseError.response?.data?.message ||
+            databaseError.message ||
+            "Manufacturer credentials are invalid."
+          }`,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
+      }
+    }
   };
 
   return (

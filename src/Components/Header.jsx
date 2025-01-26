@@ -33,6 +33,9 @@ export default function Header() {
     "/dashboard/blog": "Blogs",
     "/dashboard/contact": "contact",
     "/dashboard/settings": "Settings",
+    "/dashboard/discount": "discount",
+    "/dashboard/settings/siteinfo": "siteinfo",
+    "/dashboard/settings/siteimage": "siteimage",
     "/dashboard": "dashboard",
   };
 

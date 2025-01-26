@@ -3,6 +3,16 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      animation: {
+        "dash-text": "dashText 4s linear infinite",
+      },
+      keyframes: {
+        "dash-text": {
+          "0%": { strokeDasharray: "0 300", strokeDashoffset: "0" },
+          "50%": { strokeDasharray: "300 300", strokeDashoffset: "150" },
+          "100%": { strokeDasharray: "0 300", strokeDashoffset: "300" },
+        },
+      },
       colors: {
         primary: "#009DAA", // Primary color
         white50: "rgba(255, 255, 255, 0.5)", // Semi-transparent white

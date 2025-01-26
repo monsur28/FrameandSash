@@ -13,11 +13,11 @@ export default function CreateWindows({ onNext }) {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [newIngredient, setNewIngredient] = useState({
-    name: "Windows 08",
+    name: "Handle",
     minSize: "1",
     minCost: "",
     manufacturingCost: "210",
-    increasingSizes: ["50", "70"],
+    increasingSizes: ["50"],
     wholesale: "250",
     marketPrice: "300",
     unit: "cm",
@@ -260,6 +260,7 @@ export default function CreateWindows({ onNext }) {
                 <label className="block text-lg font-medium mb-2">Title</label>
                 <input
                   type="text"
+                  placeholder="Handle"
                   value={newIngredient.name}
                   onChange={(e) =>
                     setNewIngredient({ ...newIngredient, name: e.target.value })

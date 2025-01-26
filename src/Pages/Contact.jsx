@@ -3,6 +3,7 @@ import * as FaIcons from "react-icons/fa"; // Import FontAwesome icons
 import axiosSecure from "../Hooks/AsiosSecure";
 import Swal from "sweetalert2";
 import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
+import { Edit, Trash2 } from "lucide-react";
 
 // Icon Selector Modal Component
 const IconSelectorModal = ({ onClose, onIconSelect, selectedIcon }) => {
@@ -194,20 +195,20 @@ const Contact = () => {
                 </td>
                 <td className="border border-gray-300 space-y-3 lg:space-x-4 px-4 py-2">
                   <button
+                    className="text-green-500 hover:text-green-700 mx-2"
                     onClick={() => {
                       setNewContact(contact);
                       setEditId(contact.id);
                       setShowModal(true);
                     }}
-                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
                   >
-                    Edit
+                    <Edit size={18} />
                   </button>
                   <button
+                    className="text-red-500 hover:text-red-700 mx-2"
                     onClick={() => handleDelete(contact.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                   >
-                    Delete
+                    <Trash2 size={18} />
                   </button>
                 </td>
               </tr>
@@ -227,11 +228,10 @@ const Contact = () => {
               className="bg-gray-200 px-3 py-2 rounded mb-4"
             >
               {newContact.icon ? (
-                <span className="flex items-center">
+                <span className="flex items-center text-[25px]">
                   {React.createElement(FaIcons[newContact.icon], {
                     className: "mr-2",
                   })}
-                  {newContact.icon}
                 </span>
               ) : (
                 "Select Icon"

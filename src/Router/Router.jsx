@@ -27,7 +27,7 @@ import SiteInfo from "../Pages/SiteInfo";
 import SiteImage from "../Pages/SiteImage";
 import PushNotification from "../Pages/PushNotification";
 import ImageUpload from "../Pages/ImageUpload";
-import ProtectedRoute from "./ProtectedRoute";
+// import ProtectedRoute from "./ProtectedRoute";
 import UpdateProfile from "../Components/UpdateProfile";
 import BlogDetail from "../Components/BlogDetail";
 import EditBlog from "../Components/EditBlog";
@@ -35,11 +35,7 @@ import EditBlog from "../Components/EditBlog";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <ProtectedRoute>
-        <DashboardLayout />
-      </ProtectedRoute>
-    ),
+    element: <DashboardLayout />,
     children: [
       {
         path: "/",

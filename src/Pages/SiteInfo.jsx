@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
-
 import { Mail, Phone } from "lucide-react";
+
 import axiosSecure from "../Hooks/AsiosSecure";
+import { Helmet } from "react-helmet";
 import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
+import { useSiteInfo } from "../ContextProvider/SiteInfoContext";
 
 export default function SiteInfoForm() {
+  const { siteInfo, setSiteInfo } = useSiteInfo();
   const { showAlert } = useSweetAlert();
+
   const [formData, setFormData] = useState({
-    siteTitle: "",
-    short_description: "",
+    siteTitle: siteInfo.siteTitle || "",
+    short_description: siteInfo.short_description || "",
     copy_right: "",
     address: "",
     map_link: "",
@@ -17,14 +21,13 @@ export default function SiteInfoForm() {
   });
 
   const [errors, setErrors] = useState({});
-  const [siteInfo, setSiteInfo] = useState({});
 
   useEffect(() => {
     const fetchSiteInfo = async () => {
       try {
         const response = await axiosSecure.get("/api/site-info");
         const data = response.data || {};
-        setSiteInfo(data);
+        setSiteInfo(data); // Update global state
         setFormData({
           siteTitle: data.siteTitle || "",
           short_description: data.short_description || "",
@@ -43,17 +46,6 @@ export default function SiteInfoForm() {
     fetchSiteInfo();
   }, []);
 
-  useEffect(() => {
-    document.title = siteInfo.siteTitle || "Default Site Title";
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute(
-        "content",
-        siteInfo.short_description || "Default site description"
-      );
-    }
-  }, [siteInfo]);
-
   const validate = () => {
     let valid = true;
     const newErrors = {};
@@ -65,29 +57,6 @@ export default function SiteInfoForm() {
 
     if (!formData.short_description) {
       newErrors.short_description = "Short description is required";
-      valid = false;
-    }
-
-    if (!formData.copy_right) {
-      newErrors.copy_right = "CopyRight is required";
-      valid = false;
-    }
-
-    if (!formData.address) {
-      newErrors.address = "Address is required";
-      valid = false;
-    }
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-      valid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-      valid = false;
-    }
-
-    if (!formData.phone) {
-      newErrors.phone = "Phone is required";
       valid = false;
     }
 
@@ -119,7 +88,7 @@ export default function SiteInfoForm() {
             "OK"
           );
         }
-        setSiteInfo(formData);
+        setSiteInfo(formData); // Update global state
       } catch (error) {
         showAlert(
           "Error!",
@@ -148,6 +117,13 @@ export default function SiteInfoForm() {
 
   return (
     <div className="rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5">
+      <Helmet>
+        <title>{siteInfo.siteTitle || "Default Site Title"}</title>
+        <meta
+          name="description"
+          content={siteInfo.short_description || "Default Site Description"}
+        />
+      </Helmet>
       <form
         onSubmit={handleSubmit}
         className="space-y-4 p-6 bg-white rounded-lg shadow-md"
@@ -205,7 +181,7 @@ export default function SiteInfoForm() {
         ))}
         <button
           type="submit"
-          className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          className="w-full text-white bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
           Submit
         </button>

@@ -115,14 +115,16 @@ export default function Discount() {
     );
 
     try {
-      const response = await axiosSecure.put(
+      await axiosSecure.put(
         `/api/discounts/${updatedDiscount.id}`,
         updatedDiscount
       );
 
       setDiscounts(
         discounts.map((discount) =>
-          discount.id === updatedDiscount.id ? response.data : discount
+          discount.id === updatedDiscount.id
+            ? { ...discount, ...updatedDiscount }
+            : discount
         )
       );
 
@@ -256,7 +258,7 @@ export default function Discount() {
         </div>
 
         {/* Add Discount Form */}
-        <div className="mt-6 bg-gray-50 p-4 rounded-lg">
+        <div className="mt-6 border-2 border-white bg-white50 backdrop-blur-16.5 p-4 rounded-lg">
           <h2 className="text-lg font-semibold text-gray-600 mb-4">
             {t("AddNewDiscount")}
           </h2>

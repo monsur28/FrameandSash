@@ -60,14 +60,12 @@ export default function Products() {
     }
   };
 
-  console.log(products);
-
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8">
         <h1 className="text-xl lg:text-3xl font-bold text-gray-800">
-          {t("productList")}
+          {t("productCategories")}
         </h1>
         <button
           onClick={() => navigate("/dashboard/products/create-product")}
@@ -95,11 +93,17 @@ export default function Products() {
             </thead>
             <tbody>
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50">
+                <tr
+                  onClick={() =>
+                    navigate(`/dashboard/products/${product.title}`)
+                  }
+                  key={product.id}
+                  className="hover:bg-gray-50 cursor-pointer"
+                >
                   <td className="p-4 flex items-center gap-3">
                     <img
                       src={`${
-                        import.meta.env.VITE_BACKEND_URL
+                        import.meta.env.VITE_REACT_APP_API_BASE_URL
                       }/framesash/storage/app/public/${product.category_image}`}
                       alt={product.category_name}
                       className="w-6 h-6 object-contain"
