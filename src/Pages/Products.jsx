@@ -95,7 +95,7 @@ export default function Products() {
               {products.map((product) => (
                 <tr
                   onClick={() =>
-                    navigate(`/dashboard/products/${product.title}`)
+                    navigate(`/dashboard/products/${product.category_name}`)
                   }
                   key={product.id}
                   className="hover:bg-gray-50 cursor-pointer"

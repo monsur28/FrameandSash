@@ -7,6 +7,7 @@ import { SweetAlertProvider } from "./ContextProvider/SweetAlertContext";
 import { SiteInfoProvider } from "./ContextProvider/SiteInfoContext";
 import "./index.css";
 import Metadata from "./Shared/Metadata";
+import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")).render(
             <SiteInfoProvider>
               <div className="inter">
                 <Metadata />
+                <ToastContainer />
               </div>
             </SiteInfoProvider>
           </SweetAlertProvider>

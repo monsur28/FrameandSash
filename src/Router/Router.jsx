@@ -27,15 +27,21 @@ import SiteInfo from "../Pages/SiteInfo";
 import SiteImage from "../Pages/SiteImage";
 import PushNotification from "../Pages/PushNotification";
 import ImageUpload from "../Pages/ImageUpload";
-// import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 import UpdateProfile from "../Components/UpdateProfile";
 import BlogDetail from "../Components/BlogDetail";
 import EditBlog from "../Components/EditBlog";
+import Error from "../Pages/Error";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <DashboardLayout />,
+    errorElement: <Error />,
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/",

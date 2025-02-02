@@ -9,6 +9,7 @@ export default function Header() {
   const location = useLocation();
   const { toggleSidebar } = UseSidebar();
   const { user, logOut } = useAuth();
+  console.log(user);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
@@ -236,10 +237,10 @@ export default function Header() {
                   />
                   <div>
                     <h2 className="text-lg font-semibold text-gray-800">
-                      Abul Monsur Mohammad Kachru
+                      {user?.name || user.user_name}
                     </h2>
                     <p className="text-sm text-gray-600">
-                      {user.email.slice(0, 15) + "..."}
+                      {user?.email || user?.user_email}
                     </p>
                   </div>
                 </div>

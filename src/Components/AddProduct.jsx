@@ -1,12 +1,13 @@
+// AddProduct.jsx
 import { useState } from "react";
 import Stepper from "./Stepper";
-import CreateWindows from "./CreateWindows";
 import CreateAccessories from "./CreateAccessories";
 import Submission from "./Submission";
+import ProductDetails from "./ProductDetails";
 import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 const steps = [
-  { icon: "📝", title: "Create Windows" },
+  { icon: "📝", title: "Product Details" },
   { icon: "🔧", title: "Create Accessories" },
   { icon: "✓", title: "Submission" },
 ];
@@ -15,9 +16,22 @@ export default function AddProduct() {
   const [currentStep, setCurrentStep] = useState(0);
   const { showAlert } = useSweetAlert();
 
+  // More comprehensive Step 1 data
+  const [windowsData, setWindowsData] = useState({
+    productTitle: "",
+    images: [],
+    labels: {},
+    dimensions: [],
+    ingredients: [],
+  });
+  console.log(windowsData);
+
+  // Step 2 data
+  const [accessoriesData, setAccessoriesData] = useState({});
+
   const handleNext = () => {
     if (currentStep === steps.length - 1) {
-      // Show SweetAlert when the user completes the submission
+      // Show success or final submission
       showAlert(
         "Submission Successful!",
         "Your product has been successfully submitted.",
@@ -33,15 +47,34 @@ export default function AddProduct() {
   };
 
   return (
-    <div>
+    <div className=" p-4">
       <Stepper currentStep={currentStep} steps={steps} />
 
-      {currentStep === 0 && <CreateWindows onNext={handleNext} />}
-      {currentStep === 1 && (
-        <CreateAccessories onNext={handleNext} onPrevious={handlePrevious} />
+      {currentStep === 0 && (
+        <ProductDetails
+          windowsData={windowsData} // pass state data
+          setWindowsData={setWindowsData} // pass the setter function
+          onNext={handleNext} // next-step handler
+        />
       )}
+
+      {currentStep === 1 && (
+        <CreateAccessories
+          windowsData={windowsData}
+          accessoriesData={accessoriesData}
+          setAccessoriesData={setAccessoriesData}
+          onPrev={handlePrevious}
+          onNext={handleNext}
+        />
+      )}
+
       {currentStep === 2 && (
-        <Submission onNext={handleNext} onPrevious={handlePrevious} />
+        <Submission
+          windowsData={windowsData}
+          accessoriesData={accessoriesData}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+        />
       )}
     </div>
   );

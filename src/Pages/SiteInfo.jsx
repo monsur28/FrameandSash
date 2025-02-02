@@ -128,57 +128,160 @@ export default function SiteInfoForm() {
         onSubmit={handleSubmit}
         className="space-y-4 p-6 bg-white rounded-lg shadow-md"
       >
-        {[
-          { label: "Site Title", name: "siteTitle", type: "text" },
-          {
-            label: "Short Description",
-            name: "short_description",
-            type: "textarea",
-          },
-          { label: "CopyRight", name: "copy_right", type: "text" },
-          { label: "Address", name: "address", type: "text" },
-          { label: "Address Map Link", name: "map_link", type: "text" },
-          { label: "Email", name: "email", type: "email" },
-          { label: "Phone", name: "phone", type: "tel" },
-        ].map((field, idx) => (
-          <div key={idx}>
-            <label
-              htmlFor={field.name}
-              className="block text-sm font-medium text-gray-700"
-            >
-              {field.label}
-            </label>
-            {field.type === "textarea" ? (
-              <textarea
-                id={field.name}
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-              />
-            ) : (
-              <div className="relative mt-1">
-                {(field.name === "email" || field.name === "phone") &&
-                  (field.name === "email" ? (
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                  ) : (
-                    <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                  ))}
-                <input
-                  id={field.name}
-                  name={field.name}
-                  type={field.type}
-                  value={formData[field.name]}
-                  onChange={handleChange}
-                  className="pl-10 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            )}
-            {errors[field.name] && (
-              <p className="text-red-500 text-sm mt-1">{errors[field.name]}</p>
-            )}
+        {/* Site Title */}
+        <div>
+          <label
+            htmlFor="siteTitle"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Site Title
+          </label>
+          <input
+            id="siteTitle"
+            name="siteTitle"
+            type="text"
+            value={formData.siteTitle}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {errors.siteTitle && (
+            <p className="text-red-500 text-sm mt-1">{errors.siteTitle}</p>
+          )}
+        </div>
+
+        {/* Short Description */}
+        <div>
+          <label
+            htmlFor="short_description"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Short Description
+          </label>
+          <textarea
+            id="short_description"
+            name="short_description"
+            value={formData.short_description}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {errors.short_description && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.short_description}
+            </p>
+          )}
+        </div>
+
+        {/* CopyRight */}
+        <div>
+          <label
+            htmlFor="copy_right"
+            className="block text-sm font-medium text-gray-700"
+          >
+            CopyRight
+          </label>
+          <input
+            id="copy_right"
+            name="copy_right"
+            type="text"
+            value={formData.copy_right}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {errors.copy_right && (
+            <p className="text-red-500 text-sm mt-1">{errors.copy_right}</p>
+          )}
+        </div>
+
+        {/* Address */}
+        <div>
+          <label
+            htmlFor="address"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Address
+          </label>
+          <input
+            id="address"
+            name="address"
+            type="text"
+            value={formData.address}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {errors.address && (
+            <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+          )}
+        </div>
+
+        {/* Address Map Link */}
+        <div>
+          <label
+            htmlFor="map_link"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Address Map Link
+          </label>
+          <input
+            id="map_link"
+            name="map_link"
+            type="text"
+            value={formData.map_link}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          />
+          {errors.map_link && (
+            <p className="text-red-500 text-sm mt-1">{errors.map_link}</p>
+          )}
+        </div>
+
+        {/* Email */}
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
+          <div className="relative mt-1">
+            <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="pl-10 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            />
           </div>
-        ))}
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Phone
+          </label>
+          <div className="relative mt-1">
+            <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              className="pl-10 block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          {errors.phone && (
+            <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+          )}
+        </div>
+
         <button
           type="submit"
           className="w-full text-white bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"

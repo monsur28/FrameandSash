@@ -6,11 +6,11 @@ export default LanguageContext;
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(
-    localStorage.getItem("language") || "en"
+    sessionStorage.getItem("language") || "en"
   );
 
   useEffect(() => {
-    localStorage.setItem("language", language);
+    sessionStorage.setItem("language", language);
   }, [language]);
 
   const t = (key) => translations[language][key] || key;
