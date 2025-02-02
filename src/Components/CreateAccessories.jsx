@@ -1,432 +1,453 @@
-import { useState, useRef, useCallback, useEffect, memo } from "react";
-import PropTypes from "prop-types";
+import { useState } from "react"; // Import useState from React
 
-const ResizeHandles = memo(function ResizeHandles({
-  onResizeStart,
-  handleId,
-  disabled,
-}) {
-  if (disabled) return null;
+export default function CreateAccessories({ onNext, onPrevious }) {
+  const [accessories, setAccessories] = useState([
+    // Initialize an array of accessories
+    {
+      name: "Handle",
+      values: [
+        "https://i.ibb.co/xqBcyrP/door-handle-svgrepo-com-7.png",
+        "https://i.ibb.co/k0rvGdC/door-handle-svgrepo-com-6.png",
+        "https://i.ibb.co/0s7b5N3/door-handle-svgrepo-com-5.png",
+      ],
+      prices: [10, 15, 20], // Example prices for each image
+    },
+    {
+      name: "Frame",
+      values: [
+        "https://i.ibb.co/1fQLrbm/closed-filled-rectangular-door-5.png",
+        "https://i.ibb.co/cv0PHtN/closed-filled-rectangular-door-4.png",
+        "https://i.ibb.co/VxkCXdZ/closed-filled-rectangular-door-3.png",
+      ],
+      prices: [25, 30, 35], // Example prices for each image
+    },
+  ]);
 
-  return (
-    <>
-      {["top-left", "top-right", "bottom-left", "bottom-right"].map(
-        (corner) => (
-          <div
-            key={corner}
-            role="button"
-            tabIndex={0}
-            aria-label={`Resize handle ${corner}`}
-            className={`absolute w-4 h-4 bg-white border rounded-full cursor-${corner}-resize 
-            hover:bg-gray-200 transition-colors`}
-            style={{
-              [corner.split("-")[0]]: "-2px",
-              [corner.split("-")[1]]: "-2px",
-            }}
-            onMouseDown={(e) => onResizeStart(corner, e, handleId)}
-            onTouchStart={(e) => onResizeStart(corner, e, handleId)}
-          />
+  const [showAccessoryForm, setShowAccessoryForm] = useState(false);
+  const [openAccessoryIndex, setOpenAccessoryIndex] = useState(null); // Track which accessory form is open
+  const [newAccessory, setNewAccessory] = useState({
+    name: "",
+    values: [],
+    prices: [],
+    imageFile: null, // Store the selected image file
+    marketPrice: 0, // Store the market price from the form
+    wholesalePrice: 0,
+    manufacturingCost: 0,
+    increasingSizes: [],
+    increasingPrices: [],
+    minimumUnit: false,
+    minimumSize: false,
+    title: false,
+    totalSales: 0,
+  });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    imageFile: "",
+    marketPrice: "",
+    wholesalePrice: "",
+    manufacturingCost: "",
+    increasingSizes: "",
+    increasingPrices: "",
+    minimumUnit: "",
+    minimumSize: "",
+    title: "",
+  });
+
+  const handleAddNewAccessoryClick = () => {
+    setShowAccessoryForm(true);
+    setOpenAccessoryIndex(null); // Reset to indicate a new accessory is being added
+    setNewAccessory({
+      name: "",
+      values: [],
+      prices: [],
+      imageFile: null,
+      marketPrice: 0,
+      wholesalePrice: 0,
+    }); // Reset form
+  };
+
+  const handleSaveAccessory = () => {
+    // Reset errors
+    setErrors({ name: "", imageFile: "", marketPrice: "" });
+
+    // Validate form fields
+    let isValid = true;
+    if (!newAccessory.name.trim()) {
+      setErrors((prev) => ({
+        ...prev,
+        name: "Please enter a name for the accessory.",
+      }));
+      isValid = false;
+    }
+
+    if (!newAccessory.imageFile) {
+      setErrors((prev) => ({
+        ...prev,
+        imageFile: "Please select an image file.",
+      }));
+      isValid = false;
+    }
+
+    if (newAccessory.marketPrice <= 0) {
+      setErrors((prev) => ({
+        ...prev,
+        marketPrice: "Please enter a valid market price.",
+      }));
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    const imageURL = URL.createObjectURL(newAccessory.imageFile); // Create a URL for the selected file
+
+    if (openAccessoryIndex !== null) {
+      // Update existing accessory
+      setAccessories((prev) =>
+        prev.map((acc, i) =>
+          i === openAccessoryIndex
+            ? {
+                ...acc,
+                values: [...acc.values, imageURL],
+                prices: [...acc.prices, newAccessory.marketPrice],
+              }
+            : acc
         )
-      )}
-    </>
-  );
-});
-
-const AccessoryForm = memo(function AccessoryForm({
-  ingredient,
-  onSubmit,
-  onCancel,
-  initialData,
-}) {
-  const [formData, setFormData] = useState({
-    title: initialData?.title || ingredient.name || "",
-    minSize: initialData?.minSize || ingredient.minSize || "",
-    unit: initialData?.unit || ingredient.unit || "cm",
-    manufacturingCost:
-      initialData?.manufacturingCost || ingredient.manufacturingCost || "",
-    wholesale: initialData?.wholesale || ingredient.wholesale || "",
-    marketPrice: initialData?.marketPrice || ingredient.marketPrice || "",
-  });
-
-  const [errors, setErrors] = useState({});
-  const [imageFile, setImageFile] = useState(null);
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.title) newErrors.title = "Title is required";
-    if (!imageFile && !initialData?.imageUrl)
-      newErrors.image = "Image is required";
-    if (!formData.minSize) newErrors.minSize = "Minimum size is required";
-    return newErrors;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length === 0) {
-      onSubmit({ ...formData, image: imageFile });
+      );
     } else {
-      setErrors(newErrors);
+      // Add new accessory
+      setAccessories((prev) => [
+        ...prev,
+        {
+          name: newAccessory.name,
+          values: [imageURL],
+          prices: [newAccessory.marketPrice],
+          wholesalePrice: newAccessory.wholesalePrice,
+          manufacturingCost: newAccessory.manufacturingCost,
+          increasingSizes: newAccessory.increasingSizes,
+          increasingPrices: newAccessory.increasingPrices,
+          minimumUnit: newAccessory.minimumUnit,
+          minimumSize: newAccessory.minimumSize,
+          title: newAccessory.title,
+          totalSales: newAccessory.totalSales,
+        },
+      ]);
+    }
+
+    // Reset form
+    setNewAccessory({
+      name: "",
+      values: [],
+      prices: [],
+      imageFile: null,
+      marketPrice: 0,
+      wholesalePrice: 0,
+      manufacturingCost: 0,
+      increasingSizes: [],
+      increasingPrices: [],
+      minimumUnit: false,
+      minimumSize: false,
+      title: false,
+      totalSales: 0,
+    });
+    setShowAccessoryForm(false);
+  };
+
+  const handleCancelAccessory = () => {
+    setNewAccessory({
+      name: "",
+      values: [],
+      prices: [],
+      imageFile: null,
+      marketPrice: 0,
+      wholesalePrice: 0,
+      manufacturingCost: 0,
+      increasingSizes: [],
+      increasingPrices: [],
+      minimumUnit: false,
+      minimumSize: false,
+      title: false, // Set title to false to hide the title field
+      totalSales: 0,
+    });
+    setShowAccessoryForm(false);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewAccessory((prev) => ({
+        ...prev,
+        imageFile: file,
+      }));
     }
   };
 
+  const handleEditAccessory = (index) => {
+    setOpenAccessoryIndex(index);
+    setShowAccessoryForm(true);
+    // Populate the form with the existing accessory's name
+    setNewAccessory((prev) => ({
+      ...prev,
+      name: accessories[index].name,
+    }));
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mt-4 p-4 border rounded-md bg-gray-50"
-    >
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          Accessories Title
-        </label>
-        <input
-          type="text"
-          value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="border p-2 w-full rounded-md"
-          placeholder="e.g. Handle or Frame"
-        />
-        {errors.title && <span className="text-red-500">{errors.title}</span>}
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          Minimum Size &amp; Unit
-        </label>
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            value={formData.minSize}
-            onChange={(e) =>
-              setFormData({ ...formData, minSize: e.target.value })
-            }
-            className="border p-2 w-20 rounded-md"
-            placeholder="1"
-          />
-          <select
-            value={formData.unit}
-            onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-            className="border p-2 rounded-md"
-          >
-            <option value="cm">cm</option>
-            <option value="inch">inch</option>
-            <option value="m">m</option>
-          </select>
-        </div>
-        {errors.minSize && (
-          <span className="text-red-500">{errors.minSize}</span>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          Upload Image<span className="text-red-500">*</span>
-        </label>
-        <div className="flex gap-2 items-center">
+    <div className="p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg">
+      <div className="space-y-6">
+        {/* Accessories Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-center">
+          <h3 className="text-lg font-medium mb-4">Accessories List</h3>
           <button
-            type="button"
-            onClick={() =>
-              document.getElementById(`fileinput-${ingredient.name}`)?.click()
-            }
-            className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600"
+            className="px-4 py-2 bg-teal-500 text-white rounded-md"
+            onClick={handleAddNewAccessoryClick}
           >
-            Choose File
+            + Add New Accessory
           </button>
-          <input
-            id={`fileinput-${ingredient.name}`}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => setImageFile(e.target.files[0])}
-          />
         </div>
-        {errors.image && <span className="text-red-500">{errors.image}</span>}
-      </div>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          Manufacturing Cost
-        </label>
-        <input
-          type="number"
-          value={formData.manufacturingCost}
-          onChange={(e) =>
-            setFormData({ ...formData, manufacturingCost: e.target.value })
-          }
-          className="border p-2 w-full rounded-md"
-          placeholder="$250"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold mb-1">Wholesale</label>
-        <input
-          type="number"
-          value={formData.wholesale}
-          onChange={(e) =>
-            setFormData({ ...formData, wholesale: e.target.value })
-          }
-          className="border p-2 w-full rounded-md"
-          placeholder="$100"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold mb-1">Market Price</label>
-        <input
-          type="number"
-          value={formData.marketPrice}
-          onChange={(e) =>
-            setFormData({ ...formData, marketPrice: e.target.value })
-          }
-          className="border p-2 w-full rounded-md"
-          placeholder="$120"
-        />
-      </div>
-
-      <div className="mt-6 flex justify-end gap-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </form>
-  );
-});
-
-const CreateAccessories = ({ windowsData, onPrev, onNext }) => {
-  const { images = [], ingredients = [] } = windowsData;
-  const containerRef = useRef(null);
-
-  const [handleOptions, setHandleOptions] = useState([]);
-  const [selectedHandle, setSelectedHandle] = useState(null);
-  const [activeHandles, setActiveHandles] = useState({});
-  const [isFormOpen, setIsFormOpen] = useState({});
-  const [dragState, setDragState] = useState({
-    isDragging: false,
-    isResizing: false,
-    currentId: null,
-    isFixed: false,
-  });
-
-  const handleFormSubmit = useCallback((idx, formData) => {
-    const handleId = `handle-${Date.now()}`;
-    const imageUrl = formData.image
-      ? URL.createObjectURL(formData.image)
-      : null;
-
-    const newHandle = {
-      id: handleId,
-      name: formData.title,
-      image: imageUrl,
-      data: formData,
-      ingredientIndex: idx,
-    };
-
-    setHandleOptions((prev) => [...prev, newHandle]);
-
-    setActiveHandles((prev) => ({
-      ...prev,
-      [handleId]: {
-        position: { x: 50, y: 50 },
-        size: { width: 48, height: 48 },
-        ...newHandle,
-      },
-    }));
-
-    setIsFormOpen((prev) => ({ ...prev, [idx]: false }));
-  }, []);
-
-  const handleDragStart = useCallback(
-    (handleId, e) => {
-      if (dragState.isFixed) return;
-      e.preventDefault();
-      setDragState((prev) => ({
-        ...prev,
-        isDragging: true,
-        currentId: handleId,
-      }));
-    },
-    [dragState.isFixed]
-  );
-
-  const handleDragMove = useCallback(
-    (e) => {
-      if (!dragState.isDragging || !containerRef.current) return;
-
-      requestAnimationFrame(() => {
-        const rect = containerRef.current.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-        const xPct = Math.min(
-          Math.max(((clientX - rect.left) / rect.width) * 100, 0),
-          100
-        );
-        const yPct = Math.min(
-          Math.max(((clientY - rect.top) / rect.height) * 100, 0),
-          100
-        );
-
-        setActiveHandles((prev) => ({
-          ...prev,
-          [dragState.currentId]: {
-            ...prev[dragState.currentId],
-            position: { x: xPct, y: yPct },
-          },
-        }));
-      });
-    },
-    [dragState.isDragging, dragState.currentId]
-  );
-
-  const handleDragEnd = useCallback(() => {
-    setDragState((prev) => ({
-      ...prev,
-      isDragging: false,
-      currentId: null,
-    }));
-  }, []);
-
-  useEffect(() => {
-    if (dragState.isDragging) {
-      window.addEventListener("mousemove", handleDragMove, { passive: true });
-      window.addEventListener("mouseup", handleDragEnd);
-      window.addEventListener("touchmove", handleDragMove, { passive: false });
-      window.addEventListener("touchend", handleDragEnd);
-
-      return () => {
-        window.removeEventListener("mousemove", handleDragMove);
-        window.removeEventListener("mouseup", handleDragEnd);
-        window.removeEventListener("touchmove", handleDragMove);
-        window.removeEventListener("touchend", handleDragEnd);
-      };
-    }
-  }, [dragState.isDragging, handleDragMove, handleDragEnd]);
-
-  const handleResizeStart = useCallback(
-    (corner, e, handleId) => {
-      if (dragState.isFixed) return;
-      e.preventDefault();
-      e.stopPropagation();
-
-      setDragState((prev) => ({
-        ...prev,
-        isResizing: true,
-        currentId: handleId,
-      }));
-    },
-    [dragState.isFixed]
-  );
-
-  return (
-    <div className="p-4">
-      <div
-        ref={containerRef}
-        className="relative border rounded-md bg-gray-100 min-h-[300px]"
-      >
-        {Object.entries(activeHandles).map(([handleId, handle]) => (
-          <div
-            key={handleId}
-            className={`absolute transition-all ${
-              dragState.isFixed ? "" : "cursor-move"
-            }`}
-            style={{
-              left: `${handle.position.x}%`,
-              top: `${handle.position.y}%`,
-              transform: "translate(-50%, -50%)",
-              width: `${handle.size.width}px`,
-              height: `${handle.size.height}px`,
-            }}
-            onMouseDown={(e) => handleDragStart(handleId, e)}
-            onTouchStart={(e) => handleDragStart(handleId, e)}
-          >
-            <img
-              src={handle.image}
-              alt={handle.name}
-              className="w-full h-full object-contain"
-            />
-            <ResizeHandles
-              onResizeStart={handleResizeStart}
-              handleId={handleId}
-              disabled={dragState.isFixed}
-            />
+        {/* Accessories List */}
+        {accessories.map((item, index) => (
+          <div key={index} className="space-y-4 mb-6">
+            <div className="flex items-center space-x-4">
+              <div className="bg-teal-100 px-4 py-2 rounded-md w-24 text-center">
+                {item.name}
+              </div>
+              <div className="flex flex-wrap gap-4">
+                {item.values.map((value, valueIndex) => (
+                  <div key={valueIndex} className="relative">
+                    <img
+                      src={value}
+                      alt={`${item.name} ${valueIndex + 1}`}
+                      className="w-16 h-16 rounded-md object-cover"
+                    />
+                    <span className="absolute bottom-0 right-0 bg-black/50 text-white text-xs px-1 rounded">
+                      ${item.prices[valueIndex]}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <button
+                className="px-4 py-2 bg-teal-500 text-white rounded-md"
+                onClick={() => handleEditAccessory(index)}
+              >
+                + Add New
+              </button>
+            </div>
           </div>
         ))}
-      </div>
 
-      {ingredients.map((ingredient, idx) => (
-        <div key={idx} className="mt-6 border rounded-md p-4">
+        {/* New Accessory Form */}
+        {showAccessoryForm && (
+          <div className="mt-8 space-y-6 p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg">
+            {/* Title */}
+            <div className="flex flex-col lg:flex-row gap-6 justify-between">
+              <div className="space-y-2 w-full lg:w-1/3">
+                <label className="block text-sm font-medium">Title</label>
+                <input
+                  type="text"
+                  value={newAccessory.name}
+                  onChange={(e) =>
+                    setNewAccessory((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter accessory name"
+                  className="w-full p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-xs">{errors.name}</span>
+                )}
+              </div>
+
+              {/* Image Upload */}
+              <div className="w-full lg:w-1/3">
+                <label
+                  htmlFor="fileInput"
+                  className="block text-sm font-semibold mb-2"
+                >
+                  Image<span className="text-red-500">*</span>
+                </label>
+                <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document.getElementById("fileInput")?.click()
+                    }
+                    className="bg-teal-500 text-white px-6 py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
+                  >
+                    Choose File
+                  </button>
+                  <span className="text-gray-500">
+                    {newAccessory.imageFile
+                      ? newAccessory.imageFile.name
+                      : "No File Chosen"}
+                  </span>
+                  <input
+                    id="fileInput"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                </div>
+                {errors.imageFile && (
+                  <span className="text-red-500 text-xs">
+                    {errors.imageFile}
+                  </span>
+                )}
+              </div>
+
+              {/* Color Selection */}
+              <div className="space-y-2 w-full lg:w-1/3">
+                <label className="block text-sm font-medium">Color</label>
+                <div className="flex gap-2">
+                  {["black", "white", "blue", "red", "pink"].map(
+                    (color, idx) => (
+                      <div
+                        key={idx}
+                        className={`w-8 h-8 rounded-full border-2 cursor-pointer ${
+                          color === "black" ? "bg-black" : `bg-${color}`
+                        }`}
+                      ></div>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Minimum Size & Unit */}
+            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
+              <div className="space-y-2 w-full lg:w-auto">
+                <label className="block text-sm font-medium">
+                  Minimum Size & Unit
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    placeholder="1"
+                    className="w-20 p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
+                  />
+                  <select className="p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500">
+                    <option>cm</option>
+                    <option>mm</option>
+                    <option>in</option>
+                  </select>
+                  {errors.minimumSize && (
+                    <span className="text-red-500 text-xs">
+                      {errors.minimumSize}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <button className="flex justify-center items-center gap-1 bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 transition-colors">
+                <span>+</span>
+                Add Size & Price
+              </button>
+            </div>
+
+            {/* Pricing Inputs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                "Manufacturing Cost",
+                "Increasing Size",
+                "Increasing Price",
+              ].map((label, idx) => (
+                <div key={idx} className="space-y-2">
+                  <label className="block text-sm font-medium">{label}</label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    className="w-full p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
+                  />
+                  {errors.increasingPrices && (
+                    <span className="text-red-500 text-xs">
+                      {errors.increasingPrices}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Wholesale & Market Price */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Wholesale</label>
+                <input
+                  type="number"
+                  placeholder="$0"
+                  value={newAccessory.wholesalePrice}
+                  onChange={(e) =>
+                    setNewAccessory((prev) => ({
+                      ...prev,
+                      wholesalePrice: parseFloat(e.target.value),
+                    }))
+                  }
+                  className="w-full p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
+                  {...(errors.wholesalePrice && {
+                    className: "border-red-500",
+                  })}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">
+                  Market Price
+                </label>
+                <input
+                  type="number"
+                  placeholder="$0"
+                  value={newAccessory.marketPrice}
+                  onChange={(e) =>
+                    setNewAccessory((prev) => ({
+                      ...prev,
+                      marketPrice: parseFloat(e.target.value),
+                    }))
+                  }
+                  className="w-full p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
+                />
+                {errors.marketPrice && (
+                  <span className="text-red-500 text-xs">
+                    {errors.marketPrice}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Save & Cancel Buttons */}
+            <div className="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
+              <button
+                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                onClick={handleCancelAccessory}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors"
+                onClick={handleSaveAccessory}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Buttons */}
+        <div className="flex flex-wrap justify-end space-y-2 md:space-y-0 md:space-x-4">
           <button
-            onClick={() =>
-              setIsFormOpen((prev) => ({ ...prev, [idx]: !prev[idx] }))
-            }
-            className="mt-3 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600"
+            onClick={onPrevious}
+            className="px-4 py-2 border border-gray-300 rounded-md"
           >
-            {isFormOpen[idx] ? "Close" : `+ Add ${ingredient.name || "Item"}`}
+            Previous
           </button>
-
-          {isFormOpen[idx] && (
-            <AccessoryForm
-              ingredient={ingredient}
-              onSubmit={(formData) => handleFormSubmit(idx, formData)}
-              onCancel={() =>
-                setIsFormOpen((prev) => ({ ...prev, [idx]: false }))
-              }
-            />
-          )}
+          <button
+            onClick={onNext}
+            className="px-4 py-2 bg-teal-500 text-white rounded-md"
+          >
+            Next
+          </button>
         </div>
-      ))}
-
-      <div className="flex justify-end space-x-4 mt-4">
-        <button
-          onClick={onPrev}
-          className="px-4 py-2 border border-gray-300 rounded-md"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onNext}
-          className="px-4 py-2 bg-teal-500 text-white rounded-md"
-        >
-          Next
-        </button>
       </div>
     </div>
   );
-};
-
-CreateAccessories.propTypes = {
-  windowsData: PropTypes.shape({
-    images: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-          .isRequired,
-        url: PropTypes.string.isRequired,
-      })
-    ),
-    ingredients: PropTypes.arrayOf(
-      PropTypes.shape({
-        name: PropTypes.string,
-        minSize: PropTypes.number,
-        unit: PropTypes.string,
-        manufacturingCost: PropTypes.number,
-        wholesale: PropTypes.number,
-        marketPrice: PropTypes.number,
-      })
-    ),
-  }).isRequired,
-  onPrev: PropTypes.func.isRequired,
-  onNext: PropTypes.func.isRequired,
-};
-
-export default memo(CreateAccessories);
+}
