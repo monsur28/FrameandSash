@@ -13,7 +13,7 @@ export const SiteInfoProvider = ({ children }) => {
   useEffect(() => {
     const fetchSiteInfo = async () => {
       try {
-        const response = await axiosSecure.get("/api/site-info");
+        const response = await axiosSecure.get("/site-info");
         setSiteInfo(response.data || {});
       } catch (error) {
         console.error("Failed to fetch site info:", error);

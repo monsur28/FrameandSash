@@ -6,10 +6,10 @@ import {
   ChevronRight,
   UserCircle,
 } from "lucide-react";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 import { useLanguage } from "../ContextProvider/LanguageContext";
 import axiosSecure from "../Hooks/AsiosSecure";
 import SweetAlert from "../Shared/SweetAlert";
-import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function AddManufacturerForm() {
   const { showAlert } = useSweetAlert();
@@ -218,15 +218,11 @@ export default function AddManufacturerForm() {
 
       console.log(payload);
 
-      const response = await axiosSecure.post(
-        "/api/manufacturers/store",
-        payload,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axiosSecure.post("manufacturers/store", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.status === 200) {
         showAlert(
@@ -818,7 +814,7 @@ export default function AddManufacturerForm() {
             type="button"
             onClick={handleNext}
             disabled={isSubmitting}
-            className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-2 rounded-lg bg-primary text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isSubmitting
               ? "Submitting..."

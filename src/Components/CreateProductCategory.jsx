@@ -1,9 +1,11 @@
 import { useState } from "react";
-import axiosSecure from "../Hooks/AsiosSecure";
 import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
+import axiosSecure from "../Hooks/AsiosSecure";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateProductCategory() {
   const { showAlert } = useSweetAlert();
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     category_name: "",
     category_image: null,
@@ -44,24 +46,6 @@ export default function CreateProductCategory() {
         category_image: e.target.files[0],
       }));
     }
-  };
-
-  const handleCheckboxChange = (section, feature) => {
-    setFormState((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [feature]: !prev[section][feature],
-      },
-    }));
-  };
-
-  const handleRadioChange = (field, value) => {
-    const booleanValue = value === "true";
-    setFormState((prev) => ({
-      ...prev,
-      [field]: booleanValue,
-    }));
   };
 
   const handleSubmit = async (e) => {
@@ -110,21 +94,17 @@ export default function CreateProductCategory() {
 
     // Submit FormData
     try {
-      const response = await axiosSecure.post(
-        "/api/product-categories",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("Response:", response.data);
+      await axiosSecure.post("/product-categories", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       showAlert(
         "Success!",
         "Product category created successfully.",
         "success"
       );
+      navigate("/adminDashboard/products"); // Redirect after success
     } catch (error) {
       console.error("Error creating product category:", error);
       showAlert(
@@ -184,184 +164,6 @@ export default function CreateProductCategory() {
                 className="hidden"
                 accept="image/*"
               />
-            </div>
-          </div>
-        </div>
-
-        {/* Accessories Availability */}
-        <div className="mb-6">
-          <label className="block text-lg lg:text-xl font-semibold mb-2">
-            Accessories Availability<span className="text-red-500">*</span>
-          </label>
-          <div className="flex gap-6 flex-wrap">
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                checked={formState.accessories_available === true}
-                onChange={() =>
-                  handleRadioChange("accessories_available", "true")
-                }
-                className="w-5 h-5 bg-teal-500"
-                value="true"
-              />
-              <span>Available</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                checked={formState.accessories_available === false}
-                onChange={() =>
-                  handleRadioChange("accessories_available", "false")
-                }
-                className="w-5 h-5 bg-teal-500"
-                value="false"
-              />
-              <span>Unavailable</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Accessories Attributes */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-          {Object.entries(formState.accessories_attributes).map(
-            ([key, value]) => (
-              <label key={key} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={value}
-                  onChange={() =>
-                    handleCheckboxChange("accessories_attributes", key)
-                  }
-                  className="w-5 h-5 bg-teal-500"
-                />
-                <span className="capitalize">
-                  {key.replace(/([A-Z])/g, " $1").trim()}
-                </span>
-              </label>
-            )
-          )}
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-lg lg:text-xl font-semibold mb-2">
-            Ingredients<span className="text-red-500">*</span>
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {Object.entries(formState.ingredients_attributes).map(
-              ([key, value]) => (
-                <label key={key} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={value}
-                    onChange={() =>
-                      handleCheckboxChange("ingredients_attributes", key)
-                    }
-                    className="w-5 h-5 bg-teal-500"
-                  />
-                  <span className="capitalize">
-                    {key.replace(/([A-Z])/g, " $1").trim()}
-                  </span>
-                </label>
-              )
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-8">
-          <div className="mb-6">
-            <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Working Hour Availability<span className="text-red-500">*</span>
-            </label>
-            <div className="flex gap-6 flex-wrap">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  checked={formState.working_hour_available === true}
-                  onChange={() =>
-                    handleRadioChange("working_hour_available", "true")
-                  }
-                  className="w-5 h-5 bg-teal-500"
-                  value="true"
-                />
-                <span>Available</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  checked={formState.working_hour_available === false}
-                  onChange={() =>
-                    handleRadioChange("working_hour_available", "false")
-                  }
-                  className="w-5 h-5 bg-teal-500"
-                  value="false"
-                />
-                <span>Unavailable</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Wholesale Price Availability
-              <span className="text-red-500">*</span>
-            </label>
-            <div className="flex gap-6 flex-wrap">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  checked={formState.wholesale_price_available === true}
-                  onChange={() =>
-                    handleRadioChange("wholesale_price_available", "true")
-                  }
-                  className="w-5 h-5 bg-teal-500"
-                  value="true"
-                />
-                <span>Available</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  checked={formState.wholesale_price_available === false}
-                  onChange={() =>
-                    handleRadioChange("wholesale_price_available", "false")
-                  }
-                  className="w-5 h-5 bg-teal-500"
-                  value="false"
-                />
-                <span>Unavailable</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-lg lg:text-xl font-semibold mb-2">
-              Market Price Availability<span className="text-red-500">*</span>
-            </label>
-            <div className="flex gap-6 flex-wrap">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  checked={formState.market_price_available === true}
-                  onChange={() =>
-                    handleRadioChange("market_price_available", "true")
-                  }
-                  className="w-5 h-5 bg-teal-500"
-                  value="true"
-                />
-                <span>Available</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  checked={formState.market_price_available === false}
-                  onChange={() =>
-                    handleRadioChange("market_price_available", "false")
-                  }
-                  className="w-5 h-5 bg-teal-500"
-                  value="false"
-                />
-                <span>Unavailable</span>
-              </label>
             </div>
           </div>
         </div>

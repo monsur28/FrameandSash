@@ -5,6 +5,15 @@
 @tailwind utilities;
 
 
+
+.scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+.scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
 /* Add this to your CSS file or in a style tag */
 @media (max-width: 640px) {
   .px-20 {
@@ -74,6 +83,13 @@
   -webkit-text-size-adjust: 100%; /* Prevents unexpected font resizing on mobile browsers */
 }
 
+.popins {
+  font-family: "Poppins", sans-serif;
+  -webkit-font-smoothing: antialiased; /* Improves font rendering */
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%; /* Prevents unexpected font resizing on mobile browsers */
+}
+
 .roboto {
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased; /* Improves font rendering */
@@ -112,3 +128,38 @@
 }
 
 
+/* Apply styles for printing only */
+@media print {
+  body {
+    font-size: 10px; /* Reduce font size for print */
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Ensure the layout fits */
+  .invoice-container {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .invoice-header, .invoice-footer {
+    display: none; /* Hide unnecessary elements for printing */
+  }
+
+  /* Add page breaks to ensure content doesn't overflow */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* Reduce font size and apply more compact styling */
+  .invoice-table th, .invoice-table td {
+    font-size: 9px; /* Smaller font for tables */
+    padding: 4px;
+  }
+
+  /* Ensure the content fits into the page */
+  .invoice-content {
+    max-width: 100%;
+    font-size: 10px;
+  }
+}

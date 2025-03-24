@@ -1,452 +1,738 @@
-import { useState } from "react"; // Import useState from React
+/* eslint-disable no-unused-vars */
+import { useState, useRef, useCallback, useEffect } from "react";
 
-export default function CreateAccessories({ onNext, onPrevious }) {
-  const [accessories, setAccessories] = useState([
-    // Initialize an array of accessories
-    {
-      name: "Handle",
-      values: [
-        "https://i.ibb.co/xqBcyrP/door-handle-svgrepo-com-7.png",
-        "https://i.ibb.co/k0rvGdC/door-handle-svgrepo-com-6.png",
-        "https://i.ibb.co/0s7b5N3/door-handle-svgrepo-com-5.png",
-      ],
-      prices: [10, 15, 20], // Example prices for each image
-    },
-    {
-      name: "Frame",
-      values: [
-        "https://i.ibb.co/1fQLrbm/closed-filled-rectangular-door-5.png",
-        "https://i.ibb.co/cv0PHtN/closed-filled-rectangular-door-4.png",
-        "https://i.ibb.co/VxkCXdZ/closed-filled-rectangular-door-3.png",
-      ],
-      prices: [25, 30, 35], // Example prices for each image
-    },
-  ]);
+export default function CreateAccessories({ windowsData, onPrev, onNext }) {
+  const { images = [], ingredients = [] } = windowsData;
+  const containerRefs = useRef([]); // Array of refs for each image container
 
-  const [showAccessoryForm, setShowAccessoryForm] = useState(false);
-  const [openAccessoryIndex, setOpenAccessoryIndex] = useState(null); // Track which accessory form is open
-  const [newAccessory, setNewAccessory] = useState({
-    name: "",
-    values: [],
-    prices: [],
-    imageFile: null, // Store the selected image file
-    marketPrice: 0, // Store the market price from the form
-    wholesalePrice: 0,
-    manufacturingCost: 0,
-    increasingSizes: [],
-    increasingPrices: [],
-    minimumUnit: false,
-    minimumSize: false,
-    title: false,
-    totalSales: 0,
-  });
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
 
-  const [errors, setErrors] = useState({
-    name: "",
-    imageFile: "",
-    marketPrice: "",
-    wholesalePrice: "",
-    manufacturingCost: "",
-    increasingSizes: "",
-    increasingPrices: "",
-    minimumUnit: "",
-    minimumSize: "",
-    title: "",
-  });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isResizingMode, setIsResizingMode] = useState(false);
+  const [isHandleFixed, setIsHandleFixed] = useState(false);
+  const [resizingStartCoords, setResizingStartCoords] = useState(null);
+  const [resizedSize, setResizedSize] = useState(null);
+  const [resizeCorner, setResizeCorner] = useState(null);
+  const [zoomLevel] = useState(1);
 
-  const handleAddNewAccessoryClick = () => {
-    setShowAccessoryForm(true);
-    setOpenAccessoryIndex(null); // Reset to indicate a new accessory is being added
-    setNewAccessory({
-      name: "",
-      values: [],
-      prices: [],
-      imageFile: null,
-      marketPrice: 0,
-      wholesalePrice: 0,
-    }); // Reset form
-  };
+  const [selectedHandleId, setSelectedHandleId] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(null);
 
-  const handleSaveAccessory = () => {
-    // Reset errors
-    setErrors({ name: "", imageFile: "", marketPrice: "" });
+  const [isFormOpen, setIsFormOpen] = useState({});
+  const [tempImages, setTempImages] = useState({});
+  const [savedImages, setSavedImages] = useState({});
 
-    // Validate form fields
-    let isValid = true;
-    if (!newAccessory.name.trim()) {
-      setErrors((prev) => ({
-        ...prev,
-        name: "Please enter a name for the accessory.",
-      }));
-      isValid = false;
-    }
+  const [activeHandles, setActiveHandles] = useState({});
 
-    if (!newAccessory.imageFile) {
-      setErrors((prev) => ({
-        ...prev,
-        imageFile: "Please select an image file.",
-      }));
-      isValid = false;
-    }
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    if (newAccessory.marketPrice <= 0) {
-      setErrors((prev) => ({
-        ...prev,
-        marketPrice: "Please enter a valid market price.",
-      }));
-      isValid = false;
-    }
-
-    if (!isValid) return;
-
-    const imageURL = URL.createObjectURL(newAccessory.imageFile); // Create a URL for the selected file
-
-    if (openAccessoryIndex !== null) {
-      // Update existing accessory
-      setAccessories((prev) =>
-        prev.map((acc, i) =>
-          i === openAccessoryIndex
-            ? {
-                ...acc,
-                values: [...acc.values, imageURL],
-                prices: [...acc.prices, newAccessory.marketPrice],
-              }
-            : acc
-        )
+  const bringHandleToFront = useCallback((imageIndex, handleId) => {
+    setActiveHandles((prev) => {
+      const maxZ = Math.max(
+        0,
+        ...Object.values(prev[imageIndex] || {}).map((h) => h.zIndex || 0)
       );
-    } else {
-      // Add new accessory
-      setAccessories((prev) => [
+      const updated = {
+        ...prev[imageIndex],
+        [handleId]: { ...prev[imageIndex][handleId], zIndex: maxZ + 1 },
+      };
+      return { ...prev, [imageIndex]: updated };
+    });
+  }, []);
+
+  const handleSelect = useCallback(
+    (imageIndex, handleId) => {
+      setSelectedHandleId(handleId);
+      bringHandleToFront(imageIndex, handleId);
+    },
+    [bringHandleToFront]
+  );
+
+  const handleDragStart = useCallback(
+    (imageIndex, handleId, e) => {
+      if (isHandleFixed || isResizingMode) return;
+      e.preventDefault();
+      setIsDragging(true);
+      setCurrentImageIndex(imageIndex);
+      handleSelect(imageIndex, handleId);
+    },
+    [isHandleFixed, isResizingMode, handleSelect]
+  );
+
+  const handleDragMove = useCallback(
+    (e) => {
+      if (!isDragging || currentImageIndex === null || !selectedHandleId)
+        return;
+
+      const containerRef = containerRefs.current[currentImageIndex];
+      if (!containerRef) return;
+
+      const rect = containerRef.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const xPct = Math.min(
+        Math.max(((clientX - rect.left) / rect.width) * 100, 0),
+        100
+      );
+      const yPct = Math.min(
+        Math.max(((clientY - rect.top) / rect.height) * 100, 0),
+        100
+      );
+
+      setActiveHandles((prev) => ({
         ...prev,
-        {
-          name: newAccessory.name,
-          values: [imageURL],
-          prices: [newAccessory.marketPrice],
-          wholesalePrice: newAccessory.wholesalePrice,
-          manufacturingCost: newAccessory.manufacturingCost,
-          increasingSizes: newAccessory.increasingSizes,
-          increasingPrices: newAccessory.increasingPrices,
-          minimumUnit: newAccessory.minimumUnit,
-          minimumSize: newAccessory.minimumSize,
-          title: newAccessory.title,
-          totalSales: newAccessory.totalSales,
+        [currentImageIndex]: {
+          ...prev[currentImageIndex],
+          [selectedHandleId]: {
+            ...prev[currentImageIndex][selectedHandleId],
+            position: { x: xPct, y: yPct },
+          },
         },
-      ]);
-    }
-
-    // Reset form
-    setNewAccessory({
-      name: "",
-      values: [],
-      prices: [],
-      imageFile: null,
-      marketPrice: 0,
-      wholesalePrice: 0,
-      manufacturingCost: 0,
-      increasingSizes: [],
-      increasingPrices: [],
-      minimumUnit: false,
-      minimumSize: false,
-      title: false,
-      totalSales: 0,
-    });
-    setShowAccessoryForm(false);
-  };
-
-  const handleCancelAccessory = () => {
-    setNewAccessory({
-      name: "",
-      values: [],
-      prices: [],
-      imageFile: null,
-      marketPrice: 0,
-      wholesalePrice: 0,
-      manufacturingCost: 0,
-      increasingSizes: [],
-      increasingPrices: [],
-      minimumUnit: false,
-      minimumSize: false,
-      title: false, // Set title to false to hide the title field
-      totalSales: 0,
-    });
-    setShowAccessoryForm(false);
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setNewAccessory((prev) => ({
-        ...prev,
-        imageFile: file,
       }));
+    },
+    [isDragging, currentImageIndex, selectedHandleId]
+  );
+
+  const handleDragEnd = useCallback(() => {
+    setIsDragging(false);
+    setCurrentImageIndex(null);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener("mousemove", handleDragMove);
+      window.addEventListener("mouseup", handleDragEnd);
+      window.addEventListener("touchmove", handleDragMove, { passive: false });
+      window.addEventListener("touchend", handleDragEnd);
     }
+    return () => {
+      window.removeEventListener("mousemove", handleDragMove);
+      window.removeEventListener("mouseup", handleDragEnd);
+      window.removeEventListener("touchmove", handleDragMove);
+      window.removeEventListener("touchend", handleDragEnd);
+    };
+  }, [isDragging, handleDragMove, handleDragEnd]);
+
+  const handleResizeStart = useCallback(
+    (imageIndex, corner, e) => {
+      if (isHandleFixed) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      setIsResizingMode(true);
+      setResizeCorner(corner);
+
+      const containerRef = containerRefs.current[imageIndex];
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const current = selectedHandleId
+        ? activeHandles[imageIndex][selectedHandleId]
+        : null;
+      if (!current) return;
+
+      setResizingStartCoords({
+        x: clientX,
+        y: clientY,
+        initialWidth: current.size.width,
+        initialHeight: current.size.height,
+        initialX: current.position.x,
+        initialY: current.position.y,
+      });
+
+      handleSelect(imageIndex, selectedHandleId);
+    },
+    [isHandleFixed, selectedHandleId, activeHandles, handleSelect]
+  );
+
+  const handleResizeMove = useCallback(
+    (e) => {
+      if (
+        !isResizingMode ||
+        !resizingStartCoords ||
+        currentImageIndex === null
+      ) {
+        return;
+      }
+      const containerRef = containerRefs.current[currentImageIndex];
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const zoom = zoomLevel;
+
+      const deltaX = (clientX - resizingStartCoords.x) / zoom;
+      const deltaY = (clientY - resizingStartCoords.y) / zoom;
+
+      let newWidth, newHeight, newX, newY;
+
+      switch (resizeCorner) {
+        case "top-left":
+          newWidth = Math.max(resizingStartCoords.initialWidth - deltaX, 24);
+          newHeight = Math.max(resizingStartCoords.initialHeight - deltaY, 24);
+          newX =
+            resizingStartCoords.initialX +
+            (deltaX / containerRef.offsetWidth) * 100;
+          newY =
+            resizingStartCoords.initialY +
+            (deltaY / containerRef.offsetHeight) * 100;
+          break;
+
+        case "top-right":
+          newWidth = Math.max(resizingStartCoords.initialWidth + deltaX, 24);
+          newHeight = Math.max(resizingStartCoords.initialHeight - deltaY, 24);
+          newY =
+            resizingStartCoords.initialY +
+            (deltaY / containerRef.offsetHeight) * 100;
+          break;
+
+        case "bottom-left":
+          newWidth = Math.max(resizingStartCoords.initialWidth - deltaX, 24);
+          newHeight = Math.max(resizingStartCoords.initialHeight + deltaY, 24);
+          newX =
+            resizingStartCoords.initialX +
+            (deltaX / containerRef.offsetWidth) * 100;
+          break;
+
+        case "bottom-right":
+          newWidth = Math.max(resizingStartCoords.initialWidth + deltaX, 24);
+          newHeight = Math.max(resizingStartCoords.initialHeight + deltaY, 24);
+          break;
+
+        default:
+          return;
+      }
+
+      setResizedSize({ width: newWidth, height: newHeight });
+
+      setActiveHandles((prev) => ({
+        ...prev,
+        [currentImageIndex]: {
+          ...prev[currentImageIndex],
+          [selectedHandleId]: {
+            ...prev[currentImageIndex][selectedHandleId],
+            position: {
+              x: newX ?? prev[currentImageIndex][selectedHandleId].position.x,
+              y: newY ?? prev[currentImageIndex][selectedHandleId].position.y,
+            },
+          },
+        },
+      }));
+    },
+    [
+      isResizingMode,
+      resizingStartCoords,
+      containerRefs,
+      zoomLevel,
+      resizeCorner,
+      currentImageIndex,
+      selectedHandleId,
+    ]
+  );
+
+  const confirmResize = useCallback(() => {
+    if (resizedSize && currentImageIndex !== null && selectedHandleId) {
+      setActiveHandles((prev) => ({
+        ...prev,
+        [currentImageIndex]: {
+          ...prev[currentImageIndex],
+          [selectedHandleId]: {
+            ...prev[currentImageIndex][selectedHandleId],
+            size: resizedSize,
+          },
+        },
+      }));
+      setIsResizingMode(false);
+      setResizingStartCoords(null);
+      setResizedSize(null);
+      setResizeCorner(null);
+    }
+  }, [resizedSize, currentImageIndex, selectedHandleId]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.key === "Enter" || e.key === " ") && isResizingMode) {
+        confirmResize();
+      }
+      if (e.key === "Escape" && isResizingMode) {
+        setIsResizingMode(false);
+        setResizingStartCoords(null);
+        setResizedSize(null);
+        setResizeCorner(null);
+      }
+    };
+
+    const handleMouseUp = (e) => {
+      if (e.button === 0 && isResizingMode) {
+        confirmResize();
+      }
+    };
+
+    if (isResizingMode) {
+      window.addEventListener("mousemove", handleResizeMove);
+      window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("touchmove", handleResizeMove);
+    }
+    return () => {
+      window.removeEventListener("mousemove", handleResizeMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("touchmove", handleResizeMove);
+    };
+  }, [isResizingMode, handleResizeMove, confirmResize]);
+
+  const fixHandlePosition = () => {
+    setIsHandleFixed((prev) => {
+      if (!prev) {
+        setIsResizingMode(false);
+      }
+      return !prev;
+    });
   };
 
-  const handleEditAccessory = (index) => {
-    setOpenAccessoryIndex(index);
-    setShowAccessoryForm(true);
-    // Populate the form with the existing accessory's name
-    setNewAccessory((prev) => ({
-      ...prev,
-      name: accessories[index].name,
+  const handleOpenForm = (idx) => {
+    setIsFormOpen((prev) => ({ ...prev, [idx]: true }));
+  };
+
+  const handleCloseForm = (idx) => {
+    setIsFormOpen((prev) => ({ ...prev, [idx]: false }));
+    setTempImages((prev) => ({ ...prev, [idx]: [] }));
+  };
+
+  const handleImageUpload = (idx, e) => {
+    const newFiles = Array.from(e.target.files);
+    const fileObjects = newFiles.map((file) => ({
+      id: `${Date.now()}-${Math.random()}`,
+      url: URL.createObjectURL(file),
+      file,
     }));
+
+    setTempImages((prev) => {
+      const existing = prev[idx] || [];
+      return { ...prev, [idx]: [...existing, ...fileObjects] };
+    });
+  };
+
+  const handleSave = (idx) => {
+    const handleId = `handle-${Date.now()}-${Math.random()}`;
+
+    const updatedHandles = images.reduce(
+      (acc, _, imageIndex) => {
+        const highestZ =
+          Math.max(
+            0,
+            ...Object.values(acc[imageIndex] || {}).map((h) => h.zIndex || 0)
+          ) + 1;
+
+        acc[imageIndex] = {
+          ...acc[imageIndex],
+          [handleId]: {
+            position: { x: 50, y: 50 },
+            size: { width: 48, height: 48 },
+            image: tempImages[idx]?.[0] || null,
+            imageIndex: idx,
+            zIndex: highestZ,
+          },
+        };
+        return acc;
+      },
+      { ...activeHandles }
+    );
+
+    setActiveHandles(updatedHandles);
+
+    setSavedImages((prev) => {
+      const existing = prev[idx] || [];
+      const newlyUploaded = tempImages[idx] || [];
+      return { ...prev, [idx]: [...existing, ...newlyUploaded] };
+    });
+
+    handleCloseForm(idx);
+  };
+
+  const handleActivateHandle = (handleObj, ingredientIndex) => {
+    setActiveHandles((prev) => {
+      const updated = { ...prev };
+      images.forEach((_, imgIdx) => {
+        updated[imgIdx] = updated[imgIdx] || {};
+
+        // Remove existing handle for this ingredient from all images
+        Object.entries(updated[imgIdx]).forEach(([id, handle]) => {
+          if (handle.imageIndex === ingredientIndex) {
+            delete updated[imgIdx][id];
+          }
+        });
+
+        const highestZ =
+          Math.max(
+            0,
+            ...Object.values(updated[imgIdx]).map((h) => h.zIndex || 0)
+          ) + 1;
+
+        const newHandleId = `handle-${Date.now()}-${Math.random()}`;
+
+        updated[imgIdx][newHandleId] = {
+          position: { x: 50, y: 50 },
+          size: { width: 48, height: 48 },
+          image: handleObj,
+          imageIndex: ingredientIndex,
+          zIndex: highestZ,
+        };
+      });
+
+      return updated;
+    });
+  };
+
+  const handleNext = () => {
+    const updatedWindowsData = {
+      ...windowsData,
+      images: images.map((img, idx) => ({
+        ...img,
+        handles: Object.entries(activeHandles[idx] || {}).map(
+          ([id, handle]) => ({
+            id,
+            position: handle.position,
+            size: handle.size,
+            image: handle.image,
+            ingredientIndex: handle.imageIndex,
+          })
+        ),
+      })),
+      ingredients: ingredients.map((ingredient, idx) => ({
+        ...ingredient,
+        handles: savedImages[idx] || [],
+      })),
+    };
+
+    onNext(updatedWindowsData);
   };
 
   return (
-    <div className="p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg">
-      <div className="space-y-6">
-        {/* Accessories Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-center">
-          <h3 className="text-lg font-medium mb-4">Accessories List</h3>
-          <button
-            className="px-4 py-2 bg-teal-500 text-white rounded-md"
-            onClick={handleAddNewAccessoryClick}
+    <div className="p-4">
+      <div className="flex gap-4 justify-center items-center p-2">
+        {images.map((img, idx) => (
+          <div
+            key={`${img.id}-${idx}`}
+            ref={(el) => (containerRefs.current[idx] = el)}
+            className="relative w-48 h-48 border rounded bg-gray-100"
+            style={{ touchAction: "none" }}
           >
-            + Add New Accessory
-          </button>
-        </div>
+            <img
+              src={img.url}
+              alt={`Image #${idx + 1}`}
+              className="w-full h-full object-cover"
+            />
 
-        {/* Accessories List */}
-        {accessories.map((item, index) => (
-          <div key={index} className="space-y-4 mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="bg-teal-100 px-4 py-2 rounded-md w-24 text-center">
-                {item.name}
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {item.values.map((value, valueIndex) => (
-                  <div key={valueIndex} className="relative">
+            {Object.entries(activeHandles[idx] || {}).map(
+              ([handleId, handle]) => (
+                <div
+                  key={handleId}
+                  className={`absolute transition-all ${
+                    isHandleFixed ? "" : "cursor-pointer touch-pan-y"
+                  }`}
+                  style={{
+                    left: `${handle.position.x}%`,
+                    top: `${handle.position.y}%`,
+                    transform: "translate(-50%, -50%)",
+                    width: `${handle.size.width}px`,
+                    height: `${handle.size.height}px`,
+                    zIndex: handle.zIndex || 1,
+                    outline:
+                      selectedHandleId === handleId
+                        ? "2px solid rgba(0, 200, 255, 0.8)"
+                        : "none",
+                  }}
+                  onMouseDown={(e) => handleDragStart(idx, handleId, e)}
+                  onTouchStart={(e) => handleDragStart(idx, handleId, e)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!isDragging) {
+                      handleSelect(idx, handleId);
+                    }
+                  }}
+                >
+                  {handle.image && (
                     <img
-                      src={value}
-                      alt={`${item.name} ${valueIndex + 1}`}
-                      className="w-16 h-16 rounded-md object-cover"
+                      src={handle.image.url}
+                      alt="Handle"
+                      className="w-full h-full object-contain"
                     />
-                    <span className="absolute bottom-0 right-0 bg-black/50 text-white text-xs px-1 rounded">
-                      ${item.prices[valueIndex]}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <button
-                className="px-4 py-2 bg-teal-500 text-white rounded-md"
-                onClick={() => handleEditAccessory(index)}
-              >
-                + Add New
-              </button>
-            </div>
+                  )}
+
+                  {!isHandleFixed && selectedHandleId === handleId && (
+                    <>
+                      <div
+                        className="absolute top-0 left-0 w-1 h-1 bg-white rounded-full cursor-nw-resize hover:bg-gray-300 transition-colors"
+                        onMouseDown={(e) =>
+                          handleResizeStart(idx, "top-left", e)
+                        }
+                        onTouchStart={(e) =>
+                          handleResizeStart(idx, "top-left", e)
+                        }
+                      />
+                      <div
+                        className="absolute top-0 right-0 w-1 h-1 bg-white rounded-full cursor-ne-resize hover:bg-gray-300 transition-colors"
+                        onMouseDown={(e) =>
+                          handleResizeStart(idx, "top-right", e)
+                        }
+                        onTouchStart={(e) =>
+                          handleResizeStart(idx, "top-right", e)
+                        }
+                      />
+                      <div
+                        className="absolute bottom-0 left-0 w-1 h-1 bg-white rounded-full cursor-sw-resize hover:bg-gray-300 transition-colors"
+                        onMouseDown={(e) =>
+                          handleResizeStart(idx, "bottom-left", e)
+                        }
+                        onTouchStart={(e) =>
+                          handleResizeStart(idx, "bottom-left", e)
+                        }
+                      />
+                      <div
+                        className="absolute bottom-0 right-0 w-1 h-1 bg-white rounded-full cursor-se-resize hover:bg-gray-300 transition-colors"
+                        onMouseDown={(e) =>
+                          handleResizeStart(idx, "bottom-right", e)
+                        }
+                        onTouchStart={(e) =>
+                          handleResizeStart(idx, "bottom-right", e)
+                        }
+                      />
+                    </>
+                  )}
+
+                  {isResizingMode &&
+                    currentImageIndex === idx &&
+                    selectedHandleId === handleId && (
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                        Press Enter/Space to confirm, Escape to cancel
+                      </div>
+                    )}
+                </div>
+              )
+            )}
           </div>
         ))}
+      </div>
 
-        {/* New Accessory Form */}
-        {showAccessoryForm && (
-          <div className="mt-8 space-y-6 p-6 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg">
-            {/* Title */}
-            <div className="flex flex-col lg:flex-row gap-6 justify-between">
-              <div className="space-y-2 w-full lg:w-1/3">
-                <label className="block text-sm font-medium">Title</label>
-                <input
-                  type="text"
-                  value={newAccessory.name}
-                  onChange={(e) =>
-                    setNewAccessory((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                  placeholder="Enter accessory name"
-                  className="w-full p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
-                />
-                {errors.name && (
-                  <span className="text-red-500 text-xs">{errors.name}</span>
-                )}
+      {ingredients.map((ingredient, idx) => {
+        const openForm = isFormOpen[idx] || false;
+        const currentTemp = tempImages[idx] || [];
+
+        return (
+          <div
+            key={idx}
+            className="mt-6 p-4 border rounded-md bg-white shadow-sm"
+          >
+            <button
+              onClick={fixHandlePosition}
+              className={`px-4 py-2 rounded-lg ${
+                isHandleFixed ? "bg-red-500" : "bg-teal-500"
+              } text-white transition-colors`}
+            >
+              {isHandleFixed ? "Enable Handle Editing" : "Lock Handle Position"}
+            </button>
+
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4">
+              <div className="flex items-center gap-4">
+                <h2 className="text-lg font-semibold">
+                  {ingredient.name || `Accessory #${idx + 1}`}
+                </h2>
+
+                <div className="flex items-center gap-2">
+                  {(savedImages[idx] || []).map((imgObj) => (
+                    <img
+                      key={imgObj.id}
+                      src={imgObj.url}
+                      alt="Saved Handle"
+                      className="w-12 h-12 object-cover border rounded cursor-pointer"
+                      onClick={() => handleActivateHandle(imgObj, idx)}
+                    />
+                  ))}
+                </div>
               </div>
 
-              {/* Image Upload */}
-              <div className="w-full lg:w-1/3">
-                <label
-                  htmlFor="fileInput"
-                  className="block text-sm font-semibold mb-2"
-                >
-                  Image<span className="text-red-500">*</span>
-                </label>
-                <div className="flex gap-4 items-center rounded-[24px] border-2 border-primary bg-[#CDE8E9]/60">
+              <button
+                onClick={() => handleOpenForm(idx)}
+                className="mt-3 sm:mt-0 px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600"
+              >
+                + Add {ingredient.name || "Item"}
+              </button>
+            </div>
+
+            {openForm && (
+              <div className="mt-4 p-4 border rounded-md bg-gray-50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">
+                      Accessories Title
+                    </label>
+                    <input
+                      type="text"
+                      className="border p-2 w-full rounded-md"
+                      defaultValue={ingredient.name || ""}
+                      placeholder="e.g. Handle or Frame"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">
+                      Minimum Size &amp; Unit
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        className="border p-2 w-20 rounded-md"
+                        placeholder="1"
+                        defaultValue={ingredient.minSize || ""}
+                      />
+                      <select
+                        className="border p-2 rounded-md"
+                        defaultValue={ingredient.unit || "cm"}
+                      >
+                        <option value="cm">cm</option>
+                        <option value="inch">inch</option>
+                        <option value="m">m</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">
+                      Upload Image<span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex gap-2 items-center">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          document.getElementById(`fileinput-${idx}`)?.click()
+                        }
+                        className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600"
+                      >
+                        Choose File
+                      </button>
+                      <span className="text-gray-600">
+                        {currentTemp.length} File(s) Added
+                      </span>
+                      <input
+                        id={`fileinput-${idx}`}
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleImageUpload(idx, e)}
+                      />
+                    </div>
+                    {currentTemp.length > 0 && (
+                      <div className="flex gap-2 mt-2 flex-wrap">
+                        {currentTemp.map((imgObj) => (
+                          <div
+                            key={imgObj.id}
+                            className="w-16 h-16 border rounded relative"
+                          >
+                            <img
+                              src={imgObj.url}
+                              alt="Temp"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">
+                      Color Family
+                    </label>
+                    <div className="flex gap-2">
+                      <div className="w-6 h-6 bg-black border rounded cursor-pointer" />
+                      <div className="w-6 h-6 bg-green-700 border rounded cursor-pointer" />
+                      <div className="w-6 h-6 bg-white border rounded cursor-pointer" />
+                      <div className="w-6 h-6 bg-red-600 border rounded cursor-pointer" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">
+                      Manufacturing Cost
+                    </label>
+                    <input
+                      type="number"
+                      className="border p-2 w-full rounded-md"
+                      placeholder="$250"
+                      defaultValue={ingredient.manufacturingCost || ""}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">
+                      Wholesale
+                    </label>
+                    <input
+                      type="number"
+                      className="border p-2 w-full rounded-md"
+                      placeholder="$100"
+                      defaultValue={ingredient.wholesale || ""}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-1">
+                      Market Price
+                    </label>
+                    <input
+                      type="number"
+                      className="border p-2 w-full rounded-md"
+                      placeholder="$120"
+                      defaultValue={ingredient.marketPrice || ""}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-end gap-4">
                   <button
                     type="button"
-                    onClick={() =>
-                      document.getElementById("fileInput")?.click()
-                    }
-                    className="bg-teal-500 text-white px-6 py-3 rounded-[24px] hover:bg-teal-600 transition-colors"
+                    onClick={() => handleCloseForm(idx)}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
                   >
-                    Choose File
+                    Cancel
                   </button>
-                  <span className="text-gray-500">
-                    {newAccessory.imageFile
-                      ? newAccessory.imageFile.name
-                      : "No File Chosen"}
-                  </span>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                  />
-                </div>
-                {errors.imageFile && (
-                  <span className="text-red-500 text-xs">
-                    {errors.imageFile}
-                  </span>
-                )}
-              </div>
-
-              {/* Color Selection */}
-              <div className="space-y-2 w-full lg:w-1/3">
-                <label className="block text-sm font-medium">Color</label>
-                <div className="flex gap-2">
-                  {["black", "white", "blue", "red", "pink"].map(
-                    (color, idx) => (
-                      <div
-                        key={idx}
-                        className={`w-8 h-8 rounded-full border-2 cursor-pointer ${
-                          color === "black" ? "bg-black" : `bg-${color}`
-                        }`}
-                      ></div>
-                    )
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleSave(idx)}
+                    className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600"
+                  >
+                    Save
+                  </button>
                 </div>
               </div>
-            </div>
-
-            {/* Minimum Size & Unit */}
-            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
-              <div className="space-y-2 w-full lg:w-auto">
-                <label className="block text-sm font-medium">
-                  Minimum Size & Unit
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    placeholder="1"
-                    className="w-20 p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
-                  />
-                  <select className="p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500">
-                    <option>cm</option>
-                    <option>mm</option>
-                    <option>in</option>
-                  </select>
-                  {errors.minimumSize && (
-                    <span className="text-red-500 text-xs">
-                      {errors.minimumSize}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <button className="flex justify-center items-center gap-1 bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 transition-colors">
-                <span>+</span>
-                Add Size & Price
-              </button>
-            </div>
-
-            {/* Pricing Inputs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                "Manufacturing Cost",
-                "Increasing Size",
-                "Increasing Price",
-              ].map((label, idx) => (
-                <div key={idx} className="space-y-2">
-                  <label className="block text-sm font-medium">{label}</label>
-                  <input
-                    type="number"
-                    placeholder="0"
-                    className="w-full p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
-                  />
-                  {errors.increasingPrices && (
-                    <span className="text-red-500 text-xs">
-                      {errors.increasingPrices}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Wholesale & Market Price */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">Wholesale</label>
-                <input
-                  type="number"
-                  placeholder="$0"
-                  value={newAccessory.wholesalePrice}
-                  onChange={(e) =>
-                    setNewAccessory((prev) => ({
-                      ...prev,
-                      wholesalePrice: parseFloat(e.target.value),
-                    }))
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
-                  {...(errors.wholesalePrice && {
-                    className: "border-red-500",
-                  })}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">
-                  Market Price
-                </label>
-                <input
-                  type="number"
-                  placeholder="$0"
-                  value={newAccessory.marketPrice}
-                  onChange={(e) =>
-                    setNewAccessory((prev) => ({
-                      ...prev,
-                      marketPrice: parseFloat(e.target.value),
-                    }))
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-md bg-white focus:outline-teal-500"
-                />
-                {errors.marketPrice && (
-                  <span className="text-red-500 text-xs">
-                    {errors.marketPrice}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Save & Cancel Buttons */}
-            <div className="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
-              <button
-                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
-                onClick={handleCancelAccessory}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors"
-                onClick={handleSaveAccessory}
-              >
-                Save
-              </button>
-            </div>
+            )}
           </div>
-        )}
+        );
+      })}
 
-        {/* Navigation Buttons */}
-        <div className="flex flex-wrap justify-end space-y-2 md:space-y-0 md:space-x-4">
-          <button
-            onClick={onPrevious}
-            className="px-4 py-2 border border-gray-300 rounded-md"
-          >
-            Previous
-          </button>
-          <button
-            onClick={onNext}
-            className="px-4 py-2 bg-teal-500 text-white rounded-md"
-          >
-            Next
-          </button>
-        </div>
+      <div className="flex justify-end space-x-4 mt-4">
+        <button
+          onClick={onPrev}
+          className="px-4 py-2 border border-gray-300 rounded-md"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleNext}
+          className="px-4 py-2 bg-teal-500 text-white rounded-md"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

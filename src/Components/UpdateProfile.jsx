@@ -98,7 +98,7 @@ export default function UpdateProfile() {
             className={`w-full py-2 px-4 bg-primary text-white font-bold rounded-md ${
               loading || uploading
                 ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-blue-600"
+                : "hover:bg-primary"
             }`}
           >
             {loading ? "Updating..." : "Update Profile"}

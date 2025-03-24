@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "react-quill/dist/quill.snow.css";
-import axiosSecure from "../Hooks/AsiosSecure";
 import SweetAlert from "../Shared/SweetAlert";
-import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 import ReactQuill from "react-quill"; // Import ReactQuill
+import axiosSecure from "../Hooks/AsiosSecure";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
 
 export default function AddBlog() {
   const { showAlert } = useSweetAlert();
@@ -41,7 +41,7 @@ export default function AddBlog() {
       const plainTextContent = formData.blog_content.replace(/<[^>]*>/g, "");
 
       await axiosSecure.post(
-        "/api/blogs",
+        "blogs",
         {
           blog_title: formData.blog_title,
           author: formData.author,

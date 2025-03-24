@@ -11,7 +11,6 @@ export default function ProductDetails({
 
   // Dimensions for width and height minCost
   const [dimensions, setDimensions] = useState({
-    length: "",
     width: "",
     height: "",
     unit: "m",
@@ -41,7 +40,6 @@ export default function ProductDetails({
     name: "",
     minSize: "",
     manufacturingCost: "",
-    increasingSizes: [],
     wholesale: "",
     marketPrice: "",
     unit: "",
@@ -201,7 +199,7 @@ export default function ProductDetails({
       minSize: "",
       minCost: "",
       manufacturingCost: "",
-      increasingSizes: [],
+
       wholesale: "",
       marketPrice: "",
       unit: "",
@@ -256,7 +254,6 @@ export default function ProductDetails({
       size: "",
       cost: "",
       manufacturingCost: "",
-      increasingSizes: [],
       wholesale: "",
       marketPrice: "",
       unit: "",

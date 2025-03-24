@@ -1,9 +1,7 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import axiosSecure from "../Hooks/AsiosSecure";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Calendar, User } from "lucide-react";
+import axiosSecure from "../Hooks/AsiosSecure";
 
 const BlogDetail = () => {
   const [post, setPost] = useState(null);
@@ -14,7 +12,7 @@ const BlogDetail = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axiosSecure.get(`/api/blogs/${id}`);
+        const response = await axiosSecure.get(`/blogs/${id}`);
         setPost(response.data);
       } catch (error) {
         console.error("Error fetching the post details:", error);

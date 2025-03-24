@@ -6,19 +6,33 @@ export default function SweetAlert({
   message,
   type = "",
   onClose,
+  duration = 3000, // Default duration in milliseconds (3 seconds)
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [animateClass, setAnimateClass] = useState("");
+  const [timerId, setTimerId] = useState(null);
 
   useEffect(() => {
     if (show) {
       setIsVisible(true);
       setAnimateClass("animate-slide-in");
+
+      // Set a timer to automatically close the alert
+      const id = setTimeout(() => {
+        handleClose();
+      }, duration);
+      setTimerId(id);
     } else {
       setAnimateClass("animate-slide-out");
       setTimeout(() => setIsVisible(false), 300); // Match animation duration
+
+      // Clear any existing timer if the 'show' prop becomes false
+      if (timerId) {
+        clearTimeout(timerId);
+        setTimerId(null);
+      }
     }
-  }, [show]);
+  }, [show, duration, timerId]); // Added duration and timerId to the dependency array
 
   const handleClose = () => {
     setAnimateClass("animate-slide-out");
@@ -26,6 +40,12 @@ export default function SweetAlert({
       setIsVisible(false);
       if (onClose) onClose();
     }, 300); // Match animation duration
+
+    // Clear the automatic close timer if the user manually closes
+    if (timerId) {
+      clearTimeout(timerId);
+      setTimerId(null);
+    }
   };
 
   if (!isVisible) return null;
@@ -44,7 +64,7 @@ export default function SweetAlert({
           {type === "success" && (
             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
               <img
-                src="https://i.ibb.co.com/Wy25CD3/7361b7fc8afb8967cde95738ba8c2d04.png"
+                src="https://i.ibb.co/Wy25CD3/7361b7fc8afb8967cde95738ba8c2d04.png"
                 alt=""
                 className="w-16 h-16"
               />

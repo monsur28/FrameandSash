@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
-import axiosSecure from "../Hooks/AsiosSecure";
 import { ArrowLeft } from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useSweetAlert } from "../ContextProvider/SweetAlertContext";
+import axiosSecure from "../Hooks/AsiosSecure";
 
 export default function EditBlog() {
   const [formData, setFormData] = useState({
@@ -23,7 +23,7 @@ export default function EditBlog() {
   useEffect(() => {
     const fetchBlogPost = async () => {
       try {
-        const response = await axiosSecure.get(`/api/blogs/${id}`);
+        const response = await axiosSecure.get(`/blogs/${id}`);
         setFormData(response.data);
       } catch (error) {
         console.error("Error fetching blog post:", error);
@@ -51,7 +51,7 @@ export default function EditBlog() {
     e.preventDefault();
     try {
       await axiosSecure.put(
-        `/api/blogs/${id}`,
+        `/blogs/${id}`,
         {
           ...formData,
         },

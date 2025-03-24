@@ -1,20 +1,22 @@
-import { Bell, Mail, Search, Menu } from "lucide-react";
+import { Bell, Mail, Search, Menu, User2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { UseSidebar } from "../ContextProvider/SidebarContext";
 import useAuth from "../Hooks/UseAuth";
-import useLanguage from "../Hooks/UseLanguage";
+import { useLanguage } from "../ContextProvider/LanguageContext";
 
 export default function Header() {
   const location = useLocation();
   const { toggleSidebar } = UseSidebar();
   const { user, logOut } = useAuth();
-  console.log(user);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
+  const imageUrl = user?.user_image
+    ? `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/${user.user_image}`
+    : ``;
 
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
@@ -43,6 +45,9 @@ export default function Header() {
   const handleLogout = () => {
     logOut();
     setShowDropdown(false);
+    setInterval(() => {
+      window.location.href = "/register";
+    });
   };
 
   useEffect(() => {
@@ -73,26 +78,26 @@ export default function Header() {
     { id: 3, text: "Server downtime scheduled for tonight.", time: "1d ago" },
   ];
 
-  const messages = [
-    {
-      id: 1,
-      sender: "John Doe",
-      text: "Can we schedule a meeting tomorrow?",
-      time: "1h ago",
-    },
-    {
-      id: 2,
-      sender: "Jane Smith",
-      text: "Please review the attached document.",
-      time: "4h ago",
-    },
-    {
-      id: 3,
-      sender: "Support Team",
-      text: "Your ticket has been resolved.",
-      time: "1d ago",
-    },
-  ];
+  // const messages = [
+  //   {
+  //     id: 1,
+  //     sender: "John Doe",
+  //     text: "Can we schedule a meeting tomorrow?",
+  //     time: "1h ago",
+  //   },
+  //   {
+  //     id: 2,
+  //     sender: "Jane Smith",
+  //     text: "Please review the attached document.",
+  //     time: "4h ago",
+  //   },
+  //   {
+  //     id: 3,
+  //     sender: "Support Team",
+  //     text: "Your ticket has been resolved.",
+  //     time: "1d ago",
+  //   },
+  // ];
 
   return (
     <header className="px-4 sm:px-6 py-4 z-10 top-0">
@@ -168,7 +173,7 @@ export default function Header() {
           </div>
 
           {/* Messages Icon */}
-          <div className="relative" ref={messagesRef}>
+          {/* <div className="relative" ref={messagesRef}>
             <button
               onClick={() => setShowMessages(!showMessages)}
               className="p-2 rounded-full hover:bg-gray-100"
@@ -197,7 +202,7 @@ export default function Header() {
                 ))}
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Language Selector */}
           <div className="relative">
@@ -218,30 +223,37 @@ export default function Header() {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center justify-center w-6 lg:w-12 h- lg:h-12 rounded-full overflow-hidden border-2 border-[#0A9B9B] hover:opacity-90"
+              className="flex items-center justify-center w-6 lg:w-12 h-6 lg:h-12 rounded-full overflow-hidden border-2 border-[#0A9B9B] hover:opacity-90"
               aria-label="Profile"
             >
-              <img
-                src="https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w"
-                alt="User Avatar"
-                className="w-full h-full object-cover"
-              />
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="User Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User2 className="w-6 h-6 text-gray-500" />
+              )}
             </button>
             {showDropdown && (
               <div className="absolute right-0 mt-2 w-64 md:w-72 lg:w-96 rounded-[24px] border-2 border-white bg-white50 backdrop-blur-16.5 shadow-lg p-4 z-50">
                 <div className="flex items-center space-x-4">
-                  <img
-                    src="https://images.squarespace-cdn.com/content/v1/53b599ebe4b08a2784696956/1451882872681-B0PM3YN9RPLLA36MKVI8/image-asset.jpeg?format=500w"
-                    alt="User Avatar"
-                    className="w-12 h-12 rounded-full border"
-                  />
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt="User Avatar"
+                      className="w-36 h-full object-cover"
+                    />
+                  ) : (
+                    <User2 className="w-6 h-6 text-gray-500" />
+                  )}
                   <div>
                     <h2 className="text-lg font-semibold text-gray-800">
-                      {user?.name || user.user_name}
+                      {user?.first_name} {user?.last_name}
                     </h2>
-                    <p className="text-sm text-gray-600">
-                      {user?.email || user?.user_email}
-                    </p>
+                    <p className="text-sm text-gray-600">{user?.email}</p>
+                    <p className="text-sm text-gray-600">{user?.role}</p>
                   </div>
                 </div>
                 <div className="mt-4 space-y-2">
