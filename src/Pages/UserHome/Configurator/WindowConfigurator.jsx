@@ -4,7 +4,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Loader, ZoomIn } from "lucide-react";
+import { Loader, ZoomIn, X } from "lucide-react";
 import axiosSecure from "../../../Hooks/AsiosSecure";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -55,6 +55,20 @@ export default function WindowConfigurator() {
   const [configData, setConfigData] = useState(null);
   const swiperRef = useRef(null);
   const navigate = useNavigate();
+
+  // Add state variables to track which sections have details shown
+  const [showSizeDetails, setShowSizeDetails] = useState(false);
+  const [showMaterialDetails, setShowMaterialDetails] = useState(false);
+  const [showProfileDetails, setShowProfileDetails] = useState(false);
+  const [showColorDetails, setShowColorDetails] = useState(false);
+  const [showTypeDetails, setShowTypeDetails] = useState(false);
+  const [showFanlightDetails, setShowFanlightDetails] = useState(false);
+  const [showOpeningDetails, setShowOpeningDetails] = useState(false);
+  const [showGlazingDetails, setShowGlazingDetails] = useState(false);
+  const [showGlassStructureDetails, setShowGlassStructureDetails] =
+    useState(false);
+  const [showHandleDetails, setShowHandleDetails] = useState(false);
+
   // Create refs for each section
   const sizeRef = useRef(null);
   const materialRef = useRef(null);
@@ -427,6 +441,54 @@ export default function WindowConfigurator() {
 
   const dimensionLimits = configData.dimensions[0];
 
+  // Details section component
+  const DetailSection = ({
+    title,
+    description,
+    formula,
+    examples,
+    onClose,
+  }) => (
+    <div className="mt-3 p-4 border border-gray-200 rounded-md bg-white">
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-xl font-bold text-gray-800">{title}</h3>
+        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <X size={20} />
+        </button>
+      </div>
+
+      <p className="text-gray-700 mb-4">{description}</p>
+
+      {formula && (
+        <div className="mb-4">
+          <h4 className="font-semibold text-gray-800 mb-2">Formula:</h4>
+          <div className="p-3 bg-gray-100 rounded-md font-mono text-sm">
+            {formula}
+          </div>
+        </div>
+      )}
+
+      {examples && examples.length > 0 && (
+        <div className="mb-4">
+          <h4 className="font-semibold text-gray-800 mb-2">Examples:</h4>
+          <div className="space-y-3">
+            {examples.map((example, index) => (
+              <div key={index} className="p-3 bg-gray-50 rounded-md">
+                <p className="font-medium">{example.name}</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  {example.calculation}
+                </p>
+                <p className="text-sm font-semibold mt-1">
+                  Result: {example.result}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Window Configurator</h1>
@@ -703,10 +765,38 @@ export default function WindowConfigurator() {
         <div className="space-y-8 col-span-2 overflow-y-auto h-screen scrollbar-hide">
           {/* Size */}
           <section ref={sizeRef} className="w-full">
-            <h2 className="text-xl font-semibold mb-4 bg-teal-500 text-white p-2">
-              Size
-            </h2>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="flex  justify-between items-center bg-teal-500 text-white p-2">
+              <h2 className="text-xl font-semibold">Size</h2>
+              <button
+                className="text-lg hover:underline"
+                onClick={() => setShowSizeDetails(!showSizeDetails)}
+              >
+                More Details
+              </button>
+            </div>
+
+            {showSizeDetails && (
+              <DetailSection
+                title="Window Size Details"
+                description="The size of your window affects both functionality and cost. Larger windows allow more light but may have structural limitations. All dimensions must be within the permissible ranges."
+                formula="Window Area = Width × Height (used in price calculations)"
+                examples={[
+                  {
+                    name: "Standard Window",
+                    calculation: "Width: 1000mm × Height: 1200mm = 1.2m²",
+                    result: "1.2 square meters",
+                  },
+                  {
+                    name: "Large Window",
+                    calculation: "Width: 1500mm × Height: 2000mm = 3.0m²",
+                    result: "3.0 square meters",
+                  },
+                ]}
+                onClose={() => setShowSizeDetails(false)}
+              />
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
               {/* Total Height Input */}
               <div>
                 <label className="block text-lg mb-1">Total Height</label>
@@ -810,9 +900,37 @@ export default function WindowConfigurator() {
 
           {/* Material */}
           <section ref={materialRef} className="w-full relative">
-            <h2 className="text-xl font-semibold mb-4 bg-teal-500 text-white p-2">
-              Material
-            </h2>
+            <div className="flex justify-between items-center bg-teal-500 text-white p-2">
+              <h2 className="text-xl font-semibold">Material</h2>
+              <button
+                className="text-lg hover:underline"
+                onClick={() => setShowMaterialDetails(!showMaterialDetails)}
+              >
+                More Details
+              </button>
+            </div>
+
+            {showMaterialDetails && (
+              <DetailSection
+                title="Material Details"
+                description="The material of your window frame affects durability, insulation, maintenance requirements, and aesthetics. Different materials have different price points and benefits."
+                formula="Frame Cost = Material Price per meter × Frame Perimeter"
+                examples={[
+                  {
+                    name: "PVC Window (1.2m × 1.5m)",
+                    calculation: "$15.00/m × (1.2m + 1.5m) × 2",
+                    result: "$81.00",
+                  },
+                  {
+                    name: "Aluminum Window (1.2m × 1.5m)",
+                    calculation: "$25.00/m × (1.2m + 1.5m) × 2",
+                    result: "$135.00",
+                  },
+                ]}
+                onClose={() => setShowMaterialDetails(false)}
+              />
+            )}
+
             <div className="relative">
               <Swiper
                 ref={swiperRef}
@@ -825,11 +943,12 @@ export default function WindowConfigurator() {
                 }}
                 pagination={{ clickable: true }}
                 breakpoints={{
-                  640: { slidesPerView: 1 },
+                  320: { slidesPerView: 1 },
+                  425: { slidesPerView: 1 },
                   768: { slidesPerView: 2 },
                   1024: { slidesPerView: 4 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.materials.map((material) => (
                   <SwiperSlide
@@ -948,9 +1067,37 @@ export default function WindowConfigurator() {
 
           {/* Profile */}
           <section ref={profileRef} className="w-full relative">
-            <h2 className="text-xl font-semibold mb-4 bg-teal-500 text-white p-2">
-              Profile
-            </h2>
+            <div className="flex justify-between items-center bg-teal-500 text-white p-2">
+              <h2 className="text-xl font-semibold">Profile</h2>
+              <button
+                className="text-lg hover:underline"
+                onClick={() => setShowProfileDetails(!showProfileDetails)}
+              >
+                More Details
+              </button>
+            </div>
+
+            {showProfileDetails && (
+              <DetailSection
+                title="Profile Details"
+                description="The profile determines the structural characteristics of your window frame. Different profiles offer varying levels of insulation, strength, and design options."
+                formula="Profile Adjusted Cost = Base Frame Cost × Profile Multiplier"
+                examples={[
+                  {
+                    name: "Standard Profile (Base frame cost: $100)",
+                    calculation: "$100 × 1.0 multiplier",
+                    result: "$100.00",
+                  },
+                  {
+                    name: "Premium Profile (Base frame cost: $100)",
+                    calculation: "$100 × 1.25 multiplier",
+                    result: "$125.00",
+                  },
+                ]}
+                onClose={() => setShowProfileDetails(false)}
+              />
+            )}
+
             <div className="relative">
               <Swiper
                 modules={[Navigation, Pagination]}
@@ -962,10 +1109,11 @@ export default function WindowConfigurator() {
                 }}
                 pagination={{ clickable: true }}
                 breakpoints={{
-                  640: { slidesPerView: 1 },
+                  320: { slidesPerView: 1 },
+                  640: { slidesPerView: 2 },
                   1024: { slidesPerView: 3 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.profiles.map((profile) => (
                   <SwiperSlide key={profile.id} className="flex justify-center">
@@ -1085,9 +1233,37 @@ export default function WindowConfigurator() {
 
           {/* Color */}
           <section ref={colorRef} className="w-full relative">
-            <h2 className="text-xl font-semibold mb-4 bg-teal-500 text-white p-2">
-              Color
-            </h2>
+            <div className="flex justify-between items-center bg-teal-500 text-white p-2">
+              <h2 className="text-xl font-semibold">Color</h2>
+              <button
+                className="text-lg hover:underline"
+                onClick={() => setShowColorDetails(!showColorDetails)}
+              >
+                More Details
+              </button>
+            </div>
+
+            {showColorDetails && (
+              <DetailSection
+                title="Color Details"
+                description="The color of your window frame affects both aesthetics and price. Standard colors are typically less expensive, while specialty finishes and custom colors have premium pricing."
+                formula="Color Adjusted Cost = Profile Adjusted Cost × Color Multiplier"
+                examples={[
+                  {
+                    name: "Standard White (Profile adjusted cost: $125)",
+                    calculation: "$125 × 1.0 multiplier",
+                    result: "$125.00",
+                  },
+                  {
+                    name: "Wood Grain Finish (Profile adjusted cost: $125)",
+                    calculation: "$125 × 1.15 multiplier",
+                    result: "$143.75",
+                  },
+                ]}
+                onClose={() => setShowColorDetails(false)}
+              />
+            )}
+
             <div className="relative">
               <Swiper
                 modules={[Navigation]}
@@ -1098,11 +1274,12 @@ export default function WindowConfigurator() {
                   prevEl: ".custom-swiper-button-prev",
                 }}
                 breakpoints={{
+                  320: { slidesPerView: 3 },
                   640: { slidesPerView: 2 },
                   768: { slidesPerView: 3 },
                   1024: { slidesPerView: 10 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.colors.map((color) => (
                   <SwiperSlide
@@ -1206,9 +1383,37 @@ export default function WindowConfigurator() {
 
           {/* Types of Window */}
           <section ref={typeRef} className="w-full relative">
-            <h2 className="text-xl font-semibold mb-6 bg-teal-500 text-white p-3 rounded-md">
-              Types of Window
-            </h2>
+            <div className="flex justify-between items-center bg-teal-500 text-white p-3 rounded-md">
+              <h2 className="text-xl font-semibold">Types of Window</h2>
+              <button
+                className="text-lg hover:underline"
+                onClick={() => setShowTypeDetails(!showTypeDetails)}
+              >
+                More Details
+              </button>
+            </div>
+
+            {showTypeDetails && (
+              <DetailSection
+                title="Window Type Details"
+                description="The window type determines how the window operates and its overall design. Different types offer varying benefits in terms of ventilation, security, and aesthetics."
+                formula="Window Type Adjusted Cost = Color Adjusted Cost × Window Type Multiplier"
+                examples={[
+                  {
+                    name: "Fixed Window (Color adjusted cost: $150)",
+                    calculation: "$150 × 0.9 multiplier (simpler construction)",
+                    result: "$135.00",
+                  },
+                  {
+                    name: "Single-Hung Window (Color adjusted cost: $150)",
+                    calculation: "$150 × 1.0 multiplier",
+                    result: "$150.00",
+                  },
+                ]}
+                onClose={() => setShowTypeDetails(false)}
+              />
+            )}
+
             <div className="relative px-6">
               <Swiper
                 ref={swiperRef}
@@ -1221,11 +1426,12 @@ export default function WindowConfigurator() {
                 }}
                 pagination={{ clickable: true }}
                 breakpoints={{
+                  320: { slidesPerView: 1 },
                   640: { slidesPerView: 1 },
                   768: { slidesPerView: 2 },
                   1024: { slidesPerView: 3 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.window_types.map((type) => (
                   <SwiperSlide key={type.id} className="flex justify-center">
@@ -1335,10 +1541,41 @@ export default function WindowConfigurator() {
           <section ref={fanlightRef} className="w-full relative">
             <div className="flex justify-between items-center bg-teal-500 text-white p-3">
               <h2 className="text-xl font-semibold">Upper / Lower Fanlight</h2>
-              <button className="text-lg underline">More Details</button>
+              <button
+                className="text-lg underline"
+                onClick={() => setShowFanlightDetails(!showFanlightDetails)}
+              >
+                More Details
+              </button>
             </div>
 
             <p className="text-gray-700 my-2">Please select your door Types</p>
+
+            {showFanlightDetails && (
+              <DetailSection
+                title="Fanlight Details"
+                description="Fanlights are fixed window sections positioned above or below the main window. They allow additional light to enter the room while maintaining the structural integrity of the window."
+                formula="Fanlight Cost = Base Price of Selected Fanlight Option"
+                examples={[
+                  {
+                    name: "Without Fanlight",
+                    calculation: "Base Price = $0.00",
+                    result: "$0.00",
+                  },
+                  {
+                    name: "Lower Fanlight",
+                    calculation: "Base Price = $20.00",
+                    result: "$20.00",
+                  },
+                  {
+                    name: "Upper Fanlight",
+                    calculation: "Base Price = $30.00",
+                    result: "$30.00",
+                  },
+                ]}
+                onClose={() => setShowFanlightDetails(false)}
+              />
+            )}
 
             <div className="relative px-6">
               <Swiper
@@ -1352,10 +1589,11 @@ export default function WindowConfigurator() {
                 }}
                 pagination={{ clickable: true }}
                 breakpoints={{
+                  320: { slidesPerView: 1 },
                   640: { slidesPerView: 1, spaceBetween: 10 },
                   1024: { slidesPerView: 3, spaceBetween: 15 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.fanlights.map((option) => (
                   <SwiperSlide key={option.id} className="flex justify-center">
@@ -1455,12 +1693,43 @@ export default function WindowConfigurator() {
           <section ref={openingRef} className="w-full relative">
             <div className="flex justify-between items-center bg-teal-500 text-white p-4">
               <h2 className="text-2xl">Opening System</h2>
-              <button className="text-lg hover:underline">More Details</button>
+              <button
+                className="text-lg hover:underline"
+                onClick={() => setShowOpeningDetails(!showOpeningDetails)}
+              >
+                More Details
+              </button>
             </div>
 
             <p className="text-[#555454] text-lg my-4 px-4">
               Please select your door Opening System
             </p>
+
+            {showOpeningDetails && (
+              <DetailSection
+                title="Opening System Details"
+                description="The opening system determines how your window opens and closes. Different systems offer various benefits in terms of ventilation, accessibility, and space efficiency."
+                formula="Opening System Cost = Base Price of Selected Opening System"
+                examples={[
+                  {
+                    name: "Single Opening",
+                    calculation: "Base Price = $20.00",
+                    result: "$20.00",
+                  },
+                  {
+                    name: "Double Opening",
+                    calculation: "Base Price = $40.00",
+                    result: "$40.00",
+                  },
+                  {
+                    name: "Triple Opening",
+                    calculation: "Base Price = $60.00",
+                    result: "$60.00",
+                  },
+                ]}
+                onClose={() => setShowOpeningDetails(false)}
+              />
+            )}
 
             <div className="relative px-6">
               <Swiper
@@ -1474,11 +1743,12 @@ export default function WindowConfigurator() {
                 }}
                 pagination={{ clickable: true }}
                 breakpoints={{
+                  320: { slidesPerView: 1 },
                   640: { slidesPerView: 1 },
                   768: { slidesPerView: 2 },
                   1024: { slidesPerView: 3 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.opening_systems.map((option) => (
                   <SwiperSlide
@@ -1596,11 +1866,37 @@ export default function WindowConfigurator() {
           <section ref={glazingRef} className="w-full relative">
             <div className="flex justify-between items-center bg-teal-500 text-white p-4">
               <h2 className="text-2xl">Glazing</h2>
-              <button className="text-lg hover:underline">More Details</button>
+              <button
+                className="text-lg hover:underline"
+                onClick={() => setShowGlazingDetails(!showGlazingDetails)}
+              >
+                More Details
+              </button>
             </div>
             <p className="text-[#555454] text-lg my-4 px-4">
               Please select your Glazing type
             </p>
+
+            {showGlazingDetails && (
+              <DetailSection
+                title="Glazing Details"
+                description="Glazing refers to the number of glass panes in your window. More panes generally provide better insulation and soundproofing but at a higher cost."
+                formula="Glazing Cost = Base Price per m² × Window Area × Glazing Multiplier"
+                examples={[
+                  {
+                    name: "Single Glazing (1.2m × 1.5m window)",
+                    calculation: "$20.00/m² × 1.8m² × 1.2 multiplier",
+                    result: "$43.20",
+                  },
+                  {
+                    name: "Double Glazing (1.2m × 1.5m window)",
+                    calculation: "$40.00/m² × 1.8m² × 1.4 multiplier",
+                    result: "$100.80",
+                  },
+                ]}
+                onClose={() => setShowGlazingDetails(false)}
+              />
+            )}
 
             <div className="relative px-6">
               <Swiper
@@ -1614,11 +1910,12 @@ export default function WindowConfigurator() {
                 }}
                 pagination={{ clickable: true }}
                 breakpoints={{
+                  320: { slidesPerView: 1 },
                   640: { slidesPerView: 1 },
                   768: { slidesPerView: 2 },
                   1024: { slidesPerView: 3 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.glass_types.map((option) => (
                   <SwiperSlide
@@ -1737,11 +2034,39 @@ export default function WindowConfigurator() {
           <section ref={glassStructureRef} className="w-full relative">
             <div className="flex justify-between items-center bg-teal-500 text-white p-4">
               <h2 className="text-2xl">Glass Structure</h2>
-              <button className="text-lg hover:underline">More Details</button>
+              <button
+                className="text-lg hover:underline"
+                onClick={() =>
+                  setShowGlassStructureDetails(!showGlassStructureDetails)
+                }
+              >
+                More Details
+              </button>
             </div>
             <p className="text-[#555454] text-lg my-4 px-4">
               Please select your Glass Structure type
             </p>
+
+            {showGlassStructureDetails && (
+              <DetailSection
+                title="Glass Structure Details"
+                description="The glass structure determines the appearance and properties of your window glass. Different structures offer varying levels of privacy, light transmission, and aesthetic appeal."
+                formula="Glass Structure Cost = Base Price + (Window Area × Base Glass Price × Glazing Multiplier × Structure Multiplier)"
+                examples={[
+                  {
+                    name: "Clear Glass (1.2m × 1.5m window with Double Glazing)",
+                    calculation: "$10.00 + (1.8m² × $40.00 × 1.4 × 1.1)",
+                    result: "$120.88",
+                  },
+                  {
+                    name: "Obscure Glass (1.2m × 1.5m window with Double Glazing)",
+                    calculation: "$30.00 + (1.8m² × $40.00 × 1.4 × 1.2)",
+                    result: "$150.96",
+                  },
+                ]}
+                onClose={() => setShowGlassStructureDetails(false)}
+              />
+            )}
 
             <div className="relative px-6">
               <Swiper
@@ -1755,11 +2080,12 @@ export default function WindowConfigurator() {
                 }}
                 pagination={{ clickable: true }}
                 breakpoints={{
+                  320: { slidesPerView: 1 },
                   640: { slidesPerView: 1 },
                   768: { slidesPerView: 2 },
                   1024: { slidesPerView: 3 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.glass_structures.map((option) => (
                   <SwiperSlide
@@ -1876,12 +2202,43 @@ export default function WindowConfigurator() {
           <section ref={handleRef} className="w-full relative">
             <div className="flex justify-between items-center bg-teal-500 text-white p-4">
               <h2 className="text-2xl">Handle & Locks</h2>
-              <button className="text-lg hover:underline">More Details</button>
+              <button
+                className="text-lg hover:underline"
+                onClick={() => setShowHandleDetails(!showHandleDetails)}
+              >
+                More Details
+              </button>
             </div>
 
             <p className="text-[#555454] text-lg my-4 px-4">
               Please select your Handle & Lock
             </p>
+
+            {showHandleDetails && (
+              <DetailSection
+                title="Handle & Lock Details"
+                description="The handle and lock system affects both the security and ease of use of your window. Higher-end options offer enhanced security features and premium finishes."
+                formula="Handle & Lock Cost = Base Price of Selected Handle"
+                examples={[
+                  {
+                    name: "Simple Handle",
+                    calculation: "Base Price = $20.00",
+                    result: "$20.00",
+                  },
+                  {
+                    name: "Handle with Lock",
+                    calculation: "Base Price = $40.00",
+                    result: "$40.00",
+                  },
+                  {
+                    name: "Smart Lock Handle",
+                    calculation: "Base Price = $60.00",
+                    result: "$60.00",
+                  },
+                ]}
+                onClose={() => setShowHandleDetails(false)}
+              />
+            )}
 
             <div className="relative px-6">
               <Swiper
@@ -1895,12 +2252,13 @@ export default function WindowConfigurator() {
                 }}
                 pagination={{ clickable: true }}
                 breakpoints={{
+                  320: { slidesPerView: 1, spaceBetween: 15 },
                   480: { slidesPerView: 1, spaceBetween: 15 },
                   768: { slidesPerView: 2, spaceBetween: 20 },
                   1024: { slidesPerView: 3, spaceBetween: 25 },
                   1280: { slidesPerView: 4, spaceBetween: 25 },
                 }}
-                className="w-full"
+                className="w-full mt-4"
               >
                 {configData.handles.map((option) => (
                   <SwiperSlide

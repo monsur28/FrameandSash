@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import WindowConfigurator from "./WindowConfigurator/WindowConfigurator"; // Your existing window configurator
 import DoorConfigurator from "./DoorConfigurator/DoorConfigurator"; // The new door configurator
 
@@ -8,27 +6,26 @@ export default function ProductConfigurator() {
   const [activeTab, setActiveTab] = useState("windows");
 
   return (
-    <div className="">
-      <ToastContainer />
-
+    <div>
       {/* Tab Navigation */}
-      <div className="rounded-lg shadow-md p-4 border border-gray-300">
-        <div className="flex border-b">
+      <div className="p-4 flex justify-center">
+        <div className="relative w-64 h-12 bg-primary  rounded-full flex items-center p-1 shadow-lg">
+          <div
+            className={`absolute top-1 left-1 w-28 h-10 bg-teal-500 rounded-full transition-all duration-300 ${
+              activeTab === "doors" ? "translate-x-[120%]" : "translate-x-0"
+            }`}
+          ></div>
           <button
-            className={`py-3 px-6 font-medium text-lg ${
-              activeTab === "windows"
-                ? "border-b-2 border-teal-500 text-teal-600"
-                : "text-gray-500 hover:text-gray-700"
+            className={`w-1/2 text-lg font-medium relative z-10 transition-all ${
+              activeTab === "windows" ? "text-white" : "text-gray-600"
             }`}
             onClick={() => setActiveTab("windows")}
           >
             Windows
           </button>
           <button
-            className={`py-3 px-6 font-medium text-lg ${
-              activeTab === "doors"
-                ? "border-b-2 border-teal-500 text-teal-600"
-                : "text-gray-500 hover:text-gray-700"
+            className={`w-1/2 text-lg font-medium relative z-10 transition-all ${
+              activeTab === "doors" ? "text-white" : "text-gray-600"
             }`}
             onClick={() => setActiveTab("doors")}
           >

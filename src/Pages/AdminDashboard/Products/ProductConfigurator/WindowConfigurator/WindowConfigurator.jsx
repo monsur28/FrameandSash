@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import { Trash2 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { SketchPicker } from "react-color";
 import axiosSecure from "../../../../../Hooks/AsiosSecure";
 import { useSweetAlert } from "../../../../../ContextProvider/SweetAlertContext";
 import Section from "../../../../../Shared/Section";
@@ -19,6 +17,19 @@ import {
   SavedProfiles,
   SavedWindows,
 } from "../../../../../Components/Configurator/SavedComponents";
+import {
+  ColorSection,
+  DimensionSection,
+  EstimatedWorkingHourSection,
+  FanlightSection,
+  GlassSection,
+  GlassStructureSection,
+  HandleSection,
+  MaterialSection,
+  OperatingSystemSection,
+  ProfileSection,
+  WindowTypeSection,
+} from "../../../../../Components/Configurator/SetSavedWindowSection";
 
 // Utility function to calculate multipliers
 const calculateMultiplier = (input) => {
@@ -35,8 +46,9 @@ const isValidMultiplierInput = (input) => {
 export default function ProductConfiguration() {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("1");
+  // eslint-disable-next-line no-unused-vars
   const [selectedCategoryName, setSelectedCategoryName] = useState("1");
-  const [openSection, setOpenSection] = useState("dimensions");
+  const [openSection, setOpenSection] = useState(null);
   const { showAlert } = useSweetAlert();
   const initialImageState = { url: null, name: "No file chosen" };
 
@@ -49,29 +61,23 @@ export default function ProductConfiguration() {
   const [savedDimensions, setSavedDimensions] = useState([]);
   const [editingDimensionIndex, setEditingDimensionIndex] = useState(null);
 
-  // Error state for dimensions
   const [dimensionError, setDimensionError] = useState("");
-  // Error state for materials
   const [name, setname] = useState("");
   const [image, setimage] = useState(initialImageState);
   const [savedMaterials, setSavedMaterials] = useState([]);
-  console.log(savedMaterials);
   const [editingMaterialIndex, setEditingMaterialIndex] = useState(null);
   const [materialError, setMaterialError] = useState("");
 
-  // state for profiles
   const [profile_name, setprofile_name] = useState("");
   const [profile_multiplier, setprofile_multiplier] = useState("");
   const [profile_image, setprofile_image] = useState(initialImageState);
   const [features, setFeatures] = useState([]);
   const [newFeature, setNewFeature] = useState("");
   const [savedProfiles, setSavedProfiles] = useState([]);
-  console.log(savedProfiles);
   const [editingProfileIndex, setEditingProfileIndex] = useState(null);
   const [profile_multiplierIncrements, setprofile_multiplierIncrements] =
     useState([]);
 
-  // Error state for profiles
   const [profileError, setProfileError] = useState("");
 
   const [glassName, setGlassName] = useState("");
@@ -79,11 +85,9 @@ export default function ProductConfiguration() {
   const [glassImage, setGlassImage] = useState(initialImageState);
   const [glazing_multiplier, setglazing_multiplier] = useState(1);
   const [savedGlasses, setSavedGlasses] = useState([]);
-  console.log(savedGlasses);
   const [editingGlassIndex, setEditingGlassIndex] = useState(null);
   const [glazingPriceIncrements, setGlazingPriceIncrements] = useState([]);
 
-  // Error state for glasses
   const [glassError, setGlassError] = useState("");
 
   const [glassStructureName, setGlassStructureName] = useState("");
@@ -92,56 +96,46 @@ export default function ProductConfiguration() {
     useState(initialImageState);
   const [structure_multiplier, setstructure_multiplier] = useState(1);
   const [savedGlassStructures, setSavedGlassStructures] = useState([]);
-  console.log(savedGlassStructures);
   const [editingGlassStructureIndex, setEditingGlassStructureIndex] =
     useState(null);
   const [structurePriceIncrements, setStructurePriceIncrements] = useState([]);
 
-  // Error state fosavedOperatingr glass structures
   const [structureError, setStructureError] = useState("");
 
   const [openingName, setopeningName] = useState("");
   const [openingPrice, setopeningPrice] = useState("");
   const [opening_image, setopening_image] = useState(initialImageState);
   const [savedOpening, setSavedOpening] = useState([]);
-  console.log(savedOpening);
   const [editingOperatingIndex, setEditingOperatingIndex] = useState(null);
 
-  // Error state for operating systems
   const [operatingError, setOperatingError] = useState("");
 
   const [type, settype] = useState("");
   const [price, setprice] = useState("");
   const [handle_image, sethandle_image] = useState(initialImageState);
   const [savedHandles, setSavedHandles] = useState([]);
-  console.log(savedHandles);
   const [editingHandleIndex, setEditingHandleIndex] = useState(null);
 
-  // Error state for handles
   const [handleError, setHandleError] = useState("");
 
   const [windowTypeName, setWindowTypeName] = useState("");
   const [window_type_multiplier, setwindow_type_multiplier] = useState("");
   const [windowTypeImage, setWindowTypeImage] = useState(initialImageState);
   const [savedWindows, setSavedWindows] = useState([]);
-  console.log(savedWindows);
   const [editingWindowIndex, setEditingWindowIndex] = useState(null);
   const [
     window_type_multiplierIncrements,
     setwindow_type_multiplierIncrements,
   ] = useState([]);
 
-  // Error state for window types
   const [windowTypeError, setWindowTypeError] = useState("");
 
   const [fanlightName, setFanlightName] = useState("");
   const [fanlightPrice, setFanlightPrice] = useState("");
   const [fanlight_image, setfanlight_image] = useState(initialImageState);
   const [savedFanlights, setSavedFanlights] = useState([]);
-  console.log(savedFanlights);
   const [editingFanlightIndex, setEditingFanlightIndex] = useState(null);
 
-  // Error state for fanlights
   const [fanlightError, setFanlightError] = useState("");
 
   const [estimatedHours, setEstimatedHours] = useState("");
@@ -150,7 +144,6 @@ export default function ProductConfiguration() {
   const [savedEstimated, setSavedEstimated] = useState([]);
   const [editingEstimatedIndex, setEditingEstimatedIndex] = useState(null);
 
-  // Error state for estimated hours
   const [estimatedError, setEstimatedError] = useState("");
 
   const [selectedColor, setSelectedColor] = useState("#ffffff");
@@ -158,22 +151,89 @@ export default function ProductConfiguration() {
   const [color_multiplier, setcolor_multiplier] = useState("");
   const [color_image, setcolor_image] = useState(initialImageState);
   const [savedColors, setSavedColors] = useState([]);
-  console.log(savedColors);
   const [editingColorIndex, setEditingColorIndex] = useState(null);
   const [color_multiplierIncrements, setcolor_multiplierIncrements] = useState(
     []
   );
 
-  // Error state for colors
+  // ---- Info Tooltip States ----
+  const [showDimensionInfo, setShowDimensionInfo] = useState(false);
+  const [showMaterialInfo, setShowMaterialInfo] = useState(false);
+  const [showProfileInfo, setShowProfileInfo] = useState(false);
+  const [showGlassInfo, setShowGlassInfo] = useState(false);
+  const [showGlassStructureInfo, setShowGlassStructureInfo] = useState(false);
+  const [showOperatingInfo, setShowOperatingInfo] = useState(false);
+  const [showHandleInfo, setShowHandleInfo] = useState(false);
+  const [showWindowInfo, setShowWindowInfo] = useState(false);
+  const [showFanlightInfo, setShowFanlightInfo] = useState(false);
+  const [showEstimatedInfo, setShowEstimatedInfo] = useState(false);
+  const [showColorInfo, setShowColorInfo] = useState(false);
+
+  const infoRefs = {
+    dimension: useRef(null),
+    material: useRef(null),
+    profile: useRef(null),
+    glass: useRef(null),
+    glassStructure: useRef(null),
+    operating: useRef(null),
+    handle: useRef(null),
+    window: useRef(null),
+    fanlight: useRef(null),
+    estimated: useRef(null),
+    color: useRef(null),
+  };
+
   const [colorError, setColorError] = useState("");
   const [configurError, setConfigurError] = useState("");
 
-  // Fetch categories
+  const toggleInfo = (setter, type) => {
+    setter((prev) => !prev);
+    setOpenSection(type);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const refs = Object.values(infoRefs);
+      if (
+        !refs.some((ref) => ref.current && ref.current.contains(event.target))
+      ) {
+        setShowDimensionInfo(false);
+        setShowMaterialInfo(false);
+        setShowProfileInfo(false);
+        setShowGlassInfo(false);
+        setShowGlassStructureInfo(false);
+        setShowOperatingInfo(false);
+        setShowHandleInfo(false);
+        setShowWindowInfo(false);
+        setShowFanlightInfo(false);
+        setShowEstimatedInfo(false);
+        setShowColorInfo(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axiosSecure.get("/product-categories");
-        setCategories(response.data);
+        const windowsCategory = response.data.find(
+          (cat) => cat.category_name.toLowerCase() === "windows"
+        );
+        if (windowsCategory) {
+          setCategories([windowsCategory]);
+          setSelectedCategoryId(windowsCategory.id.toString());
+          setSelectedCategoryName("windows");
+        } else {
+          setCategories([]);
+          setSelectedCategoryId(null);
+          setSelectedCategoryName("");
+          toast.error("Windows category not found.");
+        }
       } catch (error) {
         console.error("Error fetching categories:", error);
         toast.error("Failed to fetch categories.");
@@ -183,25 +243,10 @@ export default function ProductConfiguration() {
     fetchCategories();
   }, []);
 
-  // Update selectedCategoryName whenever selectedCategoryId changes
-  useEffect(() => {
-    if (selectedCategoryId && categories.length > 0) {
-      console.log(selectedCategoryId);
-      const selectedCategory = categories.find(
-        (cat) => cat.id === parseInt(selectedCategoryId)
-      );
-      setSelectedCategoryName(
-        selectedCategory ? selectedCategory.category_name.toLowerCase() : ""
-      );
-    }
-  }, [selectedCategoryId, categories]);
-
-  // Toggle Section
   const toggleSection = (section) => {
     setOpenSection(openSection === section ? null : section);
   };
 
-  // File Handling
   const handleFileChange = async (event, type) => {
     const selectedFile = event.target.files[0];
     if (!selectedFile) return;
@@ -250,11 +295,10 @@ export default function ProductConfiguration() {
     }
   };
 
-  // ImgBB Upload for Color Swatches
   const uploadColorToImgBB = async (hexColor) => {
     try {
       const canvas = document.createElement("canvas");
-      canvas.width = 50; // Smaller size for efficiency
+      canvas.width = 50;
       canvas.height = 50;
       const ctx = canvas.getContext("2d");
       ctx.fillStyle = hexColor;
@@ -278,7 +322,6 @@ export default function ProductConfiguration() {
     }
   };
 
-  // Save Function
   const handleSave = (
     setState,
     state,
@@ -291,14 +334,13 @@ export default function ProductConfiguration() {
       updatedState[editingIndex] = newData;
       setState(updatedState);
       toast.success("Updated successfully!");
-      setEditingIndex(null); // Reset editing index after save
+      setEditingIndex(null);
     } else {
       setState([...state, newData]);
       toast.success("Saved successfully!");
     }
   };
 
-  // Validate Dimensions
   const validateDimensions = () => {
     if (!min_height || !max_height || !min_width || !max_width) {
       setDimensionError("All dimension fields are required.");
@@ -314,11 +356,10 @@ export default function ProductConfiguration() {
       setDimensionError("Minimum width cannot be greater than maximum width.");
       return false;
     }
-    setDimensionError(""); // Clear error if valid
+    setDimensionError("");
     return true;
   };
 
-  // Save Dimensions
   const handleDimensionSave = () => {
     if (validateDimensions()) {
       handleSave(
@@ -337,7 +378,6 @@ export default function ProductConfiguration() {
     }
   };
 
-  // Save Profile Features
   const handleProfileSave = () => {
     if (
       !profile_name ||
@@ -360,7 +400,7 @@ export default function ProductConfiguration() {
         profile_name,
         features,
         profile_image: profile_image.url,
-        profile_multiplier: calculatedMultiplier, // Save as 1.2
+        profile_multiplier: calculatedMultiplier,
       },
       editingProfileIndex,
       setEditingProfileIndex
@@ -368,15 +408,14 @@ export default function ProductConfiguration() {
 
     const updatedIncrements = [...profile_multiplierIncrements];
     if (editingProfileIndex !== null) {
-      updatedIncrements[editingProfileIndex] = percentageValue; // Store 20 for display
+      updatedIncrements[editingProfileIndex] = percentageValue;
     } else {
       updatedIncrements.push(percentageValue);
     }
     setprofile_multiplierIncrements(updatedIncrements);
-    setProfileError(""); // Clear error if valid
+    setProfileError("");
   };
 
-  // Handle Glass Type Save
   const handleSaveGlassType = () => {
     if (
       !glassName ||
@@ -398,8 +437,8 @@ export default function ProductConfiguration() {
       {
         type: glassName,
         glass_image: glassImage.url,
-        price: glassPrice, // Use the calculated multiplier
-        glazing_multiplier: calculatedMultiplier, // Include the existing glazing multiplier
+        price: glassPrice,
+        glazing_multiplier: calculatedMultiplier,
       },
       editingGlassIndex,
       setEditingGlassIndex
@@ -407,15 +446,14 @@ export default function ProductConfiguration() {
 
     const updatedIncrements = [...glazingPriceIncrements];
     if (editingGlassIndex !== null) {
-      updatedIncrements[editingGlassIndex] = percentageValue; // Store 20 for display
+      updatedIncrements[editingGlassIndex] = percentageValue;
     } else {
       updatedIncrements.push(percentageValue);
     }
     setGlazingPriceIncrements(updatedIncrements);
-    setGlassError(""); // Clear error if valid
+    setGlassError("");
   };
 
-  // Handle Glass Structure Save
   const handleStructureSave = () => {
     if (!glassStructureName || !isValidMultiplierInput(structure_multiplier)) {
       setStructureError(
@@ -433,7 +471,7 @@ export default function ProductConfiguration() {
         type: glassStructureName,
         glass_image: glassStructureImage.url,
         price: glassStructurePrice,
-        structure_multiplier: calculatedMultiplier, // Use the calculated multiplier
+        structure_multiplier: calculatedMultiplier,
       },
       editingGlassStructureIndex,
       setEditingGlassStructureIndex
@@ -441,15 +479,14 @@ export default function ProductConfiguration() {
 
     const updatedIncrements = [...structurePriceIncrements];
     if (editingGlassStructureIndex !== null) {
-      updatedIncrements[editingGlassStructureIndex] = percentageValue; // Store 20 for display
+      updatedIncrements[editingGlassStructureIndex] = percentageValue;
     } else {
       updatedIncrements.push(percentageValue);
     }
     setStructurePriceIncrements(updatedIncrements);
-    setStructureError(""); // Clear error if valid
+    setStructureError("");
   };
 
-  // Handle Color Save
   const handleColorSave = () => {
     if (!color_name || !isValidMultiplierInput(color_multiplier)) {
       setColorError("Color name and a valid price are required.");
@@ -464,8 +501,8 @@ export default function ProductConfiguration() {
       {
         color_name,
         color_image: color_image.url,
-        color_multiplier: calculatedMultiplier, // Use the calculated multiplier
-        color: selectedColor, // Include the selected color value
+        color_multiplier: calculatedMultiplier,
+        color: selectedColor,
       },
       editingColorIndex,
       setEditingColorIndex
@@ -473,22 +510,20 @@ export default function ProductConfiguration() {
 
     const updatedIncrements = [...color_multiplierIncrements];
     if (editingColorIndex !== null) {
-      updatedIncrements[editingColorIndex] = percentageValue; // Store 20 for display
+      updatedIncrements[editingColorIndex] = percentageValue;
     } else {
       updatedIncrements.push(percentageValue);
     }
     setcolor_multiplierIncrements(updatedIncrements);
-    setColorError(""); // Clear error if valid
+    setColorError("");
   };
 
-  // Populate form fields with existing data for editing
   const handleEdit = (index, setters, data) => {
     Object.entries(data).forEach(([key, value]) => {
       if (setters[key]) setters[key](value);
     });
   };
 
-  // Draft Retrieval and Saving
   useEffect(() => {
     const savedDraft = JSON.parse(localStorage.getItem("draft"));
 
@@ -518,7 +553,6 @@ export default function ProductConfiguration() {
     }
   }, []);
 
-  // Save Draft
   const saveDraft = () => {
     const draftData = {
       savedDimensions,
@@ -549,7 +583,6 @@ export default function ProductConfiguration() {
     toast.success("Deleted successfully!");
   };
 
-  // Color Picker Change Handler
   const handleColorChange = async (color) => {
     try {
       setSelectedColor(color.hex);
@@ -575,7 +608,6 @@ export default function ProductConfiguration() {
     setFeatures(updatedFeatures);
   };
 
-  // Prepare Form Data for API
   const prepareFormData = () => {
     const formData = new FormData();
 
@@ -737,10 +769,6 @@ export default function ProductConfiguration() {
       console.log(pair[0] + ", " + pair[1]);
     }
 
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
-
     return formData;
   };
 
@@ -751,7 +779,7 @@ export default function ProductConfiguration() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       showAlert("success", "Product configuration published successfully!");
-      localStorage.removeItem("draft"); // Remove draft from localStorage after successful publish
+      localStorage.removeItem("draft");
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message;
       setConfigurError(errorMessage);
@@ -763,7 +791,6 @@ export default function ProductConfiguration() {
   return (
     <div className="p-2 space-y-4">
       <ToastContainer />
-      {/* Category */}
       <div className="bg-white rounded-lg shadow-md p-4 border border-gray-300">
         <label className="block text-2xl font-medium text-gray-700 text-left">
           Category
@@ -780,35 +807,83 @@ export default function ProductConfiguration() {
           ))}
         </select>
       </div>
-      {/* Dimension Section */}
+
       <Section
-        title="Dimension"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Dimension</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowDimensionInfo, "dimensions");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "dimensions"}
         onToggle={() => toggleSection("dimensions")}
         content={
-          <DimensionSection
-            min_height={min_height}
-            max_height={max_height}
-            min_width={min_width}
-            max_width={max_width}
-            unit={unit}
-            onmin_heightChange={setmin_height}
-            onmax_heightChange={setmax_height}
-            onmin_widthChange={setmin_width}
-            onmax_widthChange={setmax_width}
-            onUnitChange={setUnit}
-            onSave={handleDimensionSave} // Use the new save function
-            onCancel={() => {
-              setmin_height("");
-              setmax_height("");
-              setmin_width("");
-              setmax_width("");
-              setUnit("mm");
-              setEditingDimensionIndex(null);
-            }}
-          />
+          <>
+            {showDimensionInfo && (
+              <div
+                ref={infoRefs.dimension}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to Add Dimensions
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Min Height:</strong> Enter the minimum height of the
+                    window.
+                  </li>
+                  <li>
+                    <strong>Max Height:</strong> Enter the maximum height of the
+                    window.
+                  </li>
+                  <li>
+                    <strong>Min Width:</strong> Enter the minimum width of the
+                    window.
+                  </li>
+                  <li>
+                    <strong>Max Width:</strong> Enter the maximum width of the
+                    window.
+                  </li>
+                  <li>
+                    <strong>Unit:</strong> Select the unit of measurement (mm,
+                    cm, inch).
+                  </li>
+                </ul>
+              </div>
+            )}
+            <DimensionSection
+              min_height={min_height}
+              max_height={max_height}
+              min_width={min_width}
+              max_width={max_width}
+              unit={unit}
+              onmin_heightChange={setmin_height}
+              onmax_heightChange={setmax_height}
+              onmin_widthChange={setmin_width}
+              onmax_widthChange={setmax_width}
+              onUnitChange={setUnit}
+              onSave={handleDimensionSave}
+              onCancel={() => {
+                setmin_height("");
+                setmax_height("");
+                setmin_width("");
+                setmax_width("");
+                setUnit("mm");
+                setEditingDimensionIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {dimensionError && <p className="text-red-500">{dimensionError}</p>}
       {savedDimensions.length > 0 && (
         <SavedDimensions
@@ -832,48 +907,77 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Material Section */}
+
       <Section
-        title="Material"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Material</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowMaterialInfo, "material");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "material"}
         onToggle={() => toggleSection("material")}
         content={
-          <MaterialSection
-            name={name}
-            price={price}
-            image={image}
-            onNameChange={setname}
-            onPriceChange={setprice}
-            onImageChange={(e) => handleFileChange(e, "material")}
-            onSave={() => {
-              if (!name || !isValidMultiplierInput(price) || !image.url) {
-                setMaterialError(
-                  "Material name, an image and a valid price are required."
+          <>
+            {showMaterialInfo && (
+              <div
+                ref={infoRefs.material}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to add Material
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Material Name:</strong> Enter the name of the
+                    Material.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload the image of the material.
+                  </li>
+                  <li>
+                    <strong>Price:</strong> Set the Price of the material.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <MaterialSection
+              name={name}
+              image={image}
+              onNameChange={setname}
+              onImageChange={(e) => handleFileChange(e, "material")}
+              onSave={() => {
+                if (!name || !image.url) {
+                  setMaterialError("Material name and image are required.");
+                  return;
+                }
+                handleSave(
+                  setSavedMaterials,
+                  savedMaterials,
+                  { name, image },
+                  editingMaterialIndex,
+                  setEditingMaterialIndex
                 );
-                return;
-              }
-              handleSave(
-                setSavedMaterials,
-                savedMaterials,
-                {
-                  name,
-                  image: image.url,
-                  price,
-                },
-                editingMaterialIndex,
-                setEditingMaterialIndex
-              );
-              setMaterialError(""); // Clear error if valid
-            }}
-            onCancel={() => {
-              setname("");
-              setprice("");
-              setimage(initialImageState);
-              setEditingMaterialIndex(null);
-            }}
-          />
+              }}
+              onCancel={() => {
+                setname("");
+                setimage(initialImageState);
+                setEditingMaterialIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {materialError && (
         <p className="text-red-500 text-lg 875543">{materialError}</p>
       )}
@@ -897,42 +1001,86 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Profile Section */}
+
       <Section
-        title="Profile Features"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Profile</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowProfileInfo, "profile");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "profile"}
         onToggle={() => toggleSection("profile")}
         content={
-          <ProfileSection
-            name={profile_name}
-            price={profile_multiplier}
-            image={profile_image}
-            features={features}
-            newFeature={newFeature}
-            onNameChange={setprofile_name}
-            onPriceChange={setprofile_multiplier}
-            profile_multiplierIncrements={profile_multiplierIncrements}
-            onImageChange={(e) => handleFileChange(e, "profile")}
-            onFeatureAdd={() => {
-              if (newFeature.trim()) {
-                setFeatures([...features, newFeature]);
+          <>
+            {showProfileInfo && (
+              <div
+                ref={infoRefs.profile}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-72"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to add profile
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Profile Name:</strong> Enter the name of the
+                    profile.
+                  </li>
+                  <li>
+                    <strong>Price:</strong> Enter the increment price of the
+                    profile in percentage.
+                  </li>
+                  <li>
+                    <strong>Feature:</strong> Enter the features of the profile
+                    and add.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload the image of the material.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <ProfileSection
+              name={profile_name}
+              price={profile_multiplier}
+              image={profile_image}
+              features={features}
+              newFeature={newFeature}
+              onNameChange={setprofile_name}
+              onPriceChange={setprofile_multiplier}
+              profile_multiplierIncrements={profile_multiplierIncrements}
+              onImageChange={(e) => handleFileChange(e, "profile")}
+              onFeatureAdd={() => {
+                if (newFeature.trim()) {
+                  setFeatures([...features, newFeature]);
+                  setNewFeature("");
+                }
+              }}
+              onFeatureChange={setNewFeature}
+              onFeatureDelete={handleFeatureDelete}
+              onSave={handleProfileSave}
+              onCancel={() => {
+                setprofile_name("");
+                setprofile_multiplier("");
+                setprofile_image(initialImageState);
+                setFeatures([]);
                 setNewFeature("");
-              }
-            }}
-            onFeatureChange={setNewFeature}
-            onFeatureDelete={handleFeatureDelete}
-            onSave={handleProfileSave}
-            onCancel={() => {
-              setprofile_name("");
-              setprofile_multiplier("");
-              setprofile_image(initialImageState);
-              setFeatures([]);
-              setNewFeature("");
-              setEditingProfileIndex(null);
-            }}
-          />
+                setEditingProfileIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {profileError && <p className="text-red-500">{profileError}</p>}
       {savedProfiles.length > 0 && (
         <SavedProfiles
@@ -943,31 +1091,74 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Glass Section */}
+
       <Section
-        title="Glass Types"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Glass Types</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowGlassInfo, "glass");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "glass"}
         onToggle={() => toggleSection("glass")}
         content={
-          <GlassSection
-            name={glassName}
-            price={glassPrice}
-            image={glassImage}
-            onNameChange={setGlassName}
-            onPriceChange={setGlassPrice}
-            onglazing_multiplierChange={setglazing_multiplier}
-            onImageChange={(e) => handleFileChange(e, "glass")}
-            onSave={handleSaveGlassType}
-            onCancel={() => {
-              setGlassName("");
-              setGlassPrice("");
-              setglazing_multiplier(1);
-              setGlassImage(initialImageState);
-              setEditingGlassIndex(null);
-            }}
-          />
+          <>
+            {showGlassInfo && (
+              <div
+                ref={infoRefs.glass}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to add Glass Types
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Glass Name:</strong> Enter the name of the glass
+                    type.
+                  </li>
+                  <li>
+                    <strong>Price:</strong> Enter the price of the glass type.
+                  </li>
+                  <li>
+                    <strong>Glazing Multiplier:</strong> Enter the glazing
+                    multiplier value.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload an image of the glass type.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <GlassSection
+              name={glassName}
+              price={glassPrice}
+              image={glassImage}
+              onNameChange={setGlassName}
+              onPriceChange={setGlassPrice}
+              onglazing_multiplierChange={setglazing_multiplier}
+              onImageChange={(e) => handleFileChange(e, "glass")}
+              onSave={handleSaveGlassType}
+              onCancel={() => {
+                setGlassName("");
+                setGlassPrice("");
+                setglazing_multiplier(1);
+                setGlassImage(initialImageState);
+                setEditingGlassIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {glassError && <p className="text-red-500">{glassError}</p>}
       {savedGlasses.length > 0 && (
         <SavedGlasses
@@ -991,31 +1182,76 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Glass Structure Section */}
+
       <Section
-        title="Glass Structure"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Glass Structure</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowGlassStructureInfo, "glassStructure");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "glassStructure"}
         onToggle={() => toggleSection("glassStructure")}
         content={
-          <GlassStructureSection
-            name={glassStructureName}
-            price={glassStructurePrice}
-            image={glassStructureImage}
-            onNameChange={setGlassStructureName}
-            onPriceChange={setGlassStructurePrice}
-            onstructure_multiplierChange={setstructure_multiplier}
-            onImageChange={(e) => handleFileChange(e, "glassStructure")}
-            onSave={handleStructureSave}
-            onCancel={() => {
-              setGlassStructureName("");
-              setGlassStructurePrice("");
-              setstructure_multiplier(1);
-              setGlassStructureImage(initialImageState);
-              setEditingGlassStructureIndex(null);
-            }}
-          />
+          <>
+            {showGlassStructureInfo && (
+              <div
+                ref={infoRefs.glassStructure}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to add Glass Structure
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Structure Name:</strong> Enter the name of the glass
+                    structure.
+                  </li>
+                  <li>
+                    <strong>Price:</strong> Enter the price of the glass
+                    structure.
+                  </li>
+                  <li>
+                    <strong>Structure Multiplier:</strong> Enter the multiplier
+                    value.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload an image of the glass
+                    structure.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <GlassStructureSection
+              name={glassStructureName}
+              price={glassStructurePrice}
+              image={glassStructureImage}
+              onNameChange={setGlassStructureName}
+              onPriceChange={setGlassStructurePrice}
+              onstructure_multiplierChange={setstructure_multiplier}
+              onImageChange={(e) => handleFileChange(e, "glassStructure")}
+              onSave={handleStructureSave}
+              onCancel={() => {
+                setGlassStructureName("");
+                setGlassStructurePrice("");
+                setstructure_multiplier(1);
+                setGlassStructureImage(initialImageState);
+                setEditingGlassStructureIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {structureError && <p className="text-red-500">{structureError}</p>}
       {savedGlassStructures.length > 0 && (
         <SavedGlassStructures
@@ -1026,48 +1262,89 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Operating System Section */}
+
       <Section
-        title="Operating System"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Operating System</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowOperatingInfo, "operating");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "operating"}
         onToggle={() => toggleSection("operating")}
         content={
-          <OperatingSystemSection
-            name={openingName}
-            price={openingPrice}
-            image={opening_image}
-            onNameChange={setopeningName}
-            onPriceChange={setopeningPrice}
-            onImageChange={(e) => handleFileChange(e, "operating")}
-            onSave={() => {
-              if (!openingName || !isValidMultiplierInput(openingPrice)) {
-                setOperatingError(
-                  "Operating name and a valid price are required."
+          <>
+            {showOperatingInfo && (
+              <div
+                ref={infoRefs.operating}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to Add an Operating System
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Operating Name:</strong> Enter the name of the
+                    operating system.
+                  </li>
+                  <li>
+                    <strong>Price:</strong> Enter the price of the operating
+                    system.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload an image of the operating
+                    system.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <OperatingSystemSection
+              name={openingName}
+              price={openingPrice}
+              image={opening_image}
+              onNameChange={setopeningName}
+              onPriceChange={setopeningPrice}
+              onImageChange={(e) => handleFileChange(e, "operating")}
+              onSave={() => {
+                if (!openingName || !isValidMultiplierInput(openingPrice)) {
+                  setOperatingError(
+                    "Operating name and a valid price are required."
+                  );
+                  return;
+                }
+                handleSave(
+                  setSavedOpening,
+                  savedOpening,
+                  {
+                    name: openingName,
+                    opening_image: opening_image.url,
+                    price: openingPrice,
+                  },
+                  editingOperatingIndex,
+                  setEditingOperatingIndex
                 );
-                return;
-              }
-              handleSave(
-                setSavedOpening,
-                savedOpening,
-                {
-                  name: openingName,
-                  opening_image: opening_image.url,
-                  price: openingPrice,
-                },
-                editingOperatingIndex,
-                setEditingOperatingIndex
-              );
-              setOperatingError(""); // Clear error if valid
-            }}
-            onCancel={() => {
-              setopeningName("");
-              setopeningPrice("");
-              setopening_image(initialImageState);
-              setEditingOperatingIndex(null);
-            }}
-          />
+                setOperatingError("");
+              }}
+              onCancel={() => {
+                setopeningName("");
+                setopeningPrice("");
+                setopening_image(initialImageState);
+                setEditingOperatingIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {operatingError && <p className="text-red-500">{operatingError}</p>}
       {savedOpening.length > 0 && (
         <SavedOpeningSystems
@@ -1089,46 +1366,85 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Handle Type Section */}
+
       <Section
-        title="Handle Type"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Handle Type</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowHandleInfo, "handle");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "handle"}
         onToggle={() => toggleSection("handle")}
         content={
-          <HandleSection
-            name={type}
-            price={price}
-            image={handle_image}
-            onNameChange={settype}
-            onPriceChange={setprice}
-            onImageChange={(e) => handleFileChange(e, "handle")}
-            onSave={() => {
-              if (!type || !isValidMultiplierInput(price)) {
-                setHandleError("Handle name and a valid price are required.");
-                return;
-              }
-              handleSave(
-                setSavedHandles,
-                savedHandles,
-                {
-                  type,
-                  handle_image: handle_image.url,
-                  price,
-                },
-                editingHandleIndex,
-                setEditingHandleIndex
-              );
-              setHandleError(""); // Clear error if valid
-            }}
-            onCancel={() => {
-              settype("");
-              setprice("");
-              sethandle_image(initialImageState);
-              setEditingHandleIndex(null);
-            }}
-          />
+          <>
+            {showHandleInfo && (
+              <div
+                ref={infoRefs.handle}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to Add a Handle Type
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Handle Name:</strong> Enter the name of the handle
+                    type.
+                  </li>
+                  <li>
+                    <strong>Price:</strong> Enter the price of the handle.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload an image of the handle.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <HandleSection
+              name={type}
+              price={price}
+              image={handle_image}
+              onNameChange={settype}
+              onPriceChange={setprice}
+              onImageChange={(e) => handleFileChange(e, "handle")}
+              onSave={() => {
+                if (!type || !isValidMultiplierInput(price)) {
+                  setHandleError("Handle name and a valid price are required.");
+                  return;
+                }
+                handleSave(
+                  setSavedHandles,
+                  savedHandles,
+                  {
+                    type,
+                    handle_image: handle_image.url,
+                    price,
+                  },
+                  editingHandleIndex,
+                  setEditingHandleIndex
+                );
+                setHandleError("");
+              }}
+              onCancel={() => {
+                settype("");
+                setprice("");
+                sethandle_image(initialImageState);
+                setEditingHandleIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {handleError && <p className="text-red-500">{handleError}</p>}
       {savedHandles.length > 0 && (
         <SavedHandles
@@ -1150,61 +1466,101 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Window Type Section */}
+
       <Section
-        title="Window Type"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Window Type</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowWindowInfo, "window");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "window"}
         onToggle={() => toggleSection("window")}
         content={
-          <WindowTypeSection
-            name={windowTypeName}
-            price={window_type_multiplier}
-            image={windowTypeImage}
-            onNameChange={setWindowTypeName}
-            onPriceChange={setwindow_type_multiplier}
-            onImageChange={(e) => handleFileChange(e, "window")}
-            onSave={() => {
-              if (
-                !windowTypeName ||
-                !isValidMultiplierInput(window_type_multiplier)
-              ) {
-                setWindowTypeError(
-                  "Window type name and a valid price are required."
-                );
-                return;
-              }
-              handleSave(
-                setSavedWindows,
-                savedWindows,
-                {
-                  type: windowTypeName,
-                  window_type_multiplier: calculateMultiplier(
-                    window_type_multiplier
-                  ), // Save calculated value
-                  type_image: windowTypeImage.url,
-                },
-                editingWindowIndex,
-                setEditingWindowIndex
-              );
+          <>
+            {showWindowInfo && (
+              <div
+                ref={infoRefs.window}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to Add a Window Type
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Window Type Name:</strong> Enter the name of the
+                    window type.
+                  </li>
+                  <li>
+                    <strong>Price Multiplier:</strong> Enter the price increment
+                    multiplier.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload an image representing the
+                    window type.
+                  </li>
+                </ul>
+              </div>
+            )}
 
-              const updatedIncrements = [...window_type_multiplierIncrements];
-              if (editingWindowIndex !== null) {
-                updatedIncrements[editingWindowIndex] = parseFloat(
-                  window_type_multiplier
+            <WindowTypeSection
+              name={windowTypeName}
+              price={window_type_multiplier}
+              image={windowTypeImage}
+              onNameChange={setWindowTypeName}
+              onPriceChange={setwindow_type_multiplier}
+              onImageChange={(e) => handleFileChange(e, "window")}
+              onSave={() => {
+                if (
+                  !windowTypeName ||
+                  !isValidMultiplierInput(window_type_multiplier)
+                ) {
+                  setWindowTypeError(
+                    "Window type name and a valid price are required."
+                  );
+                  return;
+                }
+                handleSave(
+                  setSavedWindows,
+                  savedWindows,
+                  {
+                    type: windowTypeName,
+                    window_type_multiplier: calculateMultiplier(
+                      window_type_multiplier
+                    ),
+                    type_image: windowTypeImage.url,
+                  },
+                  editingWindowIndex,
+                  setEditingWindowIndex
                 );
-              } else {
-                updatedIncrements.push(parseFloat(window_type_multiplier));
-              }
-              setwindow_type_multiplierIncrements(updatedIncrements);
-              setWindowTypeError(""); // Clear error if valid
-            }}
-            onCancel={() => {
-              setWindowTypeName("");
-              setwindow_type_multiplier("");
-              setWindowTypeImage(initialImageState);
-              setEditingWindowIndex(null);
-            }}
-          />
+
+                const updatedIncrements = [...window_type_multiplierIncrements];
+                if (editingWindowIndex !== null) {
+                  updatedIncrements[editingWindowIndex] = parseFloat(
+                    window_type_multiplier
+                  );
+                } else {
+                  updatedIncrements.push(parseFloat(window_type_multiplier));
+                }
+                setwindow_type_multiplierIncrements(updatedIncrements);
+                setWindowTypeError("");
+              }}
+              onCancel={() => {
+                setWindowTypeName("");
+                setwindow_type_multiplier("");
+                setWindowTypeImage(initialImageState);
+                setEditingWindowIndex(null);
+              }}
+            />
+          </>
         }
       />
 
@@ -1230,46 +1586,86 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Fanlight System Section */}
+
       <Section
-        title="Fanlight System"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Fanlight System</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowFanlightInfo, "fanlight");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "fanlight"}
         onToggle={() => toggleSection("fanlight")}
         content={
-          <FanlightSection
-            name={fanlightName}
-            price={fanlightPrice}
-            image={fanlight_image}
-            onNameChange={setFanlightName}
-            onPriceChange={setFanlightPrice}
-            onImageChange={(e) => handleFileChange(e, "fanlight")}
-            onSave={() => {
-              if (!fanlightName || !isValidMultiplierInput(fanlightPrice)) {
-                setFanlightError(
-                  "Fanlight name and a valid price are required."
+          <>
+            {showFanlightInfo && (
+              <div
+                ref={infoRefs.fanlight}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to Add a Fanlight System
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Fanlight Availability:</strong> Enter the
+                    availability status or name.
+                  </li>
+                  <li>
+                    <strong>Price:</strong> Enter the price increment for the
+                    fanlight system.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload an image representing the
+                    fanlight system.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <FanlightSection
+              name={fanlightName}
+              price={fanlightPrice}
+              image={fanlight_image}
+              onNameChange={setFanlightName}
+              onPriceChange={setFanlightPrice}
+              onImageChange={(e) => handleFileChange(e, "fanlight")}
+              onSave={() => {
+                if (!fanlightName || !isValidMultiplierInput(fanlightPrice)) {
+                  setFanlightError(
+                    "Fanlight name and a valid price are required."
+                  );
+                  return;
+                }
+                handleSave(
+                  setSavedFanlights,
+                  savedFanlights,
+                  {
+                    availability: fanlightName,
+                    price: fanlightPrice,
+                    fanlight_image: fanlight_image.url,
+                  },
+                  editingFanlightIndex,
+                  setEditingFanlightIndex
                 );
-                return;
-              }
-              handleSave(
-                setSavedFanlights,
-                savedFanlights,
-                {
-                  availability: fanlightName,
-                  price: fanlightPrice, // Save calculated value
-                  fanlight_image: fanlight_image.url,
-                },
-                editingFanlightIndex,
-                setEditingFanlightIndex
-              );
-              setFanlightError(""); // Clear error if valid
-            }}
-            onCancel={() => {
-              setFanlightName("");
-              setFanlightPrice("");
-              setfanlight_image(initialImageState);
-              setEditingFanlightIndex(null);
-            }}
-          />
+                setFanlightError("");
+              }}
+              onCancel={() => {
+                setFanlightName("");
+                setFanlightPrice("");
+                setfanlight_image(initialImageState);
+                setEditingFanlightIndex(null);
+              }}
+            />
+          </>
         }
       />
 
@@ -1294,48 +1690,89 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Estimated Working Hour Section */}
+
       <Section
-        title="Estimated Working Hour"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Estimated Working Hour</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowEstimatedInfo, "estimated");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "estimated"}
         onToggle={() => toggleSection("estimated")}
         content={
-          <EstimatedWorkingHourSection
-            estimatedHours={estimatedHours}
-            fastOption={fastOption}
-            extraPrice={extraPrice}
-            onHoursChange={setEstimatedHours}
-            onFastOptionChange={setFastOption}
-            onExtraPriceChange={setExtraPrice}
-            onSave={() => {
-              if (!estimatedHours || !isValidMultiplierInput(extraPrice)) {
-                setEstimatedError(
-                  "Estimated hours and a valid extra price are required."
+          <>
+            {showEstimatedInfo && (
+              <div
+                ref={infoRefs.estimated}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to Set Estimated Working Hours
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Estimated Hours:</strong> Enter the estimated
+                    working hours for the task.
+                  </li>
+                  <li>
+                    <strong>Fast Option:</strong> Choose between
+                    &quot;Normal&quot; and &quot;Fast&quot; processing.
+                  </li>
+                  <li>
+                    <strong>Extra Price:</strong> Enter any extra price for
+                    faster processing.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <EstimatedWorkingHourSection
+              estimatedHours={estimatedHours}
+              fastOption={fastOption}
+              extraPrice={extraPrice}
+              onHoursChange={setEstimatedHours}
+              onFastOptionChange={setFastOption}
+              onExtraPriceChange={setExtraPrice}
+              onSave={() => {
+                if (!estimatedHours || !isValidMultiplierInput(extraPrice)) {
+                  setEstimatedError(
+                    "Estimated hours and a valid extra price are required."
+                  );
+                  return;
+                }
+                handleSave(
+                  setSavedEstimated,
+                  savedEstimated,
+                  {
+                    estimatedHours,
+                    fastOption,
+                    extraPrice,
+                  },
+                  editingEstimatedIndex,
+                  setEditingEstimatedIndex
                 );
-                return;
-              }
-              handleSave(
-                setSavedEstimated,
-                savedEstimated,
-                {
-                  estimatedHours,
-                  fastOption,
-                  extraPrice,
-                },
-                editingEstimatedIndex,
-                setEditingEstimatedIndex
-              );
-              setEstimatedError(""); // Clear error if valid
-            }}
-            onCancel={() => {
-              setEstimatedHours("");
-              setFastOption("Normal");
-              setExtraPrice("");
-              setEditingEstimatedIndex(null);
-            }}
-          />
+                setEstimatedError("");
+              }}
+              onCancel={() => {
+                setEstimatedHours("");
+                setFastOption("Normal");
+                setExtraPrice("");
+                setEditingEstimatedIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {estimatedError && <p className="text-red-500">{estimatedError}</p>}
       {savedEstimated.length > 0 && (
         <SavedEstimatedHours
@@ -1357,31 +1794,75 @@ export default function ProductConfiguration() {
           }
         />
       )}
-      {/* Color System Section */}
+
       <Section
-        title="Color System"
+        title={
+          <div className="flex items-center gap-2">
+            <span>Color System</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleInfo(setShowColorInfo, "color");
+              }}
+              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+            >
+              <span className="text-xl">ℹ️</span>
+            </button>
+          </div>
+        }
         isOpen={openSection === "color"}
         onToggle={() => toggleSection("color")}
         content={
-          <ColorSection
-            name={color_name}
-            price={color_multiplier}
-            image={color_image}
-            selectedColor={selectedColor}
-            onColorChange={handleColorChange}
-            onNameChange={setcolor_name}
-            onPriceChange={setcolor_multiplier}
-            onSave={handleColorSave}
-            onCancel={() => {
-              setcolor_name("");
-              setcolor_multiplier("");
-              setcolor_image(initialImageState);
-              setSelectedColor("#ffffff");
-              setEditingColorIndex(null);
-            }}
-          />
+          <>
+            {showColorInfo && (
+              <div
+                ref={infoRefs.color}
+                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
+              >
+                <h4 className="font-semibold mb-2 text-lg">
+                  How to Add a Color
+                </h4>
+                <ul className="list-disc pl-5 space-y-1 text-base">
+                  <li>
+                    <strong>Color Name:</strong> Enter a name for the color.
+                  </li>
+                  <li>
+                    <strong>Multiplier Price:</strong> Enter the price increment
+                    for this color.
+                  </li>
+                  <li>
+                    <strong>Color Picker:</strong> Select a color using the
+                    color picker.
+                  </li>
+                  <li>
+                    <strong>Image:</strong> Upload an image representing the
+                    color.
+                  </li>
+                </ul>
+              </div>
+            )}
+
+            <ColorSection
+              name={color_name}
+              price={color_multiplier}
+              image={color_image}
+              selectedColor={selectedColor}
+              onColorChange={handleColorChange}
+              onNameChange={setcolor_name}
+              onPriceChange={setcolor_multiplier}
+              onSave={handleColorSave}
+              onCancel={() => {
+                setcolor_name("");
+                setcolor_multiplier("");
+                setcolor_image(initialImageState);
+                setSelectedColor("#ffffff");
+                setEditingColorIndex(null);
+              }}
+            />
+          </>
         }
       />
+
       {colorError && <p className="text-red-500">{colorError}</p>}
       {savedColors.length > 0 && (
         <SavedColors
@@ -1402,7 +1883,7 @@ export default function ProductConfiguration() {
           onDelete={(index) => handleDelete(setSavedColors, savedColors, index)}
         />
       )}
-      {/* Draft and Publish Buttons */}
+
       <div className="flex justify-end space-x-2 pt-4">
         {configurError && (
           <p className="text-red-500 text-lg font-medium">{configurError}</p>
@@ -1423,897 +1904,3 @@ export default function ProductConfiguration() {
     </div>
   );
 }
-
-// Dimension Section Component
-function DimensionSection({
-  min_height,
-  max_height,
-  min_width,
-  max_width,
-  unit,
-  onmin_heightChange,
-  onmax_heightChange,
-  onmin_widthChange,
-  onmax_widthChange,
-  onUnitChange,
-  onSave,
-  onCancel,
-}) {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-[auto,1fr,1fr] gap-x-2 font-medium">
-        <h2></h2>
-        <h2 className="text-center">Minimum</h2>
-        <h2 className="text-center">Maximum</h2>
-      </div>
-      <div className="grid grid-cols-[auto,1fr,1fr] gap-x-2 items-center">
-        <label className="text-[15px] text-gray-700 whitespace-nowrap">
-          Height *
-        </label>
-        <input
-          type="number"
-          value={min_height}
-          onChange={(e) => onmin_heightChange(e.target.value)}
-          placeholder="Minimum"
-          className="w-full px-3 py-2 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500"
-        />
-        <input
-          type="number"
-          value={max_height}
-          onChange={(e) => onmax_heightChange(e.target.value)}
-          placeholder="Maximum"
-          className="w-full px-3 py-2 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-[auto,1fr,1fr] gap-x-2 items-center">
-        <label className="text-[15px] text-gray-700 whitespace-nowrap">
-          Width *
-        </label>
-        <input
-          type="number"
-          value={min_width}
-          onChange={(e) => onmin_widthChange(e.target.value)}
-          placeholder="Minimum"
-          className="w-full px-3 py-2 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500"
-        />
-        <input
-          type="number"
-          value={max_width}
-          onChange={(e) => onmax_widthChange(e.target.value)}
-          placeholder="Maximum"
-          className="w-full px-3 py-2 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-[auto,1fr] gap-x-4 items-center">
-        <label className="text-[15px] text-gray-700 whitespace-nowrap">
-          Unit
-        </label>
-        <select
-          value={unit}
-          onChange={(e) => onUnitChange(e.target.value)}
-          className="w-full px-3 py-2 border border-teal-300 rounded-md focus:ring-2 focus:ring-teal-500"
-        >
-          <option value="mm">mm</option>
-          <option value="cm">cm</option>
-          <option value="inches">inches</option>
-        </select>
-      </div>
-      <div className="flex justify-end space-x-3">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-6 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-6 py-2 text-white bg-teal-500 rounded-md hover:bg-teal-600 transition-colors"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Material Section Component
-function MaterialSection({
-  name,
-  price,
-  image,
-  onNameChange,
-  onPriceChange,
-  onImageChange,
-  onSave,
-  onCancel,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="Material Name"
-          className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Image *
-          </label>
-          <div className="mt-1 flex items-center border border-primary rounded-md p-2">
-            <label className="cursor-pointer">
-              <input type="file" onChange={onImageChange} className="hidden" />
-              <span className="inline-block px-4 py-2 text-sm bg-teal-500 text-white rounded-l-md hover:bg-teal-600">
-                Choose File
-              </span>
-            </label>
-            <span className="ml-2 text-sm text-gray-500">{image.name}</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Price/unit
-          </label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="$00.00"
-          />
-        </div>
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Profile Section Component
-function ProfileSection({
-  name,
-  price,
-  image,
-  features,
-  newFeature,
-  onNameChange,
-  onPriceChange,
-  onImageChange,
-  onFeatureAdd,
-  onFeatureChange,
-  onFeatureDelete,
-  onSave,
-  onCancel,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Name
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => onNameChange(e.target.value)}
-            className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="Profile Name"
-          />
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Features
-          </label>
-          <div className="flex items-center">
-            <input
-              type="text"
-              value={newFeature}
-              onChange={(e) => onFeatureChange(e.target.value)}
-              className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-              placeholder="Add a feature"
-            />
-            <button
-              onClick={onFeatureAdd}
-              className="ml-2 px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-            >
-              Add
-            </button>
-          </div>
-          <ul className="mt-2 space-y-3">
-            {features.map((feature, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center text-gray-700 list-disc ml-4"
-              >
-                {feature}
-                <button
-                  onClick={() => onFeatureDelete(index)}
-                  className="ml-2 px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Image *
-          </label>
-          <div className="mt-1 flex items-center border border-primary rounded-md p-2">
-            <label className="cursor-pointer">
-              <input type="file" onChange={onImageChange} className="hidden" />
-              <span className="inline-block px-4 py-2 text-sm bg-teal-500 text-white rounded-l-md hover:bg-teal-600">
-                Choose File
-              </span>
-            </label>
-            <span className="ml-2 text-sm text-gray-500">{image.name}</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Price Increment (%)
-          </label>
-          <input
-            type="text"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="10 for 10%"
-          />
-        </div>
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Glass Section Component
-function GlassSection({
-  name,
-  price,
-  image,
-  onNameChange,
-  onPriceChange,
-  onImageChange,
-  onSave,
-  onCancel,
-  glazing_multiplier,
-  onglazing_multiplierChange,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="Single Glazing"
-          className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Image *
-          </label>
-          <div className="mt-1 flex items-center border border-primary rounded-md p-2">
-            <label className="cursor-pointer">
-              <input type="file" onChange={onImageChange} className="hidden" />
-              <span className="inline-block px-4 py-2 text-sm bg-teal-500 text-white rounded-l-md hover:bg-teal-600">
-                Choose File
-              </span>
-            </label>
-            <span className="ml-2 text-sm text-gray-500">{image.name}</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Price (Base Price per m<sup>2</sup>)
-          </label>
-          <input
-            type="text"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="$00.00"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Glazing Multiplier (%)
-        </label>
-        <input
-          type="number"
-          value={glazing_multiplier}
-          onChange={(e) => onglazing_multiplierChange(e.target.value)}
-          className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-          placeholder="1.0"
-        />
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Glass Structure Section Component
-function GlassStructureSection({
-  name,
-  price,
-  image,
-  onNameChange,
-  onPriceChange,
-  onImageChange,
-  onSave,
-  onCancel,
-  structure_multiplier,
-  onstructure_multiplierChange,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="Glass Structure Name"
-          className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Image *
-          </label>
-          <div className="mt-1 flex items-center border border-primary rounded-md p-2">
-            <label className="cursor-pointer">
-              <input type="file" onChange={onImageChange} className="hidden" />
-              <span className="inline-block px-4 py-2 text-sm bg-teal-500 text-white rounded-l-md hover:bg-teal-600">
-                Choose File
-              </span>
-            </label>
-            <span className="ml-2 text-sm text-gray-500">{image.name}</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Price (Base Price per m<sup>2</sup>)
-          </label>
-          <input
-            type="text"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="$00.00"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Price Increment (%)
-        </label>
-        <input
-          type="number"
-          value={structure_multiplier}
-          onChange={(e) => onstructure_multiplierChange(e.target.value)}
-          className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-          placeholder="1.0"
-        />
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Operating System Section Component
-function OperatingSystemSection({
-  name,
-  price,
-  image,
-  onNameChange,
-  onPriceChange,
-  onImageChange,
-  onSave,
-  onCancel,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="Operating System Name"
-          className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Image *
-          </label>
-          <div className="mt-1 flex items-center border border-primary rounded-md p-2">
-            <label className="cursor-pointer">
-              <input type="file" onChange={onImageChange} className="hidden" />
-              <span className="inline-block px-4 py-2 text-sm bg-teal-500 text-white rounded-l-md hover:bg-teal-600">
-                Choose File
-              </span>
-            </label>
-            <span className="ml-2 text-sm text-gray-500">{image.name}</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Price/unit
-          </label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="$00.00"
-          />
-        </div>
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Handle Section Component
-function HandleSection({
-  name,
-  price,
-  image,
-  onNameChange,
-  onPriceChange,
-  onImageChange,
-  onSave,
-  onCancel,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="Handle Name"
-          className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Image *
-          </label>
-          <div className="mt-1 flex items-center border border-primary rounded-md p-2">
-            <label className="cursor-pointer">
-              <input type="file" onChange={onImageChange} className="hidden" />
-              <span className="inline-block px-4 py-2 text-sm bg-teal-500 text-white rounded-l-md hover:bg-teal-600">
-                Choose File
-              </span>
-            </label>
-            <span className="ml-2 text-sm text-gray-500">{image.name}</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Price/unit
-          </label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="$00.00"
-          />
-        </div>
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Window Type Section Component
-function WindowTypeSection({
-  name,
-  price,
-  image,
-  onNameChange,
-  onPriceChange,
-  onImageChange,
-  onSave,
-  onCancel,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="Window Type Name"
-          className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Image *
-          </label>
-          <div className="mt-1 flex items-center border border-primary rounded-md p-2">
-            <label className="cursor-pointer">
-              <input type="file" onChange={onImageChange} className="hidden" />
-              <span className="inline-block px-4 py-2 text-sm bg-teal-500 text-white rounded-l-md hover:bg-teal-600">
-                Choose File
-              </span>
-            </label>
-            <span className="ml-2 text-sm text-gray-500">{image.name}</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Window Type Price Increment (%)
-          </label>
-          <input
-            type="text"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="10 for 10%"
-          />
-        </div>
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Fanlight Section Component
-function FanlightSection({
-  name,
-  price,
-  image,
-  onNameChange,
-  onPriceChange,
-  onImageChange,
-  onSave,
-  onCancel,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="Fanlight Name"
-          className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Image *
-          </label>
-          <div className="mt-1 flex items-center border border-primary rounded-md p-2">
-            <label className="cursor-pointer">
-              <input type="file" onChange={onImageChange} className="hidden" />
-              <span className="inline-block px-4 py-2 text-sm bg-teal-500 text-white rounded-l-md hover:bg-teal-600">
-                Choose File
-              </span>
-            </label>
-            <span className="ml-2 text-sm text-gray-500">{image.name}</span>
-          </div>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Price/unit
-          </label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="$00.00"
-          />
-        </div>
-      </div>
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Estimated Working Hour Section Component
-function EstimatedWorkingHourSection({
-  estimatedHours,
-  // fastOption,
-  // extraPrice,
-  onHoursChange,
-  // onFastOptionChange,
-  // onExtraPriceChange,
-  onSave,
-  onCancel,
-}) {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Total Hour
-        </label>
-        <input
-          type="text"
-          value={estimatedHours}
-          onChange={(e) => onHoursChange(e.target.value)}
-          placeholder="e.g., 48"
-          className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-        />
-      </div>
-      {/* <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Fast Option
-          </label>
-          <select
-            value={fastOption}
-            onChange={(e) => onFastOptionChange(e.target.value)}
-            className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-          >
-            <option value="Normal">Normal</option>
-            <option value="Express">Express</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Extra Price
-          </label>
-          <input
-            type="text"
-            value={extraPrice}
-            onChange={(e) => onExtraPriceChange(e.target.value)}
-            placeholder="$00.00"
-            className="mt-1 p-2 block w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-          />
-        </div>
-      </div> */}
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Color Section Component
-const ColorSection = ({
-  name,
-  price,
-  image,
-  selectedColor,
-  onColorChange,
-  onNameChange,
-  onPriceChange,
-  onSave,
-  onCancel,
-}) => {
-  return (
-    <div className="p-4 space-y-4">
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Color Picker
-        </label>
-        <SketchPicker
-          color={selectedColor}
-          onChangeComplete={onColorChange}
-          disableAlpha={true}
-        />
-      </div>
-
-      <div>
-        <label className="block text-lg text-left font-medium text-gray-700">
-          Color Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          className="mt-1 p-2 block w-full rounded-md border border-gray-300 bg-gray-100"
-          placeholder="Enter color name"
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Color Preview
-          </label>
-          <div
-            className="mt-2 h-20 w-20 border border-gray-300"
-            style={{ backgroundColor: selectedColor }}
-          />
-        </div>
-        <div>
-          <label className="block text-lg text-left font-medium text-gray-700">
-            Price Increment (%)
-          </label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => onPriceChange(e.target.value)}
-            className="mt-1 block p-3 w-full rounded-md border border-primary shadow-sm focus:border-teal-500 focus:ring-teal-500"
-            placeholder="10 for 10%"
-          />
-        </div>
-      </div>
-
-      <div className="flex justify-end space-x-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={image.loading}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onSave}
-          disabled={image.loading}
-          className="px-4 py-2 text-sm bg-teal-500 text-white rounded-md hover:bg-teal-600"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  );
-};
