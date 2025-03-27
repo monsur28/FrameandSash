@@ -759,7 +759,7 @@ export function EstimatedWorkingHourSection({
           Total Hour
         </label>
         <input
-          type="text"
+          type="number"
           value={estimatedHours}
           onChange={(e) => onHoursChange(e.target.value)}
           placeholder="e.g., 48"

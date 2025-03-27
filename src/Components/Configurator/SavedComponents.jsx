@@ -29,7 +29,7 @@ export const SavedColors = ({
                     color.color_image
                   }`}
                   alt="Material"
-                  className="h-10 w-10 object-cover"
+                  className="h-10 w-10 "
                 />
               </div>
             </td>
@@ -67,7 +67,7 @@ export const SavedEstimatedHours = ({ estimatedHours, onDelete }) => (
         {estimatedHours.map((hour, index) => (
           <tr key={index}>
             <td className="border border-gray-300 px-4 py-2">
-              {hour.estimatedHours}
+              {hour.total_hour}hr
             </td>
             {/* <td className="border border-gray-300 px-4 py-2">
                 {hour.fastOption}
@@ -115,7 +115,7 @@ export const SavedMaterials = ({ materials, onDelete }) => (
                     material.image
                   }`}
                   alt="Material"
-                  className="h-10 w-10 object-cover"
+                  className="h-10 w-10 "
                 />
               </div>
             </td>
@@ -208,11 +208,11 @@ export const SavedFanlights = ({ fanlights, onDelete }) => (
                   fanlight.fanlight_image
                 }`}
                 alt="Fanlight"
-                className="h-10 w-10 object-cover"
+                className="h-10 w-10 "
               />
             </td>
             <td className="border border-gray-300 px-4 py-2 text-center">
-              {fanlight.price}
+              {fanlight.price}$
             </td>
             <td className="border border-gray-300 px-4 py-2">
               <button
@@ -254,11 +254,11 @@ export const SavedGlasses = ({ glasses, glazingPriceIncrements, onDelete }) => (
                   glass.glass_image
                 }`}
                 alt="Glass Type"
-                className="h-10 w-10 object-cover"
+                className="h-10 w-10 "
               />
             </td>
             <td className="border border-gray-300 px-4 py-2 text-center">
-              {glass.price}
+              {glass.price}$
             </td>
             <td className="border border-gray-300 px-4 py-2 text-center">
               {glazingPriceIncrements[index]}%
@@ -309,11 +309,11 @@ export const SavedGlassStructures = ({
                   structure.glass_image
                 }`}
                 alt="Glass Structure"
-                className="h-10 w-10 object-cover"
+                className="h-10 w-10 "
               />
             </td>
             <td className="border border-gray-300 px-4 py-2 text-center">
-              {structure.price}
+              {structure.price}$
             </td>
             <td className="border border-gray-300 px-4 py-2 text-center">
               {structurePriceIncrements[index]}%
@@ -357,7 +357,7 @@ export const SavedOpeningSystems = ({ openingSystems, onDelete }) => (
                   system.opening_image
                 }`}
                 alt="Opening System"
-                className="h-10 w-10 object-cover"
+                className="h-10 w-10 "
               />
             </td>
             <td className="border border-gray-300 px-4 py-2 text-center">
@@ -409,7 +409,7 @@ export const SavedProfiles = ({
                   profile.profile_image
                 }`}
                 alt="Profile"
-                className="h-10 w-10 object-cover"
+                className="h-10 w-10 "
               />
             </td>
             <td className="border border-gray-300 px-4 py-2">
@@ -437,7 +437,11 @@ export const SavedProfiles = ({
   </div>
 );
 
-export const SavedWindows = ({ windows, onDelete }) => (
+export const SavedWindows = ({
+  windows,
+  window_type_multiplierIncrements,
+  onDelete,
+}) => (
   <div className="bg-white rounded-lg shadow-md border border-gray-300 p-4 mt-6">
     <h2 className="font-medium">Saved Windows</h2>
     <table className="min-w-full mt-2 border border-gray-300">
@@ -461,12 +465,13 @@ export const SavedWindows = ({ windows, onDelete }) => (
                   window.type_image
                 }`}
                 alt="Window Type"
-                className="h-10 w-10 object-cover"
+                className="h-10 w-10"
               />
             </td>
             <td className="border border-gray-300 px-4 py-2 text-center">
-              {window.window_type_multiplier}%
+              {window_type_multiplierIncrements[index]}%
             </td>
+
             <td className="border border-gray-300 px-4 py-2">
               <button
                 onClick={() => onDelete(index)}
@@ -504,11 +509,11 @@ export const SavedHandles = ({ handles, onDelete }) => (
                   handle.handle_image
                 }`}
                 alt="Handle"
-                className="h-10 w-10 object-cover"
+                className="h-10 w-10 "
               />
             </td>
             <td className="border border-gray-300 px-4 py-2 text-center">
-              {handle.price}
+              {handle.price}$
             </td>
             <td className="border border-gray-300 px-4 py-2">
               <button

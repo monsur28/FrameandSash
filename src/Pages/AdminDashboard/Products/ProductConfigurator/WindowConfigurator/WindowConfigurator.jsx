@@ -30,20 +30,21 @@ import {
   ProfileSection,
   WindowTypeSection,
 } from "../../../../../Components/Configurator/SetSavedWindowSection";
+import { X } from "lucide-react";
 
 // Utility function to calculate multipliers
 const calculateMultiplier = (input) => {
-  return (100 + parseInt(input)) / 100;
+  return (100 + Number.parseInt(input)) / 100;
 };
 
 // Utility function to validate multiplier input
 const isValidMultiplierInput = (input) => {
-  const num = parseFloat(input);
+  const num = Number.parseFloat(input);
   return !isNaN(num) && num >= 0; // Ensure input is a non-negative number
 };
 
 // Main Product Configuration Component
-export default function ProductConfiguration() {
+export default function WindowConfigurator() {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("1");
   // eslint-disable-next-line no-unused-vars
@@ -65,6 +66,7 @@ export default function ProductConfiguration() {
   const [name, setname] = useState("");
   const [image, setimage] = useState(initialImageState);
   const [savedMaterials, setSavedMaterials] = useState([]);
+  console.log(savedMaterials);
   const [editingMaterialIndex, setEditingMaterialIndex] = useState(null);
   const [materialError, setMaterialError] = useState("");
 
@@ -99,7 +101,6 @@ export default function ProductConfiguration() {
   const [editingGlassStructureIndex, setEditingGlassStructureIndex] =
     useState(null);
   const [structurePriceIncrements, setStructurePriceIncrements] = useState([]);
-
   const [structureError, setStructureError] = useState("");
 
   const [openingName, setopeningName] = useState("");
@@ -185,6 +186,212 @@ export default function ProductConfiguration() {
 
   const [colorError, setColorError] = useState("");
   const [configurError, setConfigurError] = useState("");
+
+  // Instructions content for each section
+  const instructionsContent = {
+    dimensions: {
+      title: "Dimension Instructions",
+      description:
+        "Enter the minimum and maximum dimensions for the window. These values will determine the size range customers can select. The unit can be set to mm, cm, or inches based on your preference.",
+      formula: "Window Area = Width × Height (used in price calculations)",
+      examples: [
+        {
+          name: "Standard Window",
+          calculation: "Width: 1000mm × Height: 1200mm = 1.2m²",
+          result: "1.2 square meters",
+        },
+        {
+          name: "Large Window",
+          calculation: "Width: 1500mm × Height: 2000mm = 3.0m²",
+          result: "3.0 square meters",
+        },
+      ],
+    },
+    material: {
+      title: "Material Instructions",
+      description:
+        "Add different material options for the window frame. Each material should have a name, image, and base price. The material price affects the overall cost calculation.",
+      formula: "Frame Cost = Material Price per meter × Frame Perimeter",
+      examples: [
+        {
+          name: "PVC Window (1.2m × 1.5m)",
+          calculation: "$15.00/m × (1.2m + 1.5m) × 2",
+          result: "$81.00",
+        },
+        {
+          name: "Aluminum Window (1.2m × 1.5m)",
+          calculation: "$25.00/m × (1.2m + 1.5m) × 2",
+          result: "$135.00",
+        },
+      ],
+    },
+    profile: {
+      title: "Profile Instructions",
+      description:
+        "Profiles determine the structural characteristics of the window frame. Add different profile options with features and price multipliers. The multiplier is applied to the base frame cost.",
+      formula: "Profile Adjusted Cost = Base Frame Cost × Profile Multiplier",
+      examples: [
+        {
+          name: "Standard Profile (Base frame cost: $100)",
+          calculation: "$100 × 1.0 multiplier",
+          result: "$100.00",
+        },
+        {
+          name: "Premium Profile (Base frame cost: $100)",
+          calculation: "$100 × 1.25 multiplier",
+          result: "$125.00",
+        },
+      ],
+    },
+    glass: {
+      title: "Glass Type Instructions",
+      description:
+        "Add different glass type options with their respective prices and glazing multipliers. The glazing multiplier affects the final glass cost calculation.",
+      formula:
+        "Glazing Cost = Base Price per m² × Window Area × Glazing Multiplier",
+      examples: [
+        {
+          name: "Single Glazing (1.2m × 1.5m window)",
+          calculation: "$20.00/m² × 1.8m² × 1.2 multiplier",
+          result: "$43.20",
+        },
+        {
+          name: "Double Glazing (1.2m × 1.5m window)",
+          calculation: "$40.00/m² × 1.8m² × 1.4 multiplier",
+          result: "$100.80",
+        },
+      ],
+    },
+    glassStructure: {
+      title: "Glass Structure Instructions",
+      description:
+        "Glass structures determine the appearance and properties of the window glass. Add different structure options with their prices and multipliers.",
+      formula:
+        "Glass Structure Cost = Base Price + (Window Area × Base Glass Price × Glazing Multiplier × Structure Multiplier)",
+      examples: [
+        {
+          name: "Clear Glass (1.2m × 1.5m window with Double Glazing)",
+          calculation: "$10.00 + (1.8m² × $40.00 × 1.4 × 1.1)",
+          result: "$120.88",
+        },
+        {
+          name: "Obscure Glass (1.2m × 1.5m window with Double Glazing)",
+          calculation: "$30.00 + (1.8m² × $40.00 × 1.4 × 1.2)",
+          result: "$150.96",
+        },
+      ],
+    },
+    operating: {
+      title: "Operating System Instructions",
+      description:
+        "Add different opening system options for the window. Each system should have a name, image, and price. This affects how the window opens and closes.",
+      formula: "Opening System Cost = Base Price of Selected Opening System",
+      examples: [
+        {
+          name: "Single Opening",
+          calculation: "Base Price = $20.00",
+          result: "$20.00",
+        },
+        {
+          name: "Double Opening",
+          calculation: "Base Price = $40.00",
+          result: "$40.00",
+        },
+      ],
+    },
+    handle: {
+      title: "Handle Type Instructions",
+      description:
+        "Add different handle options for the window. Each handle should have a type name, image, and price. The handle affects both aesthetics and functionality.",
+      formula: "Handle & Lock Cost = Base Price of Selected Handle",
+      examples: [
+        {
+          name: "Simple Handle",
+          calculation: "Base Price = $20.00",
+          result: "$20.00",
+        },
+        {
+          name: "Handle with Lock",
+          calculation: "Base Price = $40.00",
+          result: "$40.00",
+        },
+      ],
+    },
+    window: {
+      title: "Window Type Instructions",
+      description:
+        "Add different window type options with their respective names, images, and price multipliers. The window type affects the overall design and functionality.",
+      formula:
+        "Window Type Adjusted Cost = Color Adjusted Cost × Window Type Multiplier",
+      examples: [
+        {
+          name: "Fixed Window (Color adjusted cost: $150)",
+          calculation: "$150 × 0.9 multiplier (simpler construction)",
+          result: "$135.00",
+        },
+        {
+          name: "Single-Hung Window (Color adjusted cost: $150)",
+          calculation: "$150 × 1.0 multiplier",
+          result: "$150.00",
+        },
+      ],
+    },
+    fanlight: {
+      title: "Fanlight System Instructions",
+      description:
+        "Add different fanlight options for the window. Fanlights are fixed window sections positioned above or below the main window.",
+      formula: "Fanlight Cost = Base Price of Selected Fanlight Option",
+      examples: [
+        {
+          name: "Without Fanlight",
+          calculation: "Base Price = $0.00",
+          result: "$0.00",
+        },
+        {
+          name: "Lower Fanlight",
+          calculation: "Base Price = $20.00",
+          result: "$20.00",
+        },
+      ],
+    },
+    estimated: {
+      title: "Estimated Working Hour Instructions",
+      description:
+        "Set the estimated working hours for window installation. You can also specify fast options with extra costs for expedited service.",
+      formula:
+        "Total Labor Cost = Hourly Rate × Estimated Hours + Extra Price (if Fast Option selected)",
+      examples: [
+        {
+          name: "Standard Installation (3 hours)",
+          calculation: "$50/hour × 3 hours",
+          result: "$150.00",
+        },
+        {
+          name: "Fast Installation (3 hours)",
+          calculation: "$50/hour × 3 hours + $50 extra",
+          result: "$200.00",
+        },
+      ],
+    },
+    color: {
+      title: "Color System Instructions",
+      description:
+        "Add different color options for the window frame. Each color should have a name, color value, and price multiplier.",
+      formula: "Color Adjusted Cost = Profile Adjusted Cost × Color Multiplier",
+      examples: [
+        {
+          name: "Standard White (Profile adjusted cost: $125)",
+          calculation: "$125 × 1.0 multiplier",
+          result: "$125.00",
+        },
+        {
+          name: "Wood Grain Finish (Profile adjusted cost: $125)",
+          calculation: "$125 × 1.15 multiplier",
+          result: "$143.75",
+        },
+      ],
+    },
+  };
 
   const toggleInfo = (setter, type) => {
     setter((prev) => !prev);
@@ -346,13 +553,13 @@ export default function ProductConfiguration() {
       setDimensionError("All dimension fields are required.");
       return false;
     }
-    if (parseFloat(min_height) > parseFloat(max_height)) {
+    if (Number.parseFloat(min_height) > Number.parseFloat(max_height)) {
       setDimensionError(
         "Minimum height cannot be greater than maximum height."
       );
       return false;
     }
-    if (parseFloat(min_width) > parseFloat(max_width)) {
+    if (Number.parseFloat(min_width) > Number.parseFloat(max_width)) {
       setDimensionError("Minimum width cannot be greater than maximum width.");
       return false;
     }
@@ -390,7 +597,7 @@ export default function ProductConfiguration() {
       );
       return;
     }
-    const percentageValue = parseFloat(profile_multiplier);
+    const percentageValue = Number.parseFloat(profile_multiplier);
     const calculatedMultiplier = calculateMultiplier(percentageValue);
 
     handleSave(
@@ -428,7 +635,7 @@ export default function ProductConfiguration() {
       );
       return;
     }
-    const percentageValue = parseFloat(glassPrice);
+    const percentageValue = Number.parseFloat(glazing_multiplier);
     const calculatedMultiplier = calculateMultiplier(percentageValue);
 
     handleSave(
@@ -461,7 +668,7 @@ export default function ProductConfiguration() {
       );
       return;
     }
-    const percentageValue = parseFloat(structure_multiplier);
+    const percentageValue = Number.parseFloat(structure_multiplier);
     const calculatedMultiplier = calculateMultiplier(percentageValue);
 
     handleSave(
@@ -492,7 +699,7 @@ export default function ProductConfiguration() {
       setColorError("Color name and a valid price are required.");
       return;
     }
-    const percentageValue = parseFloat(color_multiplier);
+    const percentageValue = Number.parseFloat(color_multiplier);
     const calculatedMultiplier = calculateMultiplier(percentageValue);
 
     handleSave(
@@ -516,6 +723,38 @@ export default function ProductConfiguration() {
     }
     setcolor_multiplierIncrements(updatedIncrements);
     setColorError("");
+  };
+
+  const handleWindowSave = () => {
+    if (!windowTypeName || !isValidMultiplierInput(window_type_multiplier)) {
+      setWindowTypeError("Window type name and a valid price are required.");
+      return;
+    }
+
+    const percentageValue = Number.parseFloat(window_type_multiplier);
+    const calculatedMultiplier = calculateMultiplier(percentageValue);
+
+    handleSave(
+      setSavedWindows,
+      savedWindows,
+      {
+        type: windowTypeName,
+        type_image: windowTypeImage.url,
+        window_type_multiplier: calculatedMultiplier,
+      },
+      editingWindowIndex,
+      setEditingWindowIndex
+    );
+
+    const updatedIncrements = [...window_type_multiplierIncrements];
+    if (editingWindowIndex !== null) {
+      updatedIncrements[editingWindowIndex] = percentageValue;
+    } else {
+      updatedIncrements.push(percentageValue);
+    }
+
+    setwindow_type_multiplierIncrements(updatedIncrements);
+    setWindowTypeError("");
   };
 
   const handleEdit = (index, setters, data) => {
@@ -629,8 +868,8 @@ export default function ProductConfiguration() {
     savedMaterials.forEach((material, index) => {
       formData.append(`materials[${index}][name]`, material.name);
       formData.append(`materials[${index}][price]`, material.price);
-      if (material.image?.url) {
-        formData.append(`materials[${index}][image]`, material.image.url);
+      if (material.image) {
+        formData.append(`materials[${index}][image]`, material.image);
       }
     });
 
@@ -643,10 +882,10 @@ export default function ProductConfiguration() {
         `profile_features[${index}][profile_multiplier]`,
         calculateMultiplier(profile_multiplierIncrements[index])
       );
-      if (profile.profile_image?.url) {
+      if (profile.profile_image) {
         formData.append(
           `profile_features[${index}][profile_image]`,
-          profile.profile_image.url
+          profile.profile_image
         );
       }
       profile.features.forEach((feature, fIndex) => {
@@ -658,51 +897,42 @@ export default function ProductConfiguration() {
     });
 
     savedGlasses.forEach((glass, index) => {
-      formData.append(`glass_types[${index}][type]`, glass.glassName);
-      formData.append(`glass_types[${index}][price]`, glass.glassPrice);
+      formData.append(`glass_types[${index}][type]`, glass.type);
+      formData.append(`glass_types[${index}][price]`, glass.price);
       formData.append(
         `glass_types[${index}][glazing_multiplier]`,
         calculateMultiplier(glazingPriceIncrements[index])
       );
-      if (glass.glassImage?.url) {
+      if (glass.glass_image) {
         formData.append(
           `glass_types[${index}][glass_image]`,
-          glass.glassImage.url
+          glass.glass_image
         );
       }
     });
 
     savedGlassStructures.forEach((structure, index) => {
-      formData.append(
-        `glass_structures[${index}][type]`,
-        structure.glassStructureName
-      );
-      formData.append(
-        `glass_structures[${index}][price]`,
-        structure.glassStructurePrice
-      );
+      formData.append(`glass_structures[${index}][type]`, structure.type);
+      formData.append(`glass_structures[${index}][price]`, structure.price);
       formData.append(
         `glass_structures[${index}][structure_multiplier]`,
         calculateMultiplier(structurePriceIncrements[index])
       );
-      if (structure.glassStructureImage?.url) {
+      if (structure.glass_image) {
         formData.append(
           `glass_structures[${index}][glass_image]`,
-          structure.glassStructureImage.url
+          structure.glass_image
         );
       }
     });
 
     savedOpening.forEach((operating, index) => {
-      formData.append(`opening_systems[${index}][name]`, operating.openingName);
-      formData.append(
-        `opening_systems[${index}][price]`,
-        operating.openingPrice
-      );
-      if (operating.opening_image?.url) {
+      formData.append(`opening_systems[${index}][name]`, operating.name);
+      formData.append(`opening_systems[${index}][price]`, operating.price);
+      if (operating.opening_image) {
         formData.append(
           `opening_systems[${index}][opening_image]`,
-          operating.opening_image.url
+          operating.opening_image
         );
       }
     });
@@ -710,24 +940,21 @@ export default function ProductConfiguration() {
     savedHandles.forEach((handle, index) => {
       formData.append(`handles[${index}][type]`, handle.type);
       formData.append(`handles[${index}][price]`, handle.price);
-      if (handle.handle_image?.url) {
-        formData.append(
-          `handles[${index}][handle_image]`,
-          handle.handle_image.url
-        );
+      if (handle.handle_image) {
+        formData.append(`handles[${index}][handle_image]`, handle.handle_image);
       }
     });
 
     savedWindows.forEach((window, index) => {
-      formData.append(`window_types[${index}][type]`, window.windowTypeName);
+      formData.append(`window_types[${index}][type]`, window.type);
       formData.append(
         `window_types[${index}][window_type_multiplier]`,
         calculateMultiplier(window_type_multiplierIncrements[index])
       );
-      if (window.windowTypeImage?.url) {
+      if (window.type_image) {
         formData.append(
           `window_types[${index}][type_image]`,
-          window.windowTypeImage.url
+          window.type_image
         );
       }
     });
@@ -735,13 +962,13 @@ export default function ProductConfiguration() {
     savedFanlights.forEach((fanlight, index) => {
       formData.append(
         `fanlights[${index}][availability]`,
-        fanlight.fanlightName
+        fanlight.availability
       );
-      formData.append(`fanlights[${index}][price]`, fanlight.fanlightPrice);
-      if (fanlight.fanlight_image?.url) {
+      formData.append(`fanlights[${index}][price]`, fanlight.price);
+      if (fanlight.fanlight_image) {
         formData.append(
           `fanlights[${index}][fanlight_image]`,
-          fanlight.fanlight_image.url
+          fanlight.fanlight_image
         );
       }
     });
@@ -749,12 +976,15 @@ export default function ProductConfiguration() {
     if (savedEstimated.length === 0)
       throw new Error("Working hours information is required");
     const workingHours = savedEstimated[0];
-    formData.append("working_hours[total_hour]", workingHours.estimatedHours);
-    formData.append("working_hours[fastening_type]", workingHours.fastOption);
+    formData.append("working_hours[total_hour]", workingHours.total_hour);
     formData.append(
-      "working_hours[extra_cost]",
-      workingHours.extraPrice || "0"
+      "working_hours[fastening_type]",
+      workingHours.fastening_type
     );
+    // formData.append(
+    //   "working_hours[extra_cost]",
+    //   workingHours.extra_cost || "0"
+    // );
 
     savedColors.forEach((color, index) => {
       formData.append(`colors[${index}][color_name]`, color.color_name);
@@ -762,10 +992,10 @@ export default function ProductConfiguration() {
         `colors[${index}][color_multiplier]`,
         calculateMultiplier(color_multiplierIncrements[index])
       );
-      formData.append(`colors[${index}][color_value]`, color.color_image.url);
+      formData.append(`colors[${index}][color_value]`, color.color_image);
     });
 
-    for (let pair of formData.entries()) {
+    for (const pair of formData.entries()) {
       console.log(pair[0] + ", " + pair[1]);
     }
 
@@ -786,6 +1016,94 @@ export default function ProductConfiguration() {
       console.error("Error details:", error.response?.data);
       toast.error(errorMessage);
     }
+  };
+
+  // Function to render instructions details
+  const renderInstructionsDetails = (type) => {
+    const info = instructionsContent[type];
+    if (!info) return null;
+
+    return (
+      <div className="mt-3 p-4 border border-gray-200 rounded-md bg-white">
+        <div className="flex justify-between items-center mb-3">
+          <h3 className="text-xl font-bold text-gray-800">{info.title}</h3>
+          <button
+            onClick={() => {
+              switch (type) {
+                case "dimensions":
+                  setShowDimensionInfo(false);
+                  break;
+                case "material":
+                  setShowMaterialInfo(false);
+                  break;
+                case "profile":
+                  setShowProfileInfo(false);
+                  break;
+                case "glass":
+                  setShowGlassInfo(false);
+                  break;
+                case "glassStructure":
+                  setShowGlassStructureInfo(false);
+                  break;
+                case "operating":
+                  setShowOperatingInfo(false);
+                  break;
+                case "handle":
+                  setShowHandleInfo(false);
+                  break;
+                case "window":
+                  setShowWindowInfo(false);
+                  break;
+                case "fanlight":
+                  setShowFanlightInfo(false);
+                  break;
+                case "estimated":
+                  setShowEstimatedInfo(false);
+                  break;
+                case "color":
+                  setShowColorInfo(false);
+                  break;
+                default:
+                  break;
+              }
+            }}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <p className="text-gray-700 mb-4">{info.description}</p>
+
+        {info.formula && (
+          <div className="mb-4">
+            <h4 className="font-semibold text-gray-800 mb-2">Formula:</h4>
+            <div className="p-3 bg-gray-100 rounded-md font-mono text-sm">
+              {info.formula}
+            </div>
+          </div>
+        )}
+
+        {info.examples && info.examples.length > 0 && (
+          <div className="mb-4">
+            <h4 className="font-semibold text-gray-800 mb-2">Examples:</h4>
+            <div className="space-y-3">
+              {info.examples.map((example, index) => (
+                <div key={index} className="p-3 bg-gray-50 rounded-md">
+                  <p className="font-medium">{example.name}</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {example.calculation}
+                  </p>
+                  <p className="text-sm font-semibold mt-1">
+                    Result: {example.result}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -810,16 +1128,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between w-full">
             <span>Dimension</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowDimensionInfo, "dimensions");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -827,38 +1145,7 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("dimensions")}
         content={
           <>
-            {showDimensionInfo && (
-              <div
-                ref={infoRefs.dimension}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to Add Dimensions
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Min Height:</strong> Enter the minimum height of the
-                    window.
-                  </li>
-                  <li>
-                    <strong>Max Height:</strong> Enter the maximum height of the
-                    window.
-                  </li>
-                  <li>
-                    <strong>Min Width:</strong> Enter the minimum width of the
-                    window.
-                  </li>
-                  <li>
-                    <strong>Max Width:</strong> Enter the maximum width of the
-                    window.
-                  </li>
-                  <li>
-                    <strong>Unit:</strong> Select the unit of measurement (mm,
-                    cm, inch).
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showDimensionInfo && renderInstructionsDetails("dimensions")}
             <DimensionSection
               min_height={min_height}
               max_height={max_height}
@@ -910,16 +1197,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between w-full">
             <span>Material</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowMaterialInfo, "material");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -927,28 +1214,7 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("material")}
         content={
           <>
-            {showMaterialInfo && (
-              <div
-                ref={infoRefs.material}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to add Material
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Material Name:</strong> Enter the name of the
-                    Material.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload the image of the material.
-                  </li>
-                  <li>
-                    <strong>Price:</strong> Set the Price of the material.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showMaterialInfo && renderInstructionsDetails("material")}
 
             <MaterialSection
               name={name}
@@ -978,9 +1244,7 @@ export default function ProductConfiguration() {
         }
       />
 
-      {materialError && (
-        <p className="text-red-500 text-lg 875543">{materialError}</p>
-      )}
+      {materialError && <p className="text-red-500 text-lg">{materialError}</p>}
       {savedMaterials.length > 0 && (
         <SavedMaterials
           materials={savedMaterials}
@@ -1004,16 +1268,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between w-full">
             <span>Profile</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowProfileInfo, "profile");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1021,33 +1285,7 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("profile")}
         content={
           <>
-            {showProfileInfo && (
-              <div
-                ref={infoRefs.profile}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-72"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to add profile
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Profile Name:</strong> Enter the name of the
-                    profile.
-                  </li>
-                  <li>
-                    <strong>Price:</strong> Enter the increment price of the
-                    profile in percentage.
-                  </li>
-                  <li>
-                    <strong>Feature:</strong> Enter the features of the profile
-                    and add.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload the image of the material.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showProfileInfo && renderInstructionsDetails("profile")}
 
             <ProfileSection
               name={profile_name}
@@ -1094,16 +1332,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between w-full">
             <span>Glass Types</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowGlassInfo, "glass");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1111,32 +1349,7 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("glass")}
         content={
           <>
-            {showGlassInfo && (
-              <div
-                ref={infoRefs.glass}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to add Glass Types
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Glass Name:</strong> Enter the name of the glass
-                    type.
-                  </li>
-                  <li>
-                    <strong>Price:</strong> Enter the price of the glass type.
-                  </li>
-                  <li>
-                    <strong>Glazing Multiplier:</strong> Enter the glazing
-                    multiplier value.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload an image of the glass type.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showGlassInfo && renderInstructionsDetails("glass")}
 
             <GlassSection
               name={glassName}
@@ -1183,18 +1396,21 @@ export default function ProductConfiguration() {
         />
       )}
 
+      {/* Continue with other sections following the same pattern */}
+      {/* Each section should have the Instructions button beside Show more */}
+
       <Section
         title={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between w-full">
             <span>Glass Structure</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowGlassStructureInfo, "glassStructure");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1202,34 +1418,8 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("glassStructure")}
         content={
           <>
-            {showGlassStructureInfo && (
-              <div
-                ref={infoRefs.glassStructure}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to add Glass Structure
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Structure Name:</strong> Enter the name of the glass
-                    structure.
-                  </li>
-                  <li>
-                    <strong>Price:</strong> Enter the price of the glass
-                    structure.
-                  </li>
-                  <li>
-                    <strong>Structure Multiplier:</strong> Enter the multiplier
-                    value.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload an image of the glass
-                    structure.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showGlassStructureInfo &&
+              renderInstructionsDetails("glassStructure")}
 
             <GlassStructureSection
               name={glassStructureName}
@@ -1251,7 +1441,6 @@ export default function ProductConfiguration() {
           </>
         }
       />
-
       {structureError && <p className="text-red-500">{structureError}</p>}
       {savedGlassStructures.length > 0 && (
         <SavedGlassStructures
@@ -1263,18 +1452,19 @@ export default function ProductConfiguration() {
         />
       )}
 
+      {/* Add the remaining sections with the same pattern */}
       <Section
         title={
-          <div className="flex items-center gap-2">
-            <span>Operating System</span>
+          <div className="flex items-center justify-between w-full">
+            <span>Opening System</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowOperatingInfo, "operating");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1282,30 +1472,7 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("operating")}
         content={
           <>
-            {showOperatingInfo && (
-              <div
-                ref={infoRefs.operating}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to Add an Operating System
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Operating Name:</strong> Enter the name of the
-                    operating system.
-                  </li>
-                  <li>
-                    <strong>Price:</strong> Enter the price of the operating
-                    system.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload an image of the operating
-                    system.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showOperatingInfo && renderInstructionsDetails("operating")}
 
             <OperatingSystemSection
               name={openingName}
@@ -1344,7 +1511,6 @@ export default function ProductConfiguration() {
           </>
         }
       />
-
       {operatingError && <p className="text-red-500">{operatingError}</p>}
       {savedOpening.length > 0 && (
         <SavedOpeningSystems
@@ -1369,16 +1535,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
-            <span>Handle Type</span>
+          <div className="flex items-center justify-between w-full">
+            <span>Handle</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowHandleInfo, "handle");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1386,28 +1552,7 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("handle")}
         content={
           <>
-            {showHandleInfo && (
-              <div
-                ref={infoRefs.handle}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to Add a Handle Type
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Handle Name:</strong> Enter the name of the handle
-                    type.
-                  </li>
-                  <li>
-                    <strong>Price:</strong> Enter the price of the handle.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload an image of the handle.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showHandleInfo && renderInstructionsDetails("handle")}
 
             <HandleSection
               name={type}
@@ -1418,17 +1563,13 @@ export default function ProductConfiguration() {
               onImageChange={(e) => handleFileChange(e, "handle")}
               onSave={() => {
                 if (!type || !isValidMultiplierInput(price)) {
-                  setHandleError("Handle name and a valid price are required.");
+                  setHandleError("Handle type and a valid price are required.");
                   return;
                 }
                 handleSave(
                   setSavedHandles,
                   savedHandles,
-                  {
-                    type,
-                    handle_image: handle_image.url,
-                    price,
-                  },
+                  { type, handle_image: handle_image.url, price },
                   editingHandleIndex,
                   setEditingHandleIndex
                 );
@@ -1444,7 +1585,6 @@ export default function ProductConfiguration() {
           </>
         }
       />
-
       {handleError && <p className="text-red-500">{handleError}</p>}
       {savedHandles.length > 0 && (
         <SavedHandles
@@ -1469,16 +1609,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between w-full">
             <span>Window Type</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowWindowInfo, "window");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1486,73 +1626,19 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("window")}
         content={
           <>
-            {showWindowInfo && (
-              <div
-                ref={infoRefs.window}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to Add a Window Type
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Window Type Name:</strong> Enter the name of the
-                    window type.
-                  </li>
-                  <li>
-                    <strong>Price Multiplier:</strong> Enter the price increment
-                    multiplier.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload an image representing the
-                    window type.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showWindowInfo && renderInstructionsDetails("window")}
 
             <WindowTypeSection
               name={windowTypeName}
               price={window_type_multiplier}
               image={windowTypeImage}
+              window_type_multiplierIncrements={
+                window_type_multiplierIncrements
+              }
               onNameChange={setWindowTypeName}
               onPriceChange={setwindow_type_multiplier}
               onImageChange={(e) => handleFileChange(e, "window")}
-              onSave={() => {
-                if (
-                  !windowTypeName ||
-                  !isValidMultiplierInput(window_type_multiplier)
-                ) {
-                  setWindowTypeError(
-                    "Window type name and a valid price are required."
-                  );
-                  return;
-                }
-                handleSave(
-                  setSavedWindows,
-                  savedWindows,
-                  {
-                    type: windowTypeName,
-                    window_type_multiplier: calculateMultiplier(
-                      window_type_multiplier
-                    ),
-                    type_image: windowTypeImage.url,
-                  },
-                  editingWindowIndex,
-                  setEditingWindowIndex
-                );
-
-                const updatedIncrements = [...window_type_multiplierIncrements];
-                if (editingWindowIndex !== null) {
-                  updatedIncrements[editingWindowIndex] = parseFloat(
-                    window_type_multiplier
-                  );
-                } else {
-                  updatedIncrements.push(parseFloat(window_type_multiplier));
-                }
-                setwindow_type_multiplierIncrements(updatedIncrements);
-                setWindowTypeError("");
-              }}
+              onSave={handleWindowSave}
               onCancel={() => {
                 setWindowTypeName("");
                 setwindow_type_multiplier("");
@@ -1563,7 +1649,6 @@ export default function ProductConfiguration() {
           </>
         }
       />
-
       {windowTypeError && <p className="text-red-500">{windowTypeError}</p>}
       {savedWindows.length > 0 && (
         <SavedWindows
@@ -1575,6 +1660,7 @@ export default function ProductConfiguration() {
               {
                 windowTypeName: setWindowTypeName,
                 window_type_multiplier: setwindow_type_multiplier,
+                type_image: setWindowTypeImage,
               },
               setWindowTypeImage,
               entry
@@ -1589,16 +1675,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
-            <span>Fanlight System</span>
+          <div className="flex items-center justify-between w-full">
+            <span>Fanlight</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowFanlightInfo, "fanlight");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1606,30 +1692,7 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("fanlight")}
         content={
           <>
-            {showFanlightInfo && (
-              <div
-                ref={infoRefs.fanlight}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to Add a Fanlight System
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Fanlight Availability:</strong> Enter the
-                    availability status or name.
-                  </li>
-                  <li>
-                    <strong>Price:</strong> Enter the price increment for the
-                    fanlight system.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload an image representing the
-                    fanlight system.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showFanlightInfo && renderInstructionsDetails("fanlight")}
 
             <FanlightSection
               name={fanlightName}
@@ -1650,8 +1713,8 @@ export default function ProductConfiguration() {
                   savedFanlights,
                   {
                     availability: fanlightName,
-                    price: fanlightPrice,
                     fanlight_image: fanlight_image.url,
+                    price: fanlightPrice,
                   },
                   editingFanlightIndex,
                   setEditingFanlightIndex
@@ -1693,16 +1756,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between w-full">
             <span>Estimated Working Hour</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowEstimatedInfo, "estimated");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1710,53 +1773,24 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("estimated")}
         content={
           <>
-            {showEstimatedInfo && (
-              <div
-                ref={infoRefs.estimated}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to Set Estimated Working Hours
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Estimated Hours:</strong> Enter the estimated
-                    working hours for the task.
-                  </li>
-                  <li>
-                    <strong>Fast Option:</strong> Choose between
-                    &quot;Normal&quot; and &quot;Fast&quot; processing.
-                  </li>
-                  <li>
-                    <strong>Extra Price:</strong> Enter any extra price for
-                    faster processing.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showEstimatedInfo && renderInstructionsDetails("estimated")}
 
             <EstimatedWorkingHourSection
-              estimatedHours={estimatedHours}
+              hours={estimatedHours}
               fastOption={fastOption}
               extraPrice={extraPrice}
               onHoursChange={setEstimatedHours}
               onFastOptionChange={setFastOption}
               onExtraPriceChange={setExtraPrice}
               onSave={() => {
-                if (!estimatedHours || !isValidMultiplierInput(extraPrice)) {
-                  setEstimatedError(
-                    "Estimated hours and a valid extra price are required."
-                  );
+                if (!estimatedHours) {
+                  setEstimatedError("Estimated hours are required.");
                   return;
                 }
                 handleSave(
                   setSavedEstimated,
                   savedEstimated,
-                  {
-                    estimatedHours,
-                    fastOption,
-                    extraPrice,
-                  },
+                  { total_hour: estimatedHours, fastOption, extraPrice },
                   editingEstimatedIndex,
                   setEditingEstimatedIndex
                 );
@@ -1781,7 +1815,7 @@ export default function ProductConfiguration() {
             handleEdit(
               index,
               {
-                estimatedHours: setEstimatedHours,
+                total_hour: setEstimatedHours,
                 fastOption: setFastOption,
                 extraPrice: setExtraPrice,
               },
@@ -1797,16 +1831,16 @@ export default function ProductConfiguration() {
 
       <Section
         title={
-          <div className="flex items-center gap-2">
-            <span>Color System</span>
+          <div className="flex items-center justify-between w-full">
+            <span>Color</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 toggleInfo(setShowColorInfo, "color");
               }}
-              className="p-1 focus:outline-none border border-gray-500 rounded-full"
+              className="px-3 py-1 ml-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md border border-gray-300 focus:outline-none"
             >
-              <span className="text-xl">ℹ️</span>
+              Instructions
             </button>
           </div>
         }
@@ -1814,42 +1848,17 @@ export default function ProductConfiguration() {
         onToggle={() => toggleSection("color")}
         content={
           <>
-            {showColorInfo && (
-              <div
-                ref={infoRefs.color}
-                className="absolute bg-white text-gray-700 border border-gray-300 rounded-lg p-4 shadow-lg z-10 mt-2 w-96 lg:w-[500px]"
-              >
-                <h4 className="font-semibold mb-2 text-lg">
-                  How to Add a Color
-                </h4>
-                <ul className="list-disc pl-5 space-y-1 text-base">
-                  <li>
-                    <strong>Color Name:</strong> Enter a name for the color.
-                  </li>
-                  <li>
-                    <strong>Multiplier Price:</strong> Enter the price increment
-                    for this color.
-                  </li>
-                  <li>
-                    <strong>Color Picker:</strong> Select a color using the
-                    color picker.
-                  </li>
-                  <li>
-                    <strong>Image:</strong> Upload an image representing the
-                    color.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {showColorInfo && renderInstructionsDetails("color")}
 
             <ColorSection
+              selectedColor={selectedColor}
               name={color_name}
               price={color_multiplier}
               image={color_image}
-              selectedColor={selectedColor}
               onColorChange={handleColorChange}
               onNameChange={setcolor_name}
               onPriceChange={setcolor_multiplier}
+              onImageChange={(e) => handleFileChange(e, "color")}
               onSave={handleColorSave}
               onCancel={() => {
                 setcolor_name("");
